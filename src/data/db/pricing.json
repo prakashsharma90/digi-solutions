@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "serviceId": "ai-marketing",
+        "name": "Starter",
+        "price": "9,999",
+        "features": [
+            "Basic AI strategy setup",
+            "Initial audit & optimization",
+            "Monthly performance tracking",
+            "Email support"
+        ],
+        "popular": false
+    },
+    {
+        "id": "2",
+        "serviceId": "ai-marketing",
+        "name": "Growth",
+        "price": "24,999",
+        "features": [
+            "Advanced AI strategy & execution",
+            "Ongoing optimization",
+            "Conversion tracking",
+            "Monthly detailed reports",
+            "Priority support"
+        ],
+        "popular": true
+    }
+]

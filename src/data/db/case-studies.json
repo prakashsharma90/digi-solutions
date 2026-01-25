@@ -1,0 +1,18 @@
+[
+    {
+        "id": "1",
+        "client": "TechFlow Systems",
+        "industry": "SaaS",
+        "service": "ai-marketing",
+        "result": "250% Growth in 6 Months",
+        "status": "Published"
+    },
+    {
+        "id": "2",
+        "client": "EcoRetail",
+        "industry": "E-commerce",
+        "service": "seo",
+        "result": "40% Lower CAC",
+        "status": "Draft"
+    }
+]

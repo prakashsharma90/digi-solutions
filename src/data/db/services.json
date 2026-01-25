@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ai-marketing",
+    "name": "AI-Powered Digital Marketing sdfgh",
+    "visible": false,
+    "category": "Marketing",
+    "shortDescription": "",
+    "content": "",
+    "status": "Published",
+    "icon": "",
+    "metaTitle": "",
+    "metaDescription": "",
+    "pricingType": "custom",
+    "price": "",
+    "ctaText": "Get Started",
+    "ctaAction": "contact"
+  },
+  {
+    "id": "performance",
+    "name": "Performance Marketing",
+    "visible": true,
+    "category": "Marketing"
+  },
+  {
+    "id": "seo",
+    "name": "SEO",
+    "visible": true,
+    "category": "Search"
+  }
+]

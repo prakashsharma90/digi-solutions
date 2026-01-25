@@ -15,6 +15,8 @@ import { ContentMarketingPage } from '@/components/services/ContentMarketingPage
 import { ServicePricing } from "@/components/sections/ServicePricing";
 import { InfluencerMarketingPage } from "@/components/services/InfluencerMarketingPage";
 import { AIMarketingPage } from "@/components/services/AIMarketingPage";
+import { PersonalBrandingPage } from "@/components/services/PersonalBrandingPage";
+
 
 
 export const revalidate = 0;
@@ -126,6 +128,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    if (slug === 'personal-branding') {
+        return {
+            title: "Expert Personal Branding Services for Founders & Executives | Digihub",
+            description: "Build a high-value personal brand that attracts clients, media & inbound opportunities. Authority building, ghostwriting & PR for executives.",
+            keywords: ["personal branding services", "executive branding", "founder personal branding", "linkedin personal branding", "personal brand agency India"]
+        };
+    }
+
     const service = await getService(slug);
     if (!service) return {};
 
@@ -226,6 +236,13 @@ export default async function ServicePage({ params }: Props) {
     if (slug === 'ai-marketing') {
         return <AIMarketingPage plans={finalPlans} />;
     }
+
+    // Use custom Personal Branding page for 'personal-branding' slug
+    if (slug === 'personal-branding') {
+        return <PersonalBrandingPage plans={finalPlans} />;
+    }
+
+
 
     // If no custom page and no DB service, 404
     if (!service) {

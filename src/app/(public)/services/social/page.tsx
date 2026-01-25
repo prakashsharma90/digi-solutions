@@ -29,7 +29,7 @@ export default async function SocialMediaMarketingPage() {
     // Try to find plans with different possible service IDs
     let { data: plans } = await supabase
         .from('pricing_plans')
-        .select('*')
+        .select('*, features:plan_features(*)')
         .eq('service_id', 'social-media-marketing')
         .eq('is_active', true)
         .order('price', { ascending: true });
@@ -38,7 +38,7 @@ export default async function SocialMediaMarketingPage() {
     if (!plans || plans.length === 0) {
         const { data: altPlans } = await supabase
             .from('pricing_plans')
-            .select('*')
+            .select('*, features:plan_features(*)')
             .eq('service_id', 'social')
             .eq('is_active', true)
             .order('price', { ascending: true });

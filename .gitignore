@@ -42,3 +42,8 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# database files user requested to ignore
+db/
+supabase/
+*.sql

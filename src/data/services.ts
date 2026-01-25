@@ -115,7 +115,6 @@ export const servicesData: Record<string, ServiceType> = {
             { q: "Is pricing fixed or customizable?", a: "Pricing is flexible and depends on business goals, competition, and service scope." }
         ]
     },
-
     "social": {
         name: "Social Media Marketing",
         title: "Build a Community, Not Just a Following",
@@ -493,7 +492,7 @@ export const servicesData: Record<string, ServiceType> = {
             { q: "Is pricing fixed or customizable?", a: "Pricing is flexible and depends on business goals, competition, and service scope." }
         ]
     },
-    "p-seo": {
+    "programmatic-seo": {
         name: "Programmatic SEO",
         title: "Rank for 10,000+ Keywords Simultaneously",
         metaTitle: "Programmatic SEO Services & Pricing | Digihub Solutions",

@@ -290,6 +290,7 @@ export default function AdminPricing() {
                     serviceId={selectedService}
                     serviceName={selectedServiceData?.name}
                     planToEdit={editingPlan}
+                    existingPlans={plans}
                     onSuccess={() => fetchPlans(selectedService)}
                 />
             )}

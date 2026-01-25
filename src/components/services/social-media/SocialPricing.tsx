@@ -10,11 +10,12 @@ import { useState } from "react";
 interface PricingPlan {
     id: string;
     service_id: string;
-    name: string;
+    name?: string;
+    title?: string;
     price: number;
     currency: string;
     billing_cycle: string;
-    features: string[];
+    features: any;
     is_popular: boolean;
     is_active: boolean;
     is_custom: boolean;
@@ -111,12 +112,18 @@ export function SocialPricing({ plans }: SocialPricingProps) {
     // Helper function to normalize features (handle both string and array)
     const normalizeFeatures = (features: any): string[] => {
         if (!features) return [];
-        if (Array.isArray(features)) return features;
+        if (Array.isArray(features)) {
+            return features.map(f => {
+                if (typeof f === 'string') return f;
+                if (typeof f === 'object' && f && 'feature_text' in f) return f.feature_text;
+                return '';
+            }).filter(Boolean);
+        }
         if (typeof features === 'string') {
             // Try to parse as JSON first
             try {
                 const parsed = JSON.parse(features);
-                if (Array.isArray(parsed)) return parsed;
+                if (Array.isArray(parsed)) return normalizeFeatures(parsed);
             } catch (e) {
                 // If not JSON, split by comma or newline
                 return features.split(/[,\n]/).map(f => f.trim()).filter(f => f);
@@ -213,7 +220,7 @@ export function SocialPricing({ plans }: SocialPricingProps) {
                             )}
 
                             <div className="mb-8">
-                                <h3 className="text-2xl font-bold text-white mb-4">{plan.name || 'Plan'}</h3>
+                                <h3 className="text-2xl font-bold text-white mb-4">{plan.title || plan.name || 'Plan'}</h3>
                                 <div className="flex items-end gap-1 mb-4">
                                     <span className="text-5xl font-bold text-white">{getDisplayPrice(plan)}</span>
                                     {!plan.is_custom && (

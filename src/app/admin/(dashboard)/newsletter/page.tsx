@@ -542,7 +542,7 @@ export default function NewsletterLeadsPage() {
                                     {getEngagementBadge(selectedSubscriber.engagement)}
                                     <span className="px-3 py-1 bg-white/5 text-gray-300 rounded-full text-xs flex items-center gap-1.5">
                                         <Target size={12} />
-                                        Score: {selectedSubscriber.leadScore}
+                                        Score: {selectedSubscriber.lead_score}
                                     </span>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@ export default function NewsletterLeadsPage() {
                                     </div>
                                     <div className="bg-white/5 rounded-xl p-4 border border-white/5">
                                         <p className="text-xs text-gray-400 mb-1">Page Visits</p>
-                                        <p className="text-2xl font-bold text-white">{selectedSubscriber.pageVisits}</p>
+                                        <p className="text-2xl font-bold text-white">{selectedSubscriber.page_visits || 0}</p>
                                     </div>
                                 </div>
 
@@ -575,11 +575,11 @@ export default function NewsletterLeadsPage() {
                                         </div>
                                         <div className="flex items-center justify-between py-2 border-b border-white/5">
                                             <span className="text-sm text-gray-400">First Seen</span>
-                                            <span className="text-sm text-white">{new Date(selectedSubscriber.firstSeen).toLocaleDateString()}</span>
+                                            <span className="text-sm text-white">{selectedSubscriber.first_seen ? new Date(selectedSubscriber.first_seen).toLocaleDateString() : 'N/A'}</span>
                                         </div>
                                         <div className="flex items-center justify-between py-2 border-b border-white/5">
                                             <span className="text-sm text-gray-400">Last Activity</span>
-                                            <span className="text-sm text-white">{new Date(selectedSubscriber.lastActivity).toLocaleDateString()}</span>
+                                            <span className="text-sm text-white">{selectedSubscriber.last_activity ? new Date(selectedSubscriber.last_activity).toLocaleDateString() : 'N/A'}</span>
                                         </div>
                                         <div className="flex items-center justify-between py-2 border-b border-white/5">
                                             <span className="text-sm text-gray-400">Country</span>
@@ -591,7 +591,7 @@ export default function NewsletterLeadsPage() {
                                         <div className="flex items-center justify-between py-2 border-b border-white/5">
                                             <span className="text-sm text-gray-400">Double Opt-In</span>
                                             <span className="text-sm text-white">
-                                                {selectedSubscriber.doubleOptIn ? "✓ Yes" : "✗ No"}
+                                                {selectedSubscriber.double_opt_in ? "✓ Yes" : "✗ No"}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between py-2">

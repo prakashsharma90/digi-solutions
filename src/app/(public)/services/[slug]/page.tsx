@@ -229,7 +229,7 @@ export default async function ServicePage({ params }: Props) {
 
     // Use custom Influencer Marketing page for 'influencer' slug
     if (slug === 'influencer') {
-        return <InfluencerMarketingPage plans={finalPlans} />;
+        return <InfluencerMarketingPage />;
     }
 
     // Use custom AI Marketing page for 'ai-marketing' slug

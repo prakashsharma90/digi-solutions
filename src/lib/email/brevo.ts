@@ -111,9 +111,9 @@ export async function sendWelcomeEmail({ email, name }: WelcomeEmailParams) {
       </html>
     `;
 
-        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log('Welcome email sent successfully:', data);
-        return { success: true, messageId: data.messageId };
+        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log('Welcome email sent successfully:', response.body);
+        return { success: true, messageId: response.body.messageId };
     } catch (error) {
         console.error('Error sending welcome email:', error);
         throw error;
@@ -140,9 +140,9 @@ export async function sendNewsletterEmail({
         };
         sendSmtpEmail.htmlContent = content;
 
-        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log('Newsletter email sent successfully:', data);
-        return { success: true, messageId: data.messageId };
+        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log('Newsletter email sent successfully:', response.body);
+        return { success: true, messageId: response.body.messageId };
     } catch (error) {
         console.error('Error sending newsletter email:', error);
         throw error;
@@ -166,9 +166,9 @@ export async function addToBrevoList(email: string, listId: number, attributes?:
         createContact.attributes = attributes || {};
         createContact.updateEnabled = true;
 
-        const data = await contactsApi.createContact(createContact);
-        console.log('Contact added to Brevo list:', data);
-        return { success: true, id: data.id };
+        const response = await contactsApi.createContact(createContact);
+        console.log('Contact added to Brevo list:', response.body);
+        return { success: true, id: response.body.id };
     } catch (error: any) {
         // If contact already exists, update it
         if (error.response?.body?.code === 'duplicate_parameter') {

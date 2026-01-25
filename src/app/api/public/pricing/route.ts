@@ -5,7 +5,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const serviceSlug = searchParams.get("service");
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     if (!serviceSlug) {
         return NextResponse.json({ error: "Service slug is required" }, { status: 400 });

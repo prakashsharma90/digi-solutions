@@ -44,6 +44,10 @@ next-env.d.ts
 .env*.local
 
 # database files user requested to ignore
-db/
-supabase/
-*.sql
+# db/ narrowed to local db files
+db/*.sqlite
+db/*.db
+supabase/.local/
+supabase/.cache/
+supabase/storage/
+# *.sql

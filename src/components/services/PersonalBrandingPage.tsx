@@ -96,7 +96,7 @@ export function PersonalBrandingPage({ plans }: { plans?: any[] }) {
                 <Container className="relative z-10 py-25">
                     <div className="max-w-4xl mx-auto text-center">
                         <h1 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-[1.1] tracking-tight">
-                            Build a Personal Brand That Attracts 
+                            Build a Personal Brand That Attracts
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                                 Clients, Media & Opportunities
                             </span>
@@ -401,9 +401,11 @@ export function PersonalBrandingPage({ plans }: { plans?: any[] }) {
                             <h3 className="text-2xl font-bold text-white mb-2">Get a Free LinkedIn Authority Scorecard</h3>
                             <p className="text-blue-100">See exactly where you stand against the top 1% of creators.</p>
                         </div>
-                        <Button className="bg-white text-blue-600 hover:bg-gray-100 font-bold px-8 h-12 rounded-full shadow-xl">
-                            Get My Scorecard
-                        </Button>
+                        <Link href="/scorecard">
+                            <Button className="bg-white text-blue-600 hover:bg-gray-100 font-bold px-8 h-12 rounded-full shadow-xl">
+                                Get My Scorecard
+                            </Button>
+                        </Link>
                     </div>
                 </Container>
             </div>

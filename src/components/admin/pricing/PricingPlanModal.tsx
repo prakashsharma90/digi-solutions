@@ -112,7 +112,7 @@ export default function PricingPlanModal({
                 maximumFractionDigits: 0
             }).format(amount);
         } catch (e) {
-            return amount;
+            return amount.toString();
         }
     };
 
@@ -125,6 +125,13 @@ export default function PricingPlanModal({
         // 1. Title Required
         if (!formData.title) {
             alert("Please enter a Plan Title.");
+            setLoading(false);
+            return;
+        }
+
+        // 1.5. Description Required
+        if (!formData.description || formData.description.trim() === "") {
+            alert("Please enter a Monthly Scope Summary.");
             setLoading(false);
             return;
         }
@@ -154,8 +161,8 @@ export default function PricingPlanModal({
             const otherPopular = existingPlans.find(p => p.is_popular && p.id !== planToEdit?.id);
             if (otherPopular) {
                 if (!confirm(`Plan "${otherPopular.title}" is already marked as Popular. This will switch the popular tag to the current plan. Continue?`)) {
-                    // Logic to unmark others could be handled by backend, or just proceed
-                    // For now we allow it but warned user.
+                    setLoading(false);
+                    return;
                 }
             }
         }
@@ -361,9 +368,9 @@ export default function PricingPlanModal({
                                                         <div className="text-xl font-bold text-white font-mono">{formatCurrency(yearlyPreview)}</div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <div className="text-xs text-green-400 font-bold mb-1">Save 20%</div>
+                                                        <div className="text-xs text-green-400 font-bold mb-1">Save {formData.discount_percent || 0}%</div>
                                                         <div className="text-[10px] text-gray-500">
-                                                            {formatCurrency((parseFloat(formData.price) * 12) - yearlyPreview)} saved
+                                                            {formatCurrency(((parseFloat(formData.price) || 0) * 12) - yearlyPreview)} saved
                                                         </div>
                                                     </div>
                                                 </div>

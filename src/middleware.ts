@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-import { createClient } from '@/lib/supabase/server'
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
@@ -24,12 +23,22 @@ export async function middleware(request: NextRequest) {
     }
 
     // Update session
-    const res = await updateSession(request)
+    let response = NextResponse.next({ request: { headers: request.headers } })
+    let user = null;
+
+    try {
+        const sessionData = await updateSession(request)
+        if (sessionData && sessionData.response) {
+            response = sessionData.response
+            user = sessionData.user
+        } else {
+            console.error("Middleware: updateSession did not return a valid response object", sessionData)
+        }
+    } catch (e) {
+        console.error("Middleware: Error updating session", e)
+    }
 
     if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
         // Dev fallback check
         const isLocal = process.env.NODE_ENV === 'development'
         const hasDevSession = request.cookies.get("dev_admin_session")?.value === "true"
@@ -41,7 +50,7 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    return res
+    return response
 }
 
 export const config = {

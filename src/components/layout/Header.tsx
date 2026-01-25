@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Rocket, User, LogOut, LayoutDashboard } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,10 @@ export function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const router = useRouter();
+    const pathname = usePathname();
+
+    // Only show profile icon on admin routes
+    const isAdminRoute = pathname?.startsWith('/admin');
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -148,13 +152,14 @@ export function Header() {
 
                 {/* CTA & Mobile Toggle */}
                 <div className="flex items-center gap-4">
-                    {isLoggedIn ? (
+                    {isLoggedIn && isAdminRoute ? (
                         <div className="relative">
                             <button
                                 onClick={() => setProfileOpen(!profileOpen)}
                                 className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/30 transition-all shadow-[0_0_15px_-5px_var(--color-primary)]"
+                                aria-label="User profile menu"
                             >
-                                <User size={20} />
+                                <User size={20} aria-hidden="true" />
                             </button>
 
                             <AnimatePresence>
@@ -170,14 +175,14 @@ export function Header() {
                                             className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                                             onClick={() => setProfileOpen(false)}
                                         >
-                                            <LayoutDashboard size={16} />
+                                            <LayoutDashboard size={16} aria-hidden="true" />
                                             Dashboard
                                         </Link>
                                         <button
                                             onClick={handleLogout}
                                             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
                                         >
-                                            <LogOut size={16} />
+                                            <LogOut size={16} aria-hidden="true" />
                                             Logout
                                         </button>
                                     </motion.div>
@@ -195,8 +200,9 @@ export function Header() {
                     <button
                         className="md:hidden z-50 p-2 text-white hover:text-primary transition-colors"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                     >
-                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {mobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
                     </button>
                 </div>
             </Container>

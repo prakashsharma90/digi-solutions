@@ -57,6 +57,35 @@ export const servicesData: Record<string, ServiceType> = {
             { q: "Is pricing fixed or customizable?", a: "Pricing is flexible and depends on business goals, competition, and service scope." }
         ]
     },
+    "google-ads": {
+        name: "Google Ads (PPC)",
+        title: "#1 Google Ads Agency for E-commerce Stores",
+        metaTitle: "Google Ads Services for E-commerce | Digihub Solutions",
+        metaDesc: "Helping top 1% brands scale to 7/8-figure months with advanced Google Ads strategies and high ROAS.",
+        heroText: "Stop wasting budget. We build high-intent campaigns that convert searchers into buyers instantly.",
+        description: "Digihub Solutions specializes in Google Ads for e-commerce, helping brands scale profitably with data-driven PPC campaigns, Shopping ads, and YouTube strategies.",
+        whyMatters: "Google captures intention. People searching for your product are ready to buy. If you aren't there, you're handing sales to competitors.",
+        benefits: ["Consistent and Stable ROAS", "Higher Buyer Intent", "Endless Scaling Opportunities", "Full Merchant Center Solutions", "Transparent Reporting"],
+        problems: ["Wasted ad spend", "Low click-through rates", "Poor quality scores", "Untracked conversions"],
+        approach: [
+            { step: "Audit & Fix", desc: "Identifying wasted spend and technical errors" },
+            { step: "Campaign Structure", desc: "Rebuilding for high relevance and quality score" },
+            { step: "Shopping Optimization", desc: "Feed management for maximum visibility" },
+            { step: "Scale", desc: "Incrementally increasing budget while maintaining ROAS" }
+        ],
+        tools: ["Google Ads", "Google Merchant Center", "GA4", "Looker Studio"],
+        outcomes: ["High ROAS", "Predictable Revenue", "Scalable Growth", "Market Leadership"],
+        industries: ["E-commerce", "DTC Brands", "Dropshipping", "Retail"],
+        pricing: {
+            starter: { price: "19,999", features: ["Campaign Audit", "Basic Search Setup", "Monthly Optimization", "Email Support"] },
+            growth: { price: "49,999", features: ["Shopping & PMax Setup", "Advanced Bidding Strategies", "Weekly Optimization", "Custom Reporting", "Priority Support"] },
+            scale: { price: "Custom", features: ["Enterprise Strategy", "Dedicated Account Manager", "Daily Optimization", "Custom Dashboards"] }
+        },
+        faq: [
+            { q: "How fast can I see results?", a: "PPC is immediate. You can start getting traffic within hours of launch." },
+            { q: "Do you handle Google Shopping?", a: "Yes, we are experts in Merchant Center and PMax campaigns for e-commerce." }
+        ]
+    },
     "seo": {
         name: "Search Engine Optimization (SEO)",
         title: "Dominate Search Results Sustainably",

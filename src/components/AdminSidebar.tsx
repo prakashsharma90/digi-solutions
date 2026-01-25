@@ -16,13 +16,15 @@ import {
   Layers,
   FileEdit,
   Menu,
-  X
+  X,
+  Mail
 } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/leads", label: "Leads & Inquiries", icon: Users },
+  { href: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
   { href: "/admin/services", label: "Services Management", icon: Layers },
   { href: "/admin/pricing", label: "Pricing Plans", icon: Tag },
   { href: "/admin/blogs", label: "Blogs & Content", icon: FileEdit },
@@ -64,16 +66,26 @@ export default function AdminSidebar() {
       )}
 
       <div className={cn(
-        "w-64 bg-[#0F141A] border-r border-white/5 h-screen flex flex-col fixed left-0 top-0 z-40 transition-transform duration-300 md:translate-x-0",
+        "w-64 bg-[#0A0E14] border-r border-white/5 h-screen flex flex-col fixed left-0 top-0 z-40 transition-transform duration-300 md:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
+        {/* Logo */}
         <div className="p-6 border-b border-white/5">
-          <h2 className="text-xl font-bold font-poppins text-white">
-            <span className="text-primary">Digihub</span> Admin
-          </h2>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
+              <span className="text-black font-bold text-sm">D</span>
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-white leading-tight">
+                DIGIHUB
+              </h2>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Admin Panel</p>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex-1 px-4 overflow-y-auto no-scrollbar">
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-6 overflow-y-auto no-scrollbar">
           <ul className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -85,15 +97,15 @@ export default function AdminSidebar() {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group",
                       isActive
-                        ? "bg-primary text-black font-semibold shadow-[0_0_15px_-5px_var(--color-primary)]"
+                        ? "bg-teal-500/90 text-white font-medium shadow-lg shadow-teal-500/20"
                         : "text-gray-400 hover:text-white hover:bg-white/5"
                     )}
                   >
                     <Icon size={18} className={cn(
-                      "transition-colors",
-                      isActive ? "text-black" : "group-hover:text-primary"
+                      "transition-colors shrink-0",
+                      isActive ? "text-white" : "group-hover:text-teal-400"
                     )} />
                     <span className="text-sm">{item.label}</span>
                   </Link>
@@ -103,13 +115,14 @@ export default function AdminSidebar() {
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        {/* Logout */}
+        <div className="p-3 border-t border-white/5">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all"
+            className="flex items-center gap-3 w-full px-3 py-2.5 text-gray-400 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all group"
           >
-            <LogOut size={18} />
-            <span className="text-sm font-medium">Logout</span>
+            <LogOut size={18} className="group-hover:text-red-400" />
+            <span className="text-sm font-medium">Log Out</span>
           </button>
         </div>
       </div>

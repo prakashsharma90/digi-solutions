@@ -2,19 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Container, Section } from "@/components/ui/container";
+import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { categories } from "@/data/blog";
-import { Calendar, Clock, ArrowRight, Search, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowUpRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BlogPost } from "@/types";
+import { BlogFilters } from "@/components/blog/BlogFilters";
+import { BlogCard, BlogCardSkeleton } from "@/components/blog/BlogCard";
+import { NewsletterCTA } from "@/components/blog/NewsletterCTA";
 
 export default function BlogPage() {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
+    const [visibleCount, setVisibleCount] = useState(9); // Initial number of posts to show
     const supabase = createClient();
 
     useEffect(() => {
@@ -31,13 +34,15 @@ export default function BlogPage() {
                 const formattedPosts = (data || []).map((post: any) => ({
                     ...post,
                     author: {
-                        name: post.author_name,
-                        role: post.author_role,
+                        name: post.author_name || "Digihub Team",
+                        role: post.author_role || "Editor",
                         avatar: post.author_avatar
                     },
                     readTime: post.read_time,
                     publishedAt: post.published_at,
-                    image: post.image || null
+                    image: post.image || null,
+                    // If category is missing in DB, try to infer or default
+                    category: post.category || "General"
                 }));
                 setPosts(formattedPosts);
             }
@@ -54,213 +59,178 @@ export default function BlogPage() {
         return matchesCategory && matchesSearch;
     });
 
-    const featuredPost = filteredPosts.find(post => post.featured) || filteredPosts[0]; // Fallback to first if no featured
+    const featuredPost = filteredPosts.find(post => post.featured) || filteredPosts[0];
     const regularPosts = filteredPosts.filter(post => post.id !== featuredPost?.id);
+    const visiblePosts = regularPosts.slice(0, visibleCount);
+
+    // Check if we need to insert the newsletter CTA
+    // We want to insert it after the 6th item (or close to middle if fewer)
+    const renderPosts = () => {
+        const items = [];
+        let newsletterInserted = false;
+
+        for (let i = 0; i < visiblePosts.length; i++) {
+            items.push(
+                <div key={visiblePosts[i].slug} className="h-full">
+                    <BlogCard post={visiblePosts[i] as any} />
+                </div>
+            );
+
+            // Insert Newsletter CTA after 6 items
+            if (i === 5 && !newsletterInserted) {
+                items.push(<NewsletterCTA key="newsletter-cta" />);
+                newsletterInserted = true;
+            }
+        }
+
+        // If we have fewer than 6 items but more than 2, maybe put it at the end? 
+        // Or just stick to the rule: "Mid-grid". If grid is small, maybe don't show or show at bottom.
+        // Let's just stick to the loop insertion for now.
+
+        return items;
+    };
+
 
     return (
-        <main className="min-h-screen bg-[#0B0F14] text-white pt-20 overflow-hidden">
-            {/* Background Elements */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px]" />
-            </div>
-
-            {/* Hero Section */}
-            <Section className="relative pt-24 md:pt-10 pb-0">
-                <Container className="text-center max-w-6xl relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-primary mb-6">
-                            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                            Knowledge Hub
-                        </span>
-                        <h1 className="text-6xl md:text-6xl font-bold mb-4 tracking-tight">
-                            Insights for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Digital Age</span>
-                        </h1>
-                        <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                            Deep dives into SEO, AI automation, and growth strategies to keep you ahead of the curve.
-                        </p>
-                    </motion.div>
-                </Container>
-            </Section>
-
-            {/* Content Area */}
-            <Section className="relative z-10 pt-0 pb-10 md:pt-0">
-                <Container>
-                    {/* Controls */}
-                    <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-12">
-                        <div className="relative w-full md:w-96 group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors" size={18} />
-                            <input
-                                type="text"
-                                placeholder="Search articles..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-[#0F141A] border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+        <main className="min-h-screen bg-[#050505] text-white pt-24 pb-20">
+            <Container className="max-w-[1280px]">
+                {/* 1. FEATURED HERO POST */}
+                {loading ? (
+                    <div className="w-full h-[400px] md:h-[500px] bg-white/5 animate-pulse rounded-[2rem] mb-20" />
+                ) : featuredPost ? (
+                    <div className="relative w-full h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden mb-16 group border border-white/5">
+                        {/* Background Image */}
+                        {featuredPost.image ? (
+                            <img
+                                src={featuredPost.image}
+                                alt={featuredPost.title}
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
+                        ) : (
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-slate-900 to-black" />
+                        )}
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+
+                        {/* Content Overlay */}
+                        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 flex flex-col items-start justify-end h-full">
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="text-xs font-bold text-black bg-white px-3 py-1 rounded-full uppercase tracking-wider">
+                                    {featuredPost.category || "Featured"}
+                                </span>
+                                {featuredPost.readTime && (
+                                    <span className="text-xs font-medium text-white/80 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                                        {featuredPost.readTime}
+                                    </span>
+                                )}
+                            </div>
+
+                            <h1 className="text-3xl md:text-5xl font-bold mb-4 max-w-4xl leading-tight">
+                                {featuredPost.title}
+                            </h1>
+                            <p className="text-lg text-gray-300 max-w-2xl mb-8 leading-relaxed line-clamp-2 md:line-clamp-3">
+                                {featuredPost.excerpt}
+                            </p>
+
+                            <div className="flex items-center justify-between w-full max-w-2xl">
+                                <Link href={`/blog/${featuredPost.slug}`} className="flex items-center gap-2 text-white font-semibold bg-primary/90 hover:bg-primary px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-primary/25">
+                                    Read Article <ArrowUpRight className="w-4 h-4" />
+                                </Link>
+
+                                {/* Author Info in Hero */}
+                                <div className="hidden md:flex items-center gap-3">
+                                    {featuredPost.author?.avatar && (
+                                        <img src={featuredPost.author.avatar} alt="Author" className="w-10 h-10 rounded-full border border-white/20" />
+                                    )}
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-semibold">{featuredPost.author?.name}</span>
+                                        <span className="text-xs text-gray-400">{featuredPost.author?.role}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-                            {categories.map((category) => (
-                                <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === category
-                                        ? "bg-white text-black scale-105 shadow-lg shadow-white/10"
-                                        : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
-                                        }`}
-                                >
-                                    {category}
-                                </button>
-                            ))}
+                    </div>
+                ) : null}
+
+                {/* 2. FILTERS & SEARCH */}
+                <BlogFilters
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
+
+                {/* 3. POSTS GRID */}
+                <div className="mb-24">
+                    {/* Section Header */}
+                    <div className="flex items-end justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl font-bold mb-2">Latest from the blog</h2>
+                            <p className="text-gray-400">Insights, strategies, and updates from the Digihub team.</p>
+                        </div>
+                        <div className="hidden md:block text-sm text-gray-500">
+                            Showing {visiblePosts.length} of {regularPosts.length} articles
                         </div>
                     </div>
 
                     {loading ? (
-                        <div className="py-20 text-center">
-                            <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
-                            <p className="text-gray-400">Curating insights...</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
+                            {[1, 2, 3, 4, 5, 6].map(i => <BlogCardSkeleton key={i} />)}
                         </div>
                     ) : (
-                        <>
-                            {/* Featured Post (Hero Style) */}
-                            {featuredPost && (
-                                <Link href={`/blog/${featuredPost.slug}`} className="block mb-16 group">
-                                    <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#0F141A] grid md:grid-cols-2 gap-0 hover:border-primary/30 transition-all duration-500">
-                                        {/* Image Side */}
-                                        <div className="relative h-64 md:h-full min-h-[400px] overflow-hidden">
-                                            {featuredPost.image ? (
-                                                <img
-                                                    src={featuredPost.image}
-                                                    alt={featuredPost.title}
-                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                                    <span className="text-gray-700 text-6xl font-bold opacity-20">DIGIHUB</span>
-                                                </div>
-                                            )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-[#0F141A] via-transparent to-transparent md:bg-gradient-to-r" />
-                                        </div>
-
-                                        {/* Content Side */}
-                                        <div className="p-8 md:p-12 flex flex-col justify-center">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <span className="px-3 py-1 bg-primary text-black text-xs font-bold rounded-full uppercase tracking-wider">
-                                                    Featured
-                                                </span>
-                                                <span className="text-sm text-gray-400 flex items-center gap-1">
-                                                    <Clock size={14} /> {featuredPost.readTime} read
-                                                </span>
-                                            </div>
-
-                                            <h2 className="text-3xl md:text-5xl font-bold mb-6 group-hover:text-primary transition-colors leading-tight">
-                                                {featuredPost.title}
-                                            </h2>
-
-                                            <p className="text-gray-400 text-lg mb-8 line-clamp-3">
-                                                {featuredPost.excerpt}
-                                            </p>
-
-                                            <div className="flex items-center justify-between mt-auto">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold border border-white/10">
-                                                        {featuredPost.author.name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-sm font-medium text-white">{featuredPost.author.name}</div>
-                                                        <div className="text-xs text-gray-500">{featuredPost.publishedAt ? new Date(featuredPost.publishedAt).toLocaleDateString() : ''}</div>
-                                                    </div>
-                                                </div>
-                                                <span className="flex items-center gap-2 text-primary text-sm font-semibold opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                                                    Read Article <ArrowRight size={16} />
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
+                            {visiblePosts.length > 0 ? (
+                                renderPosts()
+                            ) : (
+                                <div className="col-span-3 py-20 text-center">
+                                    <p className="text-2xl font-bold text-gray-500 mb-2">No articles found</p>
+                                    <p className="text-gray-600">Try adjusting your search or category filter.</p>
+                                </div>
                             )}
-
-                            {/* Standard Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {regularPosts.map((post, index) => (
-                                    <motion.div
-                                        key={post.slug}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    >
-                                        <Link href={`/blog/${post.slug}`} className="group h-full flex flex-col">
-                                            <div className="bg-[#0F141A] border border-white/5 rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.3)] transition-all duration-300 h-full flex flex-col">
-                                                {/* Card Image */}
-                                                <div className="relative h-48 overflow-hidden">
-                                                    {post.image ? (
-                                                        <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                                                    ) : (
-                                                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 group-hover:from-gray-800 group-hover:to-primary/20 transition-all" />
-                                                    )}
-                                                    <div className="absolute top-4 left-4">
-                                                        <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 text-white text-xs rounded-full">
-                                                            {post.category}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Card Content */}
-                                                <div className="p-6 flex-1 flex flex-col">
-                                                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                                                        <Calendar size={12} />
-                                                        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}
-                                                        <span className="w-1 h-1 rounded-full bg-gray-600" />
-                                                        <Clock size={12} /> {post.readTime}
-                                                    </div>
-
-                                                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                                                        {post.title}
-                                                    </h3>
-
-                                                    <p className="text-gray-400 text-sm mb-6 line-clamp-2 md:line-clamp-3 flex-1">
-                                                        {post.excerpt}
-                                                    </p>
-
-                                                    <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
-                                                        <span className="text-xs font-medium text-gray-300">
-                                                            By {post.author.name}
-                                                        </span>
-                                                        <ArrowRight size={16} className="text-primary -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </>
-                    )}
-                </Container>
-            </Section>
-
-            {/* Newsletter CTA */}
-            <Section className="py-20 border-t border-white/5 bg-[#0F141A]/50">
-                <Container className="max-w-4xl text-center">
-                    <h2 className="text-3xl font-bold mb-4">Stay ahead of the competition</h2>
-                    <p className="text-gray-400 mb-8">Get the latest marketing insights and strategies delivered straight to your inbox.</p>
-                    <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative group">
-                        <div className="relative flex-1">
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-full px-6 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                            />
                         </div>
-                        <Button className="rounded-full px-8 shadow-[0_0_20px_-5px_var(--color-primary)]">
-                            Subscribe
-                        </Button>
-                    </form>
-                </Container>
-            </Section>
+                    )}
+
+                    {/* Load More Button */}
+                    {regularPosts.length > visibleCount && (
+                        <div className="mt-16 flex justify-center pt-8">
+                            <Button
+                                variant="outline"
+                                onClick={() => setVisibleCount(prev => prev + 6)}
+                                className="rounded-full px-8 py-6 h-auto text-base border-white/10 hover:bg-white/5 gap-2 group min-w-[200px]"
+                            >
+                                Load more articles <Loader2 className="w-4 h-4 group-hover:animate-spin" />
+                            </Button>
+                        </div>
+                    )}
+                </div>
+
+                {/* 4. FOOTER CTA */}
+                <div className="bg-gradient-to-b from-[#0F141A] to-black rounded-[2.5rem] p-12 md:p-24 text-center border border-white/5 relative overflow-hidden">
+                    <div className="relative z-10 max-w-3xl mx-auto">
+                        <span className="text-primary font-semibold mb-4 block">Ready to grow?</span>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Transform your digital presence today</h2>
+                        <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+                            Get a free comprehensive growth audit and see exactly how we can help you scale your revenue.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link href="/contact" className="w-full sm:w-auto">
+                                <Button className="w-full sm:w-auto rounded-full h-14 px-10 text-base bg-white text-black hover:bg-gray-200 font-semibold shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all">
+                                    Get your free audit
+                                </Button>
+                            </Link>
+                            <Link href="/contact" className="w-full sm:w-auto">
+                                <Button variant="outline" className="w-full sm:w-auto rounded-full h-14 px-10 text-base border-white/10 hover:bg-white/5">
+                                    Talk to an expert
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                    {/* Background decoration */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-60" />
+                </div>
+            </Container>
         </main>
     );
 }

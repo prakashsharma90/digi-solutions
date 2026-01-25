@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "./globals.css";
+import { Preloader } from "@/components/ui/Preloader";
 
 
 const poppins = Poppins({
@@ -33,6 +34,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
+        <Preloader />
         {children}
       </body>
     </html>

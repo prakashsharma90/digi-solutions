@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import {

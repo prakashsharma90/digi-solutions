@@ -17,7 +17,8 @@ import {
   FileEdit,
   Menu,
   X,
-  Mail
+  Mail,
+  Navigation
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/admin/leads", label: "Leads & Inquiries", icon: Users },
   { href: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
   { href: "/admin/services", label: "Services Management", icon: Layers },
+  { href: "/admin/mega-menu", label: "Mega Menu", icon: Navigation },
   { href: "/admin/pricing", label: "Pricing Plans", icon: Tag },
   { href: "/admin/blogs", label: "Blogs & Content", icon: FileEdit },
   { href: "/admin/case-studies", label: "Case Studies", icon: Briefcase },

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { Preloader } from "@/components/ui/Preloader";
+import { MegaMenuProvider } from "@/contexts/MegaMenuContext";
+import ChatWidget from "@/components/ChatWidget";
 
 
 const poppins = Poppins({
@@ -35,7 +37,10 @@ export default function RootLayout({
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
         <Preloader />
-        {children}
+        <MegaMenuProvider>
+          {children}
+        </MegaMenuProvider>
+        <ChatWidget />
       </body>
     </html>
   );

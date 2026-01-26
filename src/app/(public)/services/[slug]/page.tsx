@@ -16,6 +16,7 @@ import { ServicePricing } from "@/components/sections/ServicePricing";
 import { InfluencerMarketingPage } from "@/components/services/InfluencerMarketingPage";
 import { AIMarketingPage } from "@/components/services/AIMarketingPage";
 import { PersonalBrandingPage } from "@/components/services/PersonalBrandingPage";
+import { EmailMarketingPage } from "@/components/services/EmailMarketingPage";
 
 
 
@@ -136,6 +137,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    if (slug === 'email' || slug === 'email-marketing') {
+        return {
+            title: "Email Marketing Services - 30% Higher Open Rates | Digihub",
+            description: "Turn every email into a growth channel with our managed email marketing services. Automated campaigns, high deliverability, and stunning designs.",
+            keywords: ["email marketing", "newsletter services", "email automation", "klaviyo agency", "email list growth"]
+        };
+    }
+
     const service = await getService(slug);
     if (!service) return {};
 
@@ -237,12 +246,9 @@ export default async function ServicePage({ params }: Props) {
         return <AIMarketingPage plans={finalPlans} />;
     }
 
-    // Use custom Personal Branding page for 'personal-branding' slug
     if (slug === 'personal-branding') {
         return <PersonalBrandingPage plans={finalPlans} />;
     }
-
-
 
     // If no custom page and no DB service, 404
     if (!service) {

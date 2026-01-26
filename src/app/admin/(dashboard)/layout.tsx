@@ -17,8 +17,8 @@ export default function AdminLayout({
       <div className="flex-1 flex flex-col md:ml-64 relative">
         <AdminHeader />
 
-        {/* Scrollable Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        {/* Content Area - Pages control their own scroll/padding */}
+        <main className="flex-1 overflow-hidden flex flex-col bg-[#0B0F14]">
           {children}
         </main>
       </div>

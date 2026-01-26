@@ -319,11 +319,12 @@ export default function MegaMenuManagerPage() {
                                                             )}
                                                         >
                                                             <div className="flex items-start gap-2">
-                                                                <GripVertical
-                                                                    size={16}
-                                                                    className="text-gray-500 group-hover:text-primary mt-1 flex-shrink-0 transition-colors"
-                                                                    title="Drag to reorder"
-                                                                />
+                                                                <div title="Drag to reorder" className="mt-1">
+                                                                    <GripVertical
+                                                                        size={16}
+                                                                        className="text-gray-500 group-hover:text-primary flex-shrink-0 transition-colors"
+                                                                    />
+                                                                </div>
 
                                                                 <div className="flex-1 min-w-0">
                                                                     <div className="flex items-center gap-2 mb-1">

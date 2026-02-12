@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Container, Section } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, ExternalLink, Plus, Minus, ArrowRight } from "lucide-react";
+import { Mail, Plus, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LeadForm } from "@/components/forms/LeadForm";
 import Link from "next/link";
@@ -70,7 +70,7 @@ export default function ContactPage() {
                                 <div className="space-y-3">
                                     <h3 className="font-bold text-white">Partnerships</h3>
                                     <p className="text-sm text-text-muted leading-relaxed">
-                                        Interested in co-marketing or strategic alliances? Let's discuss how we can grow together.
+                                        Interested in co-marketing or strategic alliances? Let&apos;s discuss how we can grow together.
                                     </p>
                                 </div>
                                 <div className="space-y-3">

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export async function createClient() {
     const cookieStore = await cookies()
@@ -33,12 +34,18 @@ export async function createClient() {
 
 // Special Admin client with Service Role Key for server-side bypassing of RLS
 export function createAdminClient() {
-    const { createClient } = require('@supabase/supabase-js')
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_digisolutions_SUPABASE_URL || process.env.digisolutions_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.digisolutions_SUPABASE_SERVICE_ROLE_KEY;
 
-    return createClient(
-        supabaseUrl!,
-        supabaseServiceKey!
+    if (!supabaseUrl || !supabaseServiceKey) {
+        console.warn("createAdminClient: Missing Supabase URL or Service Role Key.");
+        // During build time, if we don't have keys, we should probably fail gracefully or throw to be caught
+        // rather than letting supabase-js crash
+        throw new Error("MISSING_SUPABASE_CCREDENTIALS");
+    }
+
+    return createSupabaseClient(
+        supabaseUrl,
+        supabaseServiceKey
     )
 }

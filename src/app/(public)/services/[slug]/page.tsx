@@ -1,9 +1,9 @@
 
 import { notFound } from "next/navigation";
-import { servicesData } from "@/data/services";
+
 import { Container, Section } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, XCircle, BrainCircuit } from "lucide-react";
+import { Check, XCircle, BrainCircuit } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
@@ -20,7 +20,7 @@ import { EmailMarketingPage } from "@/components/services/EmailMarketingPage";
 
 
 
-export const revalidate = 0;
+export const revalidate = 3600;
 
 // Next.js 15+ Page Props Interface
 interface Props {
@@ -28,58 +28,63 @@ interface Props {
 }
 
 async function getService(slug: string) {
-    const supabase = await createClient();
+    try {
+        const supabase = await createClient();
 
-    // 1. Fetch Service Details
-    const { data: service } = await supabase
-        .from('services')
-        .select('*')
-        .eq('slug', slug)
-        .eq('status', 'Published')
-        .eq('is_deleted', false)
-        .single();
+        // 1. Fetch Service Details
+        const { data: service } = await supabase
+            .from('services')
+            .select('*')
+            .eq('slug', slug)
+            .eq('status', 'Published')
+            .eq('is_deleted', false)
+            .single();
 
-    if (!service) return null;
+        if (!service) return null;
 
-    // 2. Fetch Dynamic Pricing Plans
-    const { data: dbPlans } = await supabase
-        .from('pricing_plans')
-        .select(`
-            *,
-            features:plan_features(*)
-        `)
-        .eq('service_id', service.id)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true }); // or order by price
+        // 2. Fetch Dynamic Pricing Plans
+        const { data: dbPlans } = await supabase
+            .from('pricing_plans')
+            .select(`
+                *,
+                features:plan_features(*)
+            `)
+            .eq('service_id', service.id)
+            .eq('is_active', true)
+            .order('sort_order', { ascending: true }); // or order by price
 
-    // Map snake_case DB fields to camelCase for the component
-    // Supabase returns JSON columns as objects usually, but sometimes as strings if not typed
-    const benefits = typeof service.benefits === 'string' ? JSON.parse(service.benefits) : service.benefits;
-    const problems = typeof service.problems === 'string' ? JSON.parse(service.problems) : service.problems;
-    const approach = typeof service.approach === 'string' ? JSON.parse(service.approach) : service.approach;
-    const tools = typeof service.tools === 'string' ? JSON.parse(service.tools) : service.tools;
-    const outcomes = typeof service.outcomes === 'string' ? JSON.parse(service.outcomes) : service.outcomes;
-    const industries = typeof service.industries === 'string' ? JSON.parse(service.industries) : service.industries;
-    const pricing = typeof service.pricing === 'string' ? JSON.parse(service.pricing) : service.pricing;
-    const faq = typeof service.faq === 'string' ? JSON.parse(service.faq) : service.faq;
+        // Map snake_case DB fields to camelCase for the component
+        // Supabase returns JSON columns as objects usually, but sometimes as strings if not typed
+        const benefits = typeof service.benefits === 'string' ? JSON.parse(service.benefits) : service.benefits;
+        const problems = typeof service.problems === 'string' ? JSON.parse(service.problems) : service.problems;
+        const approach = typeof service.approach === 'string' ? JSON.parse(service.approach) : service.approach;
+        const tools = typeof service.tools === 'string' ? JSON.parse(service.tools) : service.tools;
+        const outcomes = typeof service.outcomes === 'string' ? JSON.parse(service.outcomes) : service.outcomes;
+        const industries = typeof service.industries === 'string' ? JSON.parse(service.industries) : service.industries;
+        const pricing = typeof service.pricing === 'string' ? JSON.parse(service.pricing) : service.pricing;
+        const faq = typeof service.faq === 'string' ? JSON.parse(service.faq) : service.faq;
 
-    return {
-        ...service,
-        metaTitle: service.meta_title,
-        metaDesc: service.meta_desc,
-        heroText: service.hero_text,
-        whyMatters: service.why_matters,
-        benefits: benefits || [],
-        problems: problems || [],
-        approach: approach || [],
-        tools: tools || [],
-        outcomes: outcomes || [],
-        industries: industries || [],
-        pricing: pricing || {},
-        faq: faq || [],
-        // Attach dynamic plans
-        dynamicPlans: dbPlans || []
-    };
+        return {
+            ...service,
+            metaTitle: service.meta_title,
+            metaDesc: service.meta_desc,
+            heroText: service.hero_text,
+            whyMatters: service.why_matters,
+            benefits: benefits || [],
+            problems: problems || [],
+            approach: approach || [],
+            tools: tools || [],
+            outcomes: outcomes || [],
+            industries: industries || [],
+            pricing: pricing || {},
+            faq: faq || [],
+            // Attach dynamic plans
+            dynamicPlans: dbPlans || []
+        };
+    } catch (error) {
+        console.error("getService Error:", error);
+        return null;
+    }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -160,16 +165,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export async function generateStaticParams() {
     // Generate params only for PUBLISHED services
     // Use Admin Client to bypass cookie check (since this runs at build time / static generation)
-    const supabase = createAdminClient();
-    const { data } = await supabase
-        .from('services')
-        .select('slug')
-        .eq('status', 'Published')
-        .eq('is_deleted', false);
+    try {
+        const supabase = createAdminClient();
+        const { data } = await supabase
+            .from('services')
+            .select('slug')
+            .eq('status', 'Published')
+            .eq('is_deleted', false);
 
-    return (data || []).map((service: any) => ({
-        slug: service.slug,
-    }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (data || []).map((service: any) => ({
+            slug: service.slug,
+        }));
+    } catch (error) {
+        console.error("generateStaticParams (Services): Error fetching services:", error);
+        return [];
+    }
 }
 
 export default async function ServicePage({ params }: Props) {
@@ -179,6 +190,7 @@ export default async function ServicePage({ params }: Props) {
     const service = await getService(slug);
 
     // 2. Prepare standardized plans for the UI
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let finalPlans: any[] = [];
 
     if (service) {
@@ -250,6 +262,10 @@ export default async function ServicePage({ params }: Props) {
         return <PersonalBrandingPage plans={finalPlans} />;
     }
 
+    if (slug === 'email' || slug === 'email-marketing') {
+        return <EmailMarketingPage plans={finalPlans} />;
+    }
+
     // If no custom page and no DB service, 404
     if (!service) {
         notFound();
@@ -268,12 +284,6 @@ export default async function ServicePage({ params }: Props) {
         "Startups", "SMEs", "E-commerce brands", "Service-based businesses", "Local & global companies"
     ];
     // pricing object is already extracted above but used for static fallback logic
-
-    // Use dynamic plans if available, otherwise arrayify the static object for mapping (rough fallback)
-    // Actually, distinct logic is better.
-    const plans = service.dynamicPlans && service.dynamicPlans.length > 0
-        ? service.dynamicPlans
-        : null;
 
     const problems = service.problems || ["Low traffic", "Poor conversion", "Wasted ad budget"];
     const approach = service.approach || [
@@ -384,6 +394,7 @@ export default async function ServicePage({ params }: Props) {
                         <p className="text-text-muted">We follow a proven, performance-oriented framework for predictable and sustainable growth.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {approach.map((step: any, i: number) => (
                             <div key={i} className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all group">
                                 <div className="text-4xl font-bold text-white/10 mb-4 group-hover:text-primary transition-colors">0{i + 1}</div>
@@ -475,6 +486,7 @@ export default async function ServicePage({ params }: Props) {
                 <Container className="max-w-3xl">
                     <h2 className="text-3xl font-bold text-white mb-12 text-center">Frequently Asked Questions</h2>
                     <div className="space-y-6">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {faq.map((item: any, i: number) => (
                             <div key={i} className="border-b border-white/10 pb-6 group">
                                 <h3 className="text-lg font-bold text-white mb-3 group-hover:text-primary transition-colors">Q. {item.q}</h3>

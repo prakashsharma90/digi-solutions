@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
                                     <div>
                                         <h2 className="text-2xl font-bold text-white mb-2">Introduction</h2>
                                         <p className="text-text-muted leading-relaxed">
-                                            Digihub Solutions Pvt. Ltd. ("we," "our," or "us") is committed to protecting your privacy.
+                                            Digihub Solutions Pvt. Ltd. (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
                                             This Privacy Policy explains how we collect, use, disclose, and safeguard your information when
                                             you visit our website or use our services.
                                         </p>

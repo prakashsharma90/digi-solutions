@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container, Section } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, ArrowLeft, HelpCircle, Linkedin, Twitter, Facebook, ArrowRight } from "lucide-react";
+import { Calendar, Clock, HelpCircle, Linkedin, Twitter, Facebook, ArrowRight } from "lucide-react";
 import { Metadata } from "next";
 import { ConsultationFormSection } from "@/components/sections/ConsultationForm";
 import { createAdminClient } from "@/lib/supabase/server";
@@ -26,38 +26,48 @@ function slugify(text: string) {
 }
 
 async function getPost(slug: string) {
-    const supabase = createAdminClient();
-    const { data: post, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('slug', slug)
-        .single();
+    try {
+        const supabase = createAdminClient();
+        const { data: post, error } = await supabase
+            .from('blogs')
+            .select('*')
+            .eq('slug', slug)
+            .single();
 
-    if (error) console.error("Supabase Error:", error);
+        if (error) console.error("Supabase Error:", error);
 
-    // Fallback Related Resources
-    if (post && (!post.related_resources || post.related_resources.length === 0)) {
-        post.related_resources = [
-            { title: "Explore our Digital Marketing Services", href: "/services" },
-            { title: "Book a Free Strategy Consultation", href: "/contact" },
-            { title: "See our Success Stories", href: "/case-studies" }
-        ];
+        // Fallback Related Resources
+        if (post && (!post.related_resources || post.related_resources.length === 0)) {
+            post.related_resources = [
+                { title: "Explore our Digital Marketing Services", href: "/services" },
+                { title: "Book a Free Strategy Consultation", href: "/contact" },
+                { title: "See our Success Stories", href: "/case-studies" }
+            ];
+        }
+
+        return post;
+    } catch (e) {
+        console.error("getPost Error:", e);
+        return null;
     }
-
-    return post;
 }
 
 async function getRelatedPosts(currentSlug: string, category: string) {
-    const supabase = createAdminClient();
-    const { data: posts } = await supabase
-        .from('blogs')
-        .select('title, slug, image, published_at, read_time, category')
-        .eq('category', category)
-        .neq('slug', currentSlug)
-        .eq('status', 'published')
-        .limit(3);
+    try {
+        const supabase = createAdminClient();
+        const { data: posts } = await supabase
+            .from('blogs')
+            .select('title, slug, image, published_at, read_time, category')
+            .eq('category', category)
+            .neq('slug', currentSlug)
+            .eq('status', 'published')
+            .limit(3);
 
-    return posts || [];
+        return posts || [];
+    } catch (e) {
+        console.error("getRelatedPosts Error:", e);
+        return [];
+    }
 }
 
 function extractFAQs(content: string | null | undefined) {
@@ -94,7 +104,7 @@ function processContentPart(content: string): string {
         if (line.startsWith('> ')) return `<blockquote class="border-l-4 border-primary/50 pl-8 py-6 italic text-xl md:text-2xl text-gray-200 bg-white/[0.03] rounded-r-2xl my-10 relative font-serif"><span class="absolute top-2 left-2 text-6xl text-primary/20 -translate-y-4">"</span>${line.substring(2)}</blockquote>`;
 
         // Formatting
-        let processedLine = line
+        const processedLine = line
             .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
             .replace(/`(.*?)`/g, '<code class="bg-white/10 text-primary px-1.5 py-0.5 rounded font-mono text-sm border border-white/5">$1</code>')
             .replace(/\*(.*?)\*/g, '<em class="text-gray-300 italic">$1</em>')
@@ -127,9 +137,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-    const supabase = createAdminClient();
-    const { data: posts } = await supabase.from('blogs').select('slug').eq('status', 'published');
-    return (posts || []).map((post: { slug: string }) => ({ slug: post.slug }));
+    try {
+        const supabase = createAdminClient();
+        const { data: posts } = await supabase.from('blogs').select('slug').eq('status', 'published');
+        return (posts || []).map((post: { slug: string }) => ({ slug: post.slug }));
+    } catch (error) {
+        console.error("generateStaticParams (Blog): Error fetching posts:", error);
+        return [];
+    }
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -266,6 +281,7 @@ export default async function BlogPostPage({ params }: Props) {
                             <div className="flex items-center gap-4 pt-4 pb-0 border-t border-white/10">
                                 <div className="w-12 h-12 rounded-full overflow-hidden border border-white/20 bg-white/5">
                                     {author.avatar ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center font-bold text-white bg-gradient-to-br from-gray-800 to-black">
@@ -286,6 +302,7 @@ export default async function BlogPostPage({ params }: Props) {
                         {/* Hero Image */}
                         <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-[16/10] bg-[#0F141A] group mb-52">
                             {post.image ? (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={post.image}
                                     alt={post.title}
@@ -333,6 +350,7 @@ export default async function BlogPostPage({ params }: Props) {
                                         <HelpCircle className="text-primary" /> Frequently Asked Questions
                                     </h2>
                                     <div className="grid gap-6">
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                         {faqs.map((faq: any, i: number) => (
                                             <div key={i} className="bg-[#0F141A] border border-white/5 rounded-2xl p-8 hover:border-primary/20 transition-all shadow-sm">
                                                 <h3 className="text-lg font-bold text-white mb-3">{faq.question}</h3>
@@ -383,6 +401,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-10 text-center md:text-left">
                         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white/10 shrink-0 shadow-2xl">
                             {author.avatar ? (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
                             ) : (
                                 <div className="w-full h-full bg-gray-800 flex items-center justify-center text-4xl font-bold bg-gradient-to-br from-gray-700 to-black">{author.name.charAt(0)}</div>
@@ -418,11 +437,13 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                     {relatedPosts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {relatedPosts.map((related: any) => (
                                 <Link key={related.slug} href={`/blog/${related.slug}`} className="group block h-full">
                                     <div className="bg-[#0F141A] border border-white/5 rounded-2xl overflow-hidden h-full flex flex-col hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 group-hover:-translate-y-2">
                                         <div className="relative h-56 overflow-hidden">
                                             {related.image ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
                                                 <img src={related.image} alt={related.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-800" />

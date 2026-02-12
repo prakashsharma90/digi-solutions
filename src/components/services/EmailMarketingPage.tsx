@@ -111,7 +111,8 @@ const FaqItem = ({ q, a, defaultOpen = false }: { q: string, a?: string, default
     );
 }
 
-export function EmailMarketingPage() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function EmailMarketingPage({ plans }: { plans?: any[] }) {
     return (
         <div className="bg-white min-h-screen text-slate-900 font-sans selection:bg-orange-100 selection:text-orange-900">
 

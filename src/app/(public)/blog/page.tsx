@@ -31,6 +31,7 @@ export default function BlogPage() {
             if (error) {
                 console.error("Error fetching blogs:", error);
             } else {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const formattedPosts = (data || []).map((post: any) => ({
                     ...post,
                     author: {
@@ -50,7 +51,7 @@ export default function BlogPage() {
         };
 
         fetchBlogs();
-    }, []);
+    }, [supabase]);
 
     const filteredPosts = posts.filter((post) => {
         const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
@@ -72,6 +73,7 @@ export default function BlogPage() {
         for (let i = 0; i < visiblePosts.length; i++) {
             items.push(
                 <div key={visiblePosts[i].slug} className="h-full">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     <BlogCard post={visiblePosts[i] as any} />
                 </div>
             );
@@ -101,6 +103,7 @@ export default function BlogPage() {
                     <div className="relative w-full h-[400px] md:h-[500px] rounded-[2rem] overflow-hidden mb-16 group border border-white/5">
                         {/* Background Image */}
                         {featuredPost.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                                 src={featuredPost.image}
                                 alt={featuredPost.title}
@@ -141,6 +144,7 @@ export default function BlogPage() {
                                 {/* Author Info in Hero */}
                                 <div className="hidden md:flex items-center gap-3">
                                     {featuredPost.author?.avatar && (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img src={featuredPost.author.avatar} alt="Author" className="w-10 h-10 rounded-full border border-white/20" />
                                     )}
                                     <div className="flex flex-col">

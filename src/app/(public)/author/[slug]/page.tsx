@@ -32,6 +32,7 @@ async function getAuthorData(slug: string) {
     }
 
     // Filter posts by author slug
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const authorPosts = posts.filter((post: any) => slugify(post.author_name || '') === slug);
 
     if (!authorPosts.length) return null;
@@ -93,6 +94,7 @@ export default async function AuthorPage({ params }: Props) {
 
                     <div className="w-32 h-32 mx-auto bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-4xl font-bold text-black mb-6 border-4 border-[#0B0F14] shadow-[0_0_40px_-10px_rgba(0,217,195,0.3)] overflow-hidden">
                         {author.avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
                         ) : (
                             author.name.charAt(0)
@@ -119,12 +121,14 @@ export default async function AuthorPage({ params }: Props) {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {author.posts.map((post: any) => (
                             <Link key={post.slug} href={`/blog/${post.slug}`} className="group h-full flex flex-col">
                                 <div className="bg-[#0F141A] border border-white/5 rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.3)] transition-all duration-300 h-full flex flex-col">
                                     {/* Card Image */}
                                     <div className="relative h-48 overflow-hidden">
                                         {post.image ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
                                             <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                         ) : (
                                             <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900" />

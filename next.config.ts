@@ -2,8 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig = {
   // eslint and typescript config moved to respective config files or ignored via CLI flags
-  // eslint: { ignoreDuringBuilds: true },
-  // typescript: { ignoreBuildErrors: true },
+
   async headers() {
     return [
       {

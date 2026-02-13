@@ -3,6 +3,7 @@ import { Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { Preloader } from "@/components/ui/Preloader";
 import { MegaMenuProvider } from "@/contexts/MegaMenuContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 
 

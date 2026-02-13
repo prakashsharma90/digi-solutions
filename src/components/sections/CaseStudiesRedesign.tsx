@@ -59,7 +59,7 @@ const caseStudies = [
 
 export function CaseStudiesRedesign() {
     return (
-        <Section className="bg-gradient-to-b from-background to-[#0B0F14]">
+        <Section className="bg-gradient-to-b from-background to-[#0B0F14] border-y border-primary/20">
             <Container>
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto mb-16">

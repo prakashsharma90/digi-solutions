@@ -48,84 +48,79 @@ interface MegaMenuContextType {
     setShowPricing: (show: boolean) => void;
     availableServices: AvailableService[];
     loadingServices: boolean;
+    resetToDefaults: () => void;
 }
 
 const MegaMenuContext = createContext<MegaMenuContextType | undefined>(undefined);
 
 const defaultCategories: Category[] = [
     {
-        id: "acquisition",
-        name: "Acquisition & Revenue",
-        color: "green",
-        icon: "TrendingUp",
+        id: "seo",
+        name: "SEO Services",
+        color: "cyan",
+        icon: "Search",
         visible: true,
         order: 1,
         services: [
-            {
-                id: "perf-1",
-                name: "Performance Marketing",
-                slug: "performance",
-                subtitle: "Multi-channel campaigns with positive ROI",
-                icon: "Megaphone",
-                visible: true,
-                featured: true,
-                badge: "Most Popular",
-                price: "₹25k/mo",
-                order: 1
-            },
-            {
-                id: "ppc-1",
-                name: "Google Ads (PPC)",
-                slug: "ppc",
-                subtitle: "Instant visibility & qualified leads",
-                icon: "Target",
-                visible: true,
-                featured: true,
-                badge: "Recommended",
-                price: "₹20k/mo",
-                order: 2
-            }
+            { id: "seo-1", name: "Search Engine Optimization (SEO)", slug: "seo", subtitle: "Organic search dominance", icon: "Search", visible: true, featured: true, price: "₹25k/mo", order: 1 },
+            { id: "seo-2", name: "Local SEO", slug: "local-seo", subtitle: "Local map rankings", icon: "MapPin", visible: true, featured: false, price: "₹15k/mo", order: 2 },
+            { id: "seo-3", name: "E-commerce SEO", slug: "ecommerce-seo", subtitle: "Product visibility", icon: "ShoppingBag", visible: true, featured: false, price: "₹35k/mo", order: 3 },
+            { id: "seo-4", name: "Technical SEO", slug: "seo", subtitle: "Core web vitals & crawlability", icon: "Settings", visible: true, featured: false, price: "₹20k/mo", order: 4 },
+            { id: "seo-5", name: "SEO Audit", slug: "seo", subtitle: "Site health analysis", icon: "ClipboardCheck", visible: true, featured: false, price: "₹10k", order: 5 },
+            { id: "seo-6", name: "Keyword Research", slug: "seo", subtitle: "Targeted traffic strategy", icon: "Key", visible: true, featured: false, price: "₹5k", order: 6 },
+            { id: "seo-7", name: "Link Building", slug: "seo", subtitle: "Authority & trust building", icon: "Link", visible: true, featured: false, price: "₹30k/mo", order: 7 }
         ]
     },
     {
-        id: "ai",
-        name: "AI & Future Search",
-        color: "cyan",
-        icon: "Bot",
+        id: "paid-ads",
+        name: "Paid Advertising",
+        color: "green",
+        icon: "DollarSign",
         visible: true,
         order: 2,
         services: [
-            {
-                id: "ai-seo-1",
-                name: "AI Search Optimization",
-                slug: "ai-seo",
-                subtitle: "Rank in AI answers & featured snippets",
-                icon: "Sparkles",
-                visible: true,
-                featured: true,
-                badge: "AI-Powered",
-                price: "₹35k/mo",
-                order: 1
-            }
+            { id: "paid-1", name: "Google Ads", slug: "google-ads", subtitle: "PPC & Search ads", icon: "Target", visible: true, featured: true, price: "₹20k/mo", order: 1 },
+            { id: "paid-2", name: "Meta Ads (Facebook & Instagram)", slug: "meta-ads", subtitle: "Social media reach", icon: "Facebook", visible: true, featured: true, price: "₹15k/mo", order: 2 },
+            { id: "paid-3", name: "YouTube Ads", slug: "youtube-ads", subtitle: "Video marketing", icon: "Youtube", visible: true, featured: false, price: "₹25k/mo", order: 3 },
+            { id: "paid-4", name: "LinkedIn Ads", slug: "linkedin-ads", subtitle: "B2B lead generation", icon: "Linkedin", visible: true, featured: false, price: "₹30k/mo", order: 4 },
+            { id: "paid-5", name: "Performance Marketing", slug: "performance-marketing", subtitle: "ROI focused strategy", icon: "TrendingUp", visible: true, featured: true, price: "₹40k/mo", order: 5 },
+            { id: "paid-6", name: "Remarketing Campaigns", slug: "performance-marketing", subtitle: "Customer re-engagement", icon: "RefreshCw", visible: true, featured: false, price: "₹10k/mo", order: 6 }
         ]
     },
     {
-        id: "brand",
-        name: "Brand Growth",
-        color: "purple",
-        icon: "Star",
+        id: "digital-channels",
+        name: "Marketing & Digital Channels",
+        color: "blue",
+        icon: "Share2",
         visible: true,
         order: 3,
-        services: []
+        services: [
+            { id: "chan-1", name: "Social Media Marketing", slug: "social-media", subtitle: "Brand presence", icon: "MessageCircle", visible: true, featured: true, price: "₹15k/mo", order: 1 },
+            { id: "chan-2", name: "Website Designing & Development", slug: "website-designing-and-development", subtitle: "High-converting sites", icon: "Code", visible: true, featured: true, price: "₹50k+", order: 2 },
+            { id: "chan-3", name: "Email Marketing", slug: "email-marketing", subtitle: "Direct engagement", icon: "Mail", visible: true, featured: false, price: "₹10k/mo", order: 3 },
+            { id: "chan-4", name: "WhatsApp Marketing", slug: "whatsapp-marketing", subtitle: "Instant messaging", icon: "Phone", visible: true, featured: false, price: "₹12k/mo", order: 4 },
+            { id: "chan-5", name: "Content Marketing", slug: "content-marketing", subtitle: "Authority content", icon: "FileText", visible: true, featured: false, price: "₹20k/mo", order: 5 },
+            { id: "chan-6", name: "AI Search Optimization (SGE & LLM SEO)", slug: "ai-marketing", subtitle: "Future-proof SEO", icon: "Sparkles", visible: true, featured: true, badge: "AI-Powered", price: "₹35k/mo", order: 6 },
+            { id: "chan-7", name: "Influencer Marketing", slug: "influencer", subtitle: "Social proof", icon: "Users", visible: true, featured: false, price: "Quote", order: 7 }
+        ]
     },
     {
-        id: "dev",
-        name: "Development & Tech",
-        color: "orange",
-        icon: "Code",
+        id: "growth-opt",
+        name: "Growth & Optimization",
+        color: "purple",
+        icon: "Zap",
         visible: true,
         order: 4,
-        services: []
+        services: [
+            { id: "growth-1", name: "Conversion Rate Optimization (CRO)", slug: "cro", subtitle: "Maximize efficiency", icon: "MousePointerClick", visible: true, featured: true, price: "₹25k/mo", order: 1 },
+            { id: "growth-2", name: "Landing Page Optimization", slug: "landing-page", subtitle: "High-impact pages", icon: "Layout", visible: true, featured: false, price: "₹15k+", order: 2 },
+            { id: "growth-3", name: "Funnel Building", slug: "funnel-building", subtitle: "Sales automation", icon: "Filter", visible: true, featured: false, price: "₹40k+", order: 3 },
+            { id: "growth-4", name: "Marketing Automation", slug: "marketing-automation", subtitle: "Scaling efficiency", icon: "Repeat", visible: true, featured: false, price: "₹30k/mo", order: 4 },
+            { id: "growth-5", name: "CRM Integration", slug: "crm-integration", subtitle: "Seamless workflows", icon: "Database", visible: true, featured: false, price: "₹20k+", order: 5 },
+            { id: "growth-6", name: "Online Reputation Management (ORM)", slug: "orm", subtitle: "Brand protection", icon: "ShieldCheck", visible: true, featured: false, price: "₹20k/mo", order: 6 },
+            { id: "growth-7", name: "Brand Strategy & Positioning", slug: "brand-strategy", subtitle: "Market differentiation", icon: "Flag", visible: true, featured: true, price: "₹50k+", order: 7 },
+            { id: "growth-8", name: "Analytics & Reporting", slug: "analytics", subtitle: "Insights & transparency", icon: "BarChart3", visible: true, featured: false, price: "₹10k/mo", order: 8 }
+        ]
     }
 ];
 
@@ -135,7 +130,12 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
             const stored = localStorage.getItem("megaMenuCategories");
             if (stored) {
                 try {
-                    return JSON.parse(stored);
+                    const parsed = JSON.parse(stored);
+                    // Force update to new 4-column layout if they have fewer than 4 categories
+                    if (parsed.length < 4) {
+                        return defaultCategories;
+                    }
+                    return parsed;
                 } catch (e) {
                     return defaultCategories;
                 }
@@ -278,7 +278,8 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
                 showPricing,
                 setShowPricing,
                 availableServices,
-                loadingServices
+                loadingServices,
+                resetToDefaults: () => setCategories(defaultCategories)
             }}
         >
             {children}

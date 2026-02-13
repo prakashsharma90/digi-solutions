@@ -7,7 +7,7 @@ import {
     ToggleLeft, ToggleRight, Star, Settings,
     ChevronDown, ChevronUp, BarChart3, Clock,
     AlertCircle, CheckCircle2, Monitor, Smartphone,
-    Zap, Package, ArrowRight, DollarSign
+    Zap, Package, ArrowRight, DollarSign, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +38,8 @@ export default function MegaMenuManagerPage() {
         showPricing,
         setShowPricing,
         availableServices,
-        loadingServices
+        loadingServices,
+        resetToDefaults
     } = useMegaMenu();
 
     const [showPreview, setShowPreview] = useState(false);
@@ -139,6 +140,19 @@ export default function MegaMenuManagerPage() {
                                 Saving...
                             </span>
                         )}
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (confirm("Are you sure you want to reset to default 4-column layout? This will overwrite your current menu structure.")) {
+                                    resetToDefaults();
+                                }
+                            }}
+                            className="gap-2 text-yellow-500 hover:text-yellow-400 border-yellow-500/20 hover:border-yellow-500/40"
+                            size="sm"
+                        >
+                            <RefreshCw size={16} />
+                            Reset Defaults
+                        </Button>
                         <Button
                             variant="outline"
                             onClick={() => setShowPreview(!showPreview)}

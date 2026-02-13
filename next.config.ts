@@ -3,6 +3,18 @@ import type { NextConfig } from "next";
 const nextConfig = {
   // eslint and typescript config moved to respective config files or ignored via CLI flags
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'plus.unsplash.com',
+      },
+    ],
+  },
   async headers() {
     return [
       {

@@ -2,7 +2,7 @@
 
 import { Container, Section } from "@/components/ui/container";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, Users, Megaphone, PenTool, Sparkles, Target } from "lucide-react";
+import { ArrowRight, TrendingUp, Users, Megaphone, PenTool, Sparkles, Target, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +54,15 @@ const services = [
         borderColor: "hover:border-purple-500/50",
     },
     {
+        icon: Code2,
+        title: "Web Design & Development",
+        slug: "website-designing-and-development",
+        description: "High-performance, SEO-optimized websites built to convert. Clean code. Fast load times. Better ROI.",
+        metrics: ["Page speed optimization", "Conversion-focused UI", "Next.js & React"],
+        color: "from-cyan-500/20 to-teal-500/20",
+        borderColor: "hover:border-cyan-500/50",
+    },
+    {
         icon: Sparkles,
         title: "AI Marketing Automation",
         slug: "ai-marketing",
@@ -69,24 +78,30 @@ export function ServicesGridRedesign() {
         <Section className="bg-gradient-to-b from-background to-[#0B0F14]">
             <Container>
                 {/* Header */}
-                <div className="text-center max-w-3xl mx-auto mb-16">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4 font-poppins">
-                            Services Built for{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                                Growth
-                            </span>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-14"
+                >
+                    <div>
+                        <span className="text-sm font-semibold text-primary mb-2 block">
+                            What We Do
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-bold font-poppins text-white">
+                            Our Services
                         </h2>
-                        <p className="text-lg text-gray-400">
-                            Full-stack performance marketing. Every service designed to drive measurable ROI.
-                        </p>
-                    </motion.div>
-                </div>
+                    </div>
+
+                    <Link
+                        href="/services"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-black bg-primary hover:bg-primary/90 px-6 py-2.5 rounded-full transition-all group w-fit"
+                    >
+                        VIEW ALL
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </motion.div>
 
                 {/* Services Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -166,7 +181,7 @@ export function ServicesGridRedesign() {
                     transition={{ duration: 0.5, delay: 0.6 }}
                     className="text-center mt-12"
                 >
-                    <p className="text-gray-400 mb-4">
+                    {/* <p className="text-gray-400 mb-4">
                         Not sure which service is right for you?
                     </p>
                     <Link href="/contact">
@@ -174,7 +189,7 @@ export function ServicesGridRedesign() {
                             Book a Free Strategy Call
                             <ArrowRight className="w-4 h-4" />
                         </button>
-                    </Link>
+                    </Link> */}
                 </motion.div>
             </Container>
         </Section>

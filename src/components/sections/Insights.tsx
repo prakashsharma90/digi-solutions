@@ -1,133 +1,241 @@
 "use client";
 
 import { Container, Section } from "@/components/ui/container";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { blogPosts } from "@/data/blog";
 import { motion } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect } from "react";
+
+interface BlogPost {
+    slug: string;
+    title: string;
+    excerpt: string;
+    image: string;
+    category: string;
+    published_at: string;
+    author_name: string;
+    author_role: string;
+}
 
 export function Insights() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [itemsPerPage, setItemsPerPage] = useState(3);
-    const [isPaused, setIsPaused] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    // Get the latest 6 posts
-    const latestPosts = [...blogPosts]
-        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-        .slice(0, 6);
+    const [posts, setPosts] = useState<BlogPost[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth < 768) {
-                setItemsPerPage(1);
-            } else if (window.innerWidth < 1024) {
-                setItemsPerPage(2);
+        const fetchPosts = async () => {
+            const supabase = createClient();
+            const { data, error } = await supabase
+                .from("blogs")
+                .select(
+                    "slug, title, excerpt, image, category, published_at, author_name, author_role"
+                )
+                .eq("status", "published")
+                .order("published_at", { ascending: false })
+                .limit(4);
+
+            if (error) {
+                console.error("Error fetching blogs:", error);
             } else {
-                setItemsPerPage(3);
+                setPosts(data || []);
             }
+            setLoading(false);
         };
 
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        fetchPosts();
     }, []);
 
-    // Auto-play logic
-    useEffect(() => {
-        if (isPaused) return;
+    // First post is featured, next 3 are secondary cards
+    const featured = posts[0];
+    const secondary = posts.slice(1, 4);
 
-        const interval = setInterval(() => {
-            nextSlide();
-        }, 2000);
-
-        return () => clearInterval(interval);
-    }, [currentIndex, isPaused, itemsPerPage]);
-
-    const nextSlide = () => {
-        setCurrentIndex((prev) =>
-            prev < latestPosts.length - itemsPerPage ? prev + 1 : 0
-        );
-    };
-
-    const prevSlide = () => {
-        setCurrentIndex((prev) =>
-            prev > 0 ? prev - 1 : latestPosts.length - itemsPerPage
-        );
-    };
-
-    return (
-        <Section className="overflow-hidden">
-            <Container>
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-                    <div>
-                        <h2 className="text-3xl md:text-5xl font-bold mb-4">Latest Insights</h2>
-                        <p className="text-text-muted text-lg">Stay ahead of the curve with our research.</p>
+    // Loading skeleton
+    if (loading) {
+        return (
+            <Section className="bg-gradient-to-b from-[#0B0F14] to-background relative overflow-hidden py-16 md:py-20">
+                <Container>
+                    <div className="text-center max-w-2xl mx-auto mb-14">
+                        <div className="h-10 w-3/4 mx-auto bg-white/5 rounded-lg animate-pulse mb-4" />
+                        <div className="h-4 w-full bg-white/5 rounded animate-pulse" />
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Link href="/blog">
-                            <Button variant="outline" className="hidden md:flex gap-2 border-primary/30 hover:border-primary hover:bg-primary/5 transition-all">
-                                Explore All <ArrowRight size={16} />
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-
-                <div
-                    className="relative overflow-hidden"
-                    ref={containerRef}
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                >
-                    <motion.div
-                        className="flex gap-6"
-                        initial={false}
-                        animate={{ x: `calc(-${currentIndex * (100 / itemsPerPage)}% - ${currentIndex * (24 / itemsPerPage)}px)` }}
-                        transition={{ type: "spring", damping: 25, stiffness: 120 }}
-                    >
-                        {latestPosts.map((post) => (
-                            <div
-                                key={post.slug}
-                                className="flex-shrink-0"
-                                style={{ width: `calc(${(100 / itemsPerPage)}% - ${(24 * (itemsPerPage - 1)) / itemsPerPage}px)` }}
-                            >
-                                <Link href={`/blog/${post.slug}`} className="group block h-full">
-                                    <Card className="h-full border-white/5 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-primary/30 transition-all duration-300">
-                                        <CardHeader>
-                                            <div className="flex justify-between items-center mb-3 text-xs text-primary font-medium tracking-wider uppercase">
-                                                <span>{post.category}</span>
-                                                <span className="text-text-muted normal-case">{post.readTime}</span>
-                                            </div>
-                                            <CardTitle className="leading-tight group-hover:text-primary transition-colors text-xl min-h-[3.5rem] line-clamp-2">
-                                                {post.title}
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p className="text-text-muted text-sm line-clamp-3">{post.excerpt}</p>
-                                        </CardContent>
-                                        <CardFooter className="text-xs text-text-muted mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
-                                            <span>{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                            <span className="group-hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                                                Read More <ArrowRight size={12} />
-                                            </span>
-                                        </CardFooter>
-                                    </Card>
-                                </Link>
+                    <div className="h-72 bg-white/5 rounded-2xl animate-pulse mb-8" />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i}>
+                                <div className="aspect-[4/3] bg-white/5 rounded-xl animate-pulse mb-4" />
+                                <div className="h-5 bg-white/5 rounded animate-pulse mx-4" />
                             </div>
                         ))}
-                    </motion.div>
-                </div>
+                    </div>
+                </Container>
+            </Section>
+        );
+    }
 
-                <div className="mt-12 text-center md:hidden">
-                    <Link href="/blog">
-                        <Button variant="outline" className="gap-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all">
-                            Explore All <ArrowRight size={16} />
-                        </Button>
+    if (!featured) return null;
+
+    return (
+        <Section className="bg-gradient-to-b from-[#0B0F14] to-background relative overflow-hidden py-16 md:py-20">
+            <Container>
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center max-w-2xl mx-auto mb-14"
+                >
+                    <h2 className="text-3xl md:text-4xl font-bold font-poppins text-white mb-4">
+                        Explore Our Latest Insights &{" "}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                            Marketing Tips
+                        </span>
+                    </h2>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                        Dive into expert tips, case studies, and actionable
+                        strategies to grow your digital presence. We share
+                        content designed to help your business thrive online.
+                    </p>
+                </motion.div>
+
+                {/* Featured Post */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="mb-8"
+                >
+                    <Link
+                        href={`/blog/${featured.slug}`}
+                        className="group block"
+                    >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 bg-white/[0.04] rounded-2xl border border-white/[0.08] overflow-hidden hover:border-primary/20 transition-all duration-300">
+                            {/* Image */}
+                            <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[280px] overflow-hidden">
+                                {featured.image ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={featured.image}
+                                        alt={featured.title}
+                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/10 flex items-center justify-center">
+                                        <span className="text-4xl">📝</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-8 md:p-10 flex flex-col justify-center">
+                                <h3 className="text-2xl font-bold text-white mb-4 font-poppins leading-snug group-hover:text-primary transition-colors">
+                                    {featured.title}
+                                </h3>
+                                <p className="text-sm text-gray-400 leading-relaxed mb-6 line-clamp-3">
+                                    {featured.excerpt}
+                                </p>
+
+                                {/* Author + Category */}
+                                <div className="flex items-center justify-between mt-auto">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-secondary/20 border border-primary/20 flex items-center justify-center">
+                                            <span className="text-xs font-bold text-primary">
+                                                {(featured.author_name || "DT")
+                                                    .split(" ")
+                                                    .map((n) => n[0])
+                                                    .join("")}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-semibold text-white">
+                                                {featured.author_name ||
+                                                    "Digihub Team"}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                                {featured.author_role ||
+                                                    "Editor"}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full">
+                                        {featured.category}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </Link>
-                </div>
+                </motion.div>
+
+                {/* Secondary Posts - 3 Cards */}
+                {secondary.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {secondary.map((post, index) => (
+                            <motion.div
+                                key={post.slug}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                    duration: 0.4,
+                                    delay: 0.2 + index * 0.1,
+                                }}
+                            >
+                                <Link
+                                    href={`/blog/${post.slug}`}
+                                    className="group block"
+                                >
+                                    {/* Image */}
+                                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 border border-white/[0.06]">
+                                        {post.image ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img
+                                                src={post.image}
+                                                alt={post.title}
+                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-white/[0.05] to-white/[0.02] flex items-center justify-center">
+                                                <span className="text-3xl">
+                                                    📝
+                                                </span>
+                                            </div>
+                                        )}
+                                        {/* Category badge on image */}
+                                        <div className="absolute bottom-3 left-3">
+                                            <span className="text-[10px] font-semibold text-white bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
+                                                {post.category}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Title */}
+                                    <h3 className="text-base font-bold text-white text-center leading-snug group-hover:text-primary transition-colors px-2">
+                                        {post.title}
+                                    </h3>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Read More Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.5 }}
+                    className="flex justify-center mt-10"
+                >
+                    <Link
+                        href="/blog"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-black bg-primary hover:bg-primary/90 px-6 py-2.5 rounded-full transition-all group"
+                    >
+                        Read More
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </motion.div>
             </Container>
         </Section>
     );

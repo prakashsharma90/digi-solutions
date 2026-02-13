@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   description: "Intelligence-driven digital solutions hub.",
 };
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,7 +42,7 @@ export default function RootLayout({
         <MegaMenuProvider>
           {children}
         </MegaMenuProvider>
-
+        <SpeedInsights />
       </body>
     </html>
   );

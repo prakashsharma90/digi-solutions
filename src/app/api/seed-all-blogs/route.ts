@@ -2,6 +2,11 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+    // Security: Disable in production to prevent accidental data overwrites
+    if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: "Seeding is disabled in production" }, { status: 403 });
+    }
+
     const supabase = createAdminClient();
 
     const blogPosts = [

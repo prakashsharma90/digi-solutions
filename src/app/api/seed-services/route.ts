@@ -3,6 +3,11 @@ import { servicesData } from "@/data/services";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
+    // Security: Disable in production to prevent accidental data overwrites
+    if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: "Seeding is disabled in production" }, { status: 403 });
+    }
+
     const supabase = createAdminClient();
 
     const services = Object.entries(servicesData).map(([slug, data]) => ({

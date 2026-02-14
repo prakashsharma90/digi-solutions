@@ -34,6 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+      </head>
       <body
         suppressHydrationWarning
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}

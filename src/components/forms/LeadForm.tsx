@@ -178,7 +178,9 @@ export function LeadForm({ source, className, defaultService = "" }: LeadFormPro
 
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 {/* Honeypot */}
+                <label htmlFor="_honeypot" className="sr-only">Do not fill this out</label>
                 <input
+                    id="_honeypot"
                     type="text"
                     name="_honeypot"
                     tabIndex={-1}
@@ -272,7 +274,9 @@ export function LeadForm({ source, className, defaultService = "" }: LeadFormPro
                         </select>
                         <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={14} />
                     </div>
+                    <label htmlFor="phone" className="sr-only">Phone Number</label>
                     <input
+                        id="phone"
                         type="tel"
                         placeholder="Phone number"
                         className="flex-1 bg-transparent border-none px-4 text-white placeholder:text-gray-500 focus:ring-0 focus:outline-none min-w-0"

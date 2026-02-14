@@ -6,7 +6,7 @@ export async function isAdminAuthenticated() {
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) return true;
+        if (user?.app_metadata?.role === 'admin') return true;
     } catch (e) {
         // Supabase fail is fine if we're local
     }

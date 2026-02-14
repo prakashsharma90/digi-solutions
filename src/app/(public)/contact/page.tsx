@@ -115,6 +115,7 @@ export default function ContactPage() {
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3507.2945478251744!2d77.08773631508076!3d28.459497982484447!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d18c9f0f0f0f1%3A0x1234567890abcdef!2sCyber%20City%2C%20Gurugram%2C%20Haryana!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
                                     width="100%"
                                     height="100%"
+                                    title="Digihub Office Location"
                                     style={{ border: 0 }}
                                     allowFullScreen
                                     loading="lazy"

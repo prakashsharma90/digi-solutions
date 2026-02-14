@@ -26,10 +26,10 @@ const footerLinks = {
 };
 
 const socialLinks = [
-    { icon: Twitter, href: "https://twitter.com" },
-    { icon: Linkedin, href: "https://linkedin.com" },
-    { icon: Instagram, href: "https://instagram.com" },
-    { icon: Facebook, href: "https://facebook.com" },
+    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+    { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+    { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+    { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
 ];
 
 export function Footer() {
@@ -47,7 +47,14 @@ export function Footer() {
                         </p>
                         <div className="flex gap-4 pt-4">
                             {socialLinks.map((social, idx) => (
-                                <Link key={idx} href={social.href} className="text-text-muted hover:text-primary transition-colors">
+                                <Link
+                                    key={idx}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={social.label}
+                                    className="text-text-muted hover:text-primary transition-colors"
+                                >
                                     <social.icon size={20} />
                                 </Link>
                             ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Info } from "lucide-react";
+import { Check, Info, ArrowRight, Book, Award, Building2, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,7 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
 
     // State for billing cycle toggle
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+    const [showAllFeatures, setShowAllFeatures] = useState(false);
 
     // Sort plans in the correct order: Starter → Growth → Custom/Enterprise
     const sortedPlans = [...plans].sort((a, b) => {
@@ -57,25 +58,11 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
         serviceName.toLowerCase().includes('paid')
     );
 
-    // Helper to get the small uppercase label
-    const getPlanLabel = (title: string, index: number) => {
-        const t = title.toLowerCase();
-        if (t.includes("starter") || t.includes("basic")) return "STARTER";
-        if (t.includes("growth") || t.includes("pro") || t.includes("scale")) return "GROWTH";
-        if (t.includes("enterprise") || t.includes("custom")) return "ENTERPRISE";
-        if (index === 0) return "STARTER";
-        if (index === 1) return "GROWTH";
-        return "SCALE";
-    };
-
-    const formatCurrency = (amount: number | string, currency: string) => {
+    const formatCurrency = (amount: number | string) => {
         const value = Number(amount);
         if (isNaN(value)) return amount;
-
-        if (currency === 'INR') {
-            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
-        }
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD', maximumFractionDigits: 0 }).format(value);
+        // User requested replacing Dollar with Rupee
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
     };
 
     // Calculate price based on billing cycle
@@ -93,148 +80,190 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
         return price;
     };
 
+    const getPlanIcon = (title: string) => {
+        const t = title.toLowerCase();
+        if (t.includes("starter") || t.includes("basic") || t.includes("beginner")) return <Book className="w-5 h-5" />;
+        if (t.includes("growth") || t.includes("pro") || t.includes("scale") || t.includes("professional")) return <Award className="w-5 h-5" />;
+        return <Building2 className="w-5 h-5" />;
+    };
+
     return (
-        <section className="py-24 bg-[#0B0F14] relative overflow-hidden">
-            {/* Background Decoration */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        <section className="py-24 bg-black relative overflow-hidden font-sans selection:bg-primary/30">
+            {/* 1. Background Typography (Big Text) */}
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 select-none pointer-events-none z-0 overflow-hidden w-full flex justify-center">
+                <h2 className="text-[25rem] md:text-[35rem] font-black text-white/[0.02] tracking-tighter leading-none whitespace-nowrap">
+                    Our Pricing
+                </h2>
+            </div>
+
+            {/* Background Glow */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
-                {/* Header */}
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-poppins">Transparent Pricing</h2>
-                    <p className="text-gray-400 text-lg mb-6">No hidden fees. No surprises.</p>
-
-                    {/* Billing Cycle Toggle */}
-                    <div className="flex items-center justify-center gap-4 mb-6">
-                        <div className="inline-flex items-center bg-white/5 p-1 rounded-full border border-white/10">
+                {/* Header Section */}
+                <div className="flex flex-col items-center text-center mb-16 space-y-6">
+                    <div className="flex flex-col items-center gap-2 py-9">
+                        {/* 2. Toggle Design (Glassmorphism Segmented Control) */}
+                        <div className="bg-[#111] p-1.5 rounded-full border border-white/10 inline-flex relative shadow-inner">
                             <button
                                 onClick={() => setBillingCycle('monthly')}
                                 className={cn(
-                                    "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300",
+                                    "relative px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 z-10",
                                     billingCycle === 'monthly'
-                                        ? "bg-primary text-black shadow-lg"
-                                        : "text-gray-400 hover:text-white"
+                                        ? "text-white"
+                                        : "text-gray-500 hover:text-gray-300"
                                 )}
                             >
                                 Monthly
+                                {billingCycle === 'monthly' && (
+                                    <span className="absolute inset-0 bg-white/[0.08] rounded-full -z-10 border border-white/5 shadow-sm" />
+                                )}
                             </button>
                             <button
                                 onClick={() => setBillingCycle('yearly')}
                                 className={cn(
-                                    "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative",
+                                    "relative px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300 z-10",
                                     billingCycle === 'yearly'
-                                        ? "bg-primary text-black shadow-lg"
-                                        : "text-gray-400 hover:text-white"
+                                        ? "text-white"
+                                        : "text-gray-500 hover:text-gray-300"
                                 )}
                             >
-                                Annual
-                                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                    Save 20%
-                                </span>
+                                Yearly
+                                {billingCycle === 'yearly' && (
+                                    <span className="absolute inset-0 bg-white/[0.08] rounded-full -z-10 border border-white/5 shadow-sm" />
+                                )}
                             </button>
                         </div>
-                    </div>
 
-                    {requiresAdSpend && (
-                        <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 text-sm text-gray-300">
-                            <Info className="w-4 h-4 text-yellow-400" />
-                            <span>Ad spend is paid directly to platforms</span>
+                        <div className="flex flex-col items-center gap-1 mt-2">
+                            {/* Savings Badge */}
+                            <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider bg-green-400/10 px-2 py-0.5 rounded border border-green-400/20">
+                                Save 20% on Yearly
+                            </span>
                         </div>
-                    )}
+                    </div>
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                {/* 3. Pricing Cards Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
                     {sortedPlans.map((plan, index) => {
                         const isPopular = plan.is_popular;
-                        const label = getPlanLabel(plan.title, index);
-                        // Enhanced custom detection logic matches Admin Panel
                         const isCustom = (plan as any).is_custom || plan.price === 0 || plan.title.toLowerCase() === 'custom' || plan.title.toLowerCase().includes('enterprise');
 
                         const displayPrice = calculatePrice(plan.price, isCustom);
-                        const monthlyEquivalent = billingCycle === 'yearly' && !isCustom
-                            ? Number(plan.price)
-                            : null;
+
+                        const features = Array.isArray(plan.features) ? plan.features.sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0)) : [];
+                        const displayedFeatures = showAllFeatures ? features : features.slice(0, 5);
 
                         return (
                             <div
                                 key={plan.id}
                                 className={cn(
-                                    "relative rounded-2xl p-8 bg-[#111111] border transition-all duration-300 flex flex-col h-full",
+                                    "group relative rounded-[2.5rem] p-10 flex flex-col h-full transition-all duration-500",
+                                    // Glassmorphism & Borders
+                                    "bg-[#0a0a0a] backdrop-blur-xl border",
                                     isPopular
-                                        ? "border-primary shadow-[0_0_30px_-10px_var(--color-primary)] scale-105 z-10"
-                                        : "border-white/10 hover:border-white/20"
+                                        ? "border-primary/30 shadow-[0_0_50px_-20px_rgba(0,217,195,0.15)] bg-[#0c0c0c]"
+                                        : "border-white/5 hover:border-white/10 hover:bg-[#0c0c0c]"
                                 )}
                             >
+                                {/* Active Glow (Popular only) */}
                                 {isPopular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                        <div className="bg-primary text-black font-bold text-xs uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider">
-                                            Most Popular
-                                        </div>
-                                    </div>
+                                    <div className="absolute inset-x-0 -top-px h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
                                 )}
 
-                                <div className="mb-8">
-                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">{label}</h4>
-                                    <h3 className="text-2xl font-bold text-white mb-6 font-poppins">{plan.title}</h3>
+                                {/* Card Header: Icon & Price */}
+                                <div className="flex justify-between items-start mb-10">
+                                    {/* Icon Box */}
+                                    <div className={cn(
+                                        "w-14 h-14 rounded-2xl flex items-center justify-center border transition-colors",
+                                        isPopular
+                                            ? "bg-[#1A1A1A] border-primary/30 text-primary"
+                                            : "bg-[#111] border-white/5 text-gray-400 group-hover:text-white group-hover:border-white/10"
+                                    )}>
+                                        {getPlanIcon(plan.title)}
+                                    </div>
 
-                                    <div className="flex items-end gap-1">
-                                        <span className="text-5xl font-bold text-white tracking-tight transition-all duration-300">
-                                            {isCustom ? "Custom" : formatCurrency(displayPrice, plan.currency)}
-                                        </span>
+                                    {/* Link Price */}
+                                    <div className="text-right">
+                                        <div className="flex items-baseline justify-end gap-1">
+                                            <span className={cn("text-4xl font-bold tracking-tight", isPopular ? "text-white" : "text-gray-200")}>
+                                                {isCustom ? "Custom" : formatCurrency(displayPrice)}
+                                            </span>
+                                        </div>
                                         {!isCustom && (
-                                            <div className="flex flex-col mb-1.5">
-                                                <span className="text-xs text-gray-400 font-medium">
-                                                    /{billingCycle === 'monthly' ? 'mo' : 'yr'}
-                                                </span>
-                                                {requiresAdSpend && (
-                                                    <span className="text-[10px] text-gray-500 font-medium">+ ad spend</span>
-                                                )}
-                                            </div>
-                                        )}
-                                        {isCustom && (
-                                            <div className="flex flex-col mb-1.5">
-                                                <span className="text-xs text-gray-400 font-medium">High volume</span>
+                                            <div className="text-[12px] font-medium text-gray-500 uppercase tracking-wide mt-1">
+                                                / Per {billingCycle === 'monthly' ? 'Month' : 'Year'}
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* Monthly equivalent for annual billing */}
-                                    {monthlyEquivalent && billingCycle === 'yearly' && (
-                                        <p className="text-sm text-gray-500 mt-2">
-                                            {formatCurrency(monthlyEquivalent, plan.currency)}/month billed annually
-                                        </p>
-                                    )}
                                 </div>
 
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {Array.isArray(plan.features) && plan.features.sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0)).map((f: any, i: number) => {
-                                        // Handle both object (from join) and string (fallback) feature formats
-                                        const text = typeof f === 'string' ? f : f.feature_text;
-                                        return (
-                                            <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                                                <Check className="w-5 h-5 text-primary shrink-0" />
-                                                <span className="leading-relaxed">{text}</span>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
+                                {/* Title & Description */}
+                                <div className="mb-10 space-y-3">
+                                    <h3 className="text-2xl font-bold text-white mb-2">{plan.title}</h3>
+                                    <p className="text-[15px] text-gray-400 font-medium leading-relaxed">
+                                        {isCustom
+                                            ? "Enterprise-grade power for large scale operations."
+                                            : (index === 0
+                                                ? "Perfect for small businesses starting their journey."
+                                                : "Advanced tools for growing businesses needing speed.")}
+                                    </p>
+                                </div>
 
-                                <Link href="/contact" className="block mt-auto">
-                                    <Button
-                                        className={cn(
-                                            "w-full h-12 text-base font-bold transition-all",
-                                            isPopular
-                                                ? "bg-primary text-black hover:bg-primary/90 shadow-[0_0_20px_-5px_var(--color-primary)]"
-                                                : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
-                                        )}
-                                    >
-                                        {isPopular ? "Talk to Expert" : (isCustom ? "Request Quote" : "Get Started")}
-                                    </Button>
-                                </Link>
+                                {/* CTA Button - Centered & Styled */}
+                                <div className="mb-10">
+                                    <Link href="/contact" className="block w-full">
+                                        <Button
+                                            className={cn(
+                                                "w-full h-14 rounded-full text-base font-bold transition-all duration-300 flex items-center justify-center gap-2 group-hover:gap-3",
+                                                isPopular
+                                                    ? "bg-white text-black hover:bg-white/90 shadow-[0_0_30px_-10px_rgba(255,255,255,0.3)]"
+                                                    : "bg-[#151515] text-white border border-white/10 hover:bg-[#202020] hover:border-white/20"
+                                            )}
+                                        >
+                                            Get Started
+                                            <ArrowRight className="w-5 h-5" />
+                                        </Button>
+                                    </Link>
+                                </div>
+
+                                {/* Features List */}
+                                <div className="space-y-6 flex-1 border-t border-white/5 pt-8">
+                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Features</h4>
+                                    <ul className="space-y-4">
+                                        {displayedFeatures.map((f: any, i: number) => {
+                                            const text = typeof f === 'string' ? f : f.feature_text;
+                                            return (
+                                                <li key={i} className="flex items-start gap-3 text-[15px] text-gray-300/90 group/item">
+                                                    <div className={cn(
+                                                        "w-5 h-5 rounded-full flex items-center justify-center shrink-0 border transition-colors mt-0.5",
+                                                        isPopular
+                                                            ? "bg-primary/10 border-primary/20 text-primary"
+                                                            : "bg-white/5 border-white/10 text-gray-500 group-hover/item:text-gray-300"
+                                                    )}>
+                                                        <Check className="w-3 h-3" />
+                                                    </div>
+                                                    <span className="leading-snug font-medium">{text}</span>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
                             </div>
                         );
                     })}
+                </div>
+
+                {/* Bottom View More Action */}
+                <div className="mt-20 text-center">
+                    <button
+                        onClick={() => setShowAllFeatures(!showAllFeatures)}
+                        className="group inline-flex items-center gap-3 px-10 py-4 rounded-full bg-[#111] border border-white/10 text-white text-sm font-semibold hover:bg-[#1A1A1A] hover:border-white/20 transition-all shadow-lg hover:shadow-xl"
+                    >
+                        <span>{showAllFeatures ? "Collapse details" : "View full feature breakdown"}</span>
+                        <ArrowRight className={cn("w-4 h-4 transition-transform duration-300", showAllFeatures ? "-rotate-90" : "group-hover:translate-x-1")} />
+                    </button>
                 </div>
             </div>
         </section>

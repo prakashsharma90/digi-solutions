@@ -15,7 +15,8 @@ import {
     CheckCircle2,
     Clock,
     AlertCircle,
-    Trash2
+    Trash2,
+    RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ export default function LeadsPage() {
     const [selectedLead, setSelectedLead] = useState<any | null>(null);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [syncing, setSyncing] = useState(false);
 
     // CRM Fields State
     const [editForm, setEditForm] = useState({
@@ -92,6 +94,25 @@ export default function LeadsPage() {
             console.error("Failed to save lead", error);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleSync = async () => {
+        setSyncing(true);
+        try {
+            const res = await fetch("/api/admin/sync-leads");
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message || "Sync successful!");
+                fetchLeads();
+            } else {
+                alert(`Sync failed: ${data.error}`);
+            }
+        } catch (error) {
+            console.error("Sync error:", error);
+            alert("Failed to sync leads.");
+        } finally {
+            setSyncing(false);
         }
     };
 
@@ -222,10 +243,21 @@ export default function LeadsPage() {
                             />
                         </div>
                     </div>
-                    <Button className="gap-2 shadow-lg shadow-primary/20" onClick={handleExport}>
-                        <Download size={18} />
-                        Export CSV
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            className="gap-2 border-primary/20 hover:border-primary/50 text-primary-foreground"
+                            onClick={handleSync}
+                            disabled={syncing}
+                        >
+                            <RefreshCw size={18} className={cn(syncing && "animate-spin")} />
+                            {syncing ? "Syncing..." : "Sync Local"}
+                        </Button>
+                        <Button className="gap-2 shadow-lg shadow-primary/20" onClick={handleExport}>
+                            <Download size={18} />
+                            Export CSV
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Status Tabs */}

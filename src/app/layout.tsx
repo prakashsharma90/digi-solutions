@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { Preloader } from "@/components/ui/Preloader";
+import SmoothScroll from "@/components/ui/SmoothScroll";
 import { MegaMenuProvider } from "@/contexts/MegaMenuContext";
 
 
@@ -43,6 +44,7 @@ export default function RootLayout({
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
         <Preloader />
+        <SmoothScroll />
         <MegaMenuProvider>
           {children}
         </MegaMenuProvider>

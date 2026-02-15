@@ -188,7 +188,14 @@ function CoreValues() {
         <section className="py-32 space-y-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 {sections.map((item, i) => (
-                    <div key={i} className={`flex flex-col lg:flex-row gap-20 items-center ${item.align === 'right' ? 'lg:flex-row-reverse' : ''} pb-24 mb-24 border-b border-white/10 last:border-0 last:pb-0 last:mb-0`}>
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.7, delay: i * 0.1 }}
+                        className={`flex flex-col lg:flex-row gap-20 items-center ${item.align === 'right' ? 'lg:flex-row-reverse' : ''} pb-24 mb-24 border-b border-white/10 last:border-0 last:pb-0 last:mb-0`}
+                    >
                         {/* Image Side (Collage) */}
                         <div className="flex-1 relative w-full min-h-[500px] flex items-center justify-center">
                             {/* Decorative Blur Background */}
@@ -248,10 +255,10 @@ function CoreValues() {
                                 Learn More <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </Container>
-        </section>
+        </section >
     );
 }
 
@@ -261,13 +268,32 @@ function HowWeWork() {
         <Section className="py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 <div className="text-center mb-16 space-y-4">
-                    <h2 className="text-4xl lg:text-5xl font-black text-white">Our Approach to Digital Success</h2>
-                    <p className="text-gray-400 font-medium max-w-2xl mx-auto">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-4xl lg:text-5xl font-black text-white"
+                    >
+                        Our Approach to Digital Success
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-gray-400 font-medium max-w-2xl mx-auto"
+                    >
                         We blend creativity with data-driven strategies to craft campaigns that resonate and deliver measurable results.
-                    </p>
+                    </motion.p>
                 </div>
 
-                <div className="relative w-full aspect-video rounded-[3rem] overflow-hidden border border-white/10 group cursor-pointer shadow-2xl">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="relative w-full aspect-video rounded-[3rem] overflow-hidden border border-white/10 group cursor-pointer shadow-2xl"
+                >
                     <Image
                         src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=2070"
                         alt="How We Work"
@@ -281,7 +307,7 @@ function HowWeWork() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </Container>
         </Section>
     );
@@ -301,7 +327,14 @@ function TeamSection() {
             <Container>
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="space-y-4">
-                        <h2 className="text-4xl lg:text-5xl font-black text-white">The People Behind <br /> Your Success</h2>
+                        <motion.h2
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="text-4xl lg:text-5xl font-black text-white"
+                        >
+                            The People Behind <br /> Your Success
+                        </motion.h2>
                     </div>
                     <Link href="/team" className="px-8 py-3 rounded-full border border-white/10 text-white font-bold hover:bg-white hover:text-black transition-all">
                         View All Members
@@ -314,6 +347,7 @@ function TeamSection() {
                             key={i}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
                             transition={{ delay: i * 0.1 }}
                             className="group p-10 rounded-[2.5rem] bg-[#0F1216] border border-white/5 hover:border-primary/20 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.15)] transition-all duration-500"
                         >
@@ -363,13 +397,35 @@ function Testimonials() {
 
             <Container className="relative z-10">
                 <div className="text-center mb-20">
-                    <h2 className="text-4xl lg:text-5xl font-black text-white mb-4">What Our Clients Say</h2>
-                    <p className="text-gray-400">Real results from real partnerships.</p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-4xl lg:text-5xl font-black text-white mb-4"
+                    >
+                        What Our Clients Say
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-gray-400"
+                    >
+                        Real results from real partnerships.
+                    </motion.p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
                     {clients.map((client, i) => (
-                        <div key={i} className="p-10 rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group">
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="p-10 rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group"
+                        >
                             <div className="flex gap-1 mb-6">
                                 {[...Array(client.rating)].map((_, r) => (
                                     <Star key={r} className="w-4 h-4 text-[#00D9C3] fill-[#00D9C3]" />
@@ -386,7 +442,7 @@ function Testimonials() {
                                     <div className="text-gray-500 text-xs uppercase tracking-wider">{client.role}</div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </Container>
@@ -401,7 +457,13 @@ function AboutCTA() {
             <div className="absolute inset-0 bg-gradient-to-b from-[#0F0F0F] to-black" />
 
             <Container className="relative z-10 text-center">
-                <div className="max-w-4xl mx-auto bg-[#111] p-12 md:p-20 rounded-[3rem] border border-white/10 relative overflow-hidden">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-4xl mx-auto bg-[#111] p-12 md:p-20 rounded-[3rem] border border-white/10 relative overflow-hidden"
+                >
                     {/* Glow */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00D9C3]/10 rounded-full blur-[120px] pointer-events-none" />
 
@@ -419,7 +481,7 @@ function AboutCTA() {
                             Get Started Today
                         </Link>
                     </div>
-                </div>
+                </motion.div>
             </Container>
         </section>
     );

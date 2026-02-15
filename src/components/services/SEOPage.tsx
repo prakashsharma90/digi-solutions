@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Container, Section } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Search, XCircle, BarChart, Layers, Globe, ShieldCheck, AlertCircle, Zap, TrendingUp, MousePointerClick, FileText, Share2, Code, Mail, Wrench, ShoppingCart, MapPin, Layout } from "lucide-react";
+import { ArrowRight, CheckCircle2, Search, XCircle, BarChart, Layers, Globe, ShieldCheck, AlertCircle, Zap, TrendingUp, MousePointerClick, FileText, Share2, Code, Mail, Wrench, ShoppingCart, MapPin, Layout, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -13,6 +13,45 @@ export function SEOPage({ plans }: { plans?: any[] }) {
     const [activeSolution, setActiveSolution] = useState(0);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
     const [activeFAQ, setActiveFAQ] = useState(0);
+
+    // Newsletter State
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleNewsletterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        try {
+            const response = await fetch("/api/newsletter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email,
+                    source: "SEO Page"
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to subscribe");
+            }
+
+            setSuccess(true);
+            setEmail("");
+
+            // Reset success message after 5 seconds
+            setTimeout(() => setSuccess(false), 5000);
+        } catch (err: any) {
+            setError(err.message || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const testimonials = [
         {
@@ -139,7 +178,7 @@ export function SEOPage({ plans }: { plans?: any[] }) {
             </Section>
 
             {/* NEW: Specialization Section */}
-            <Section className="py-24 bg-white/[0.02] border-b border-white/5">
+            <Section className="py-24 bg-white/[0.02] border-y border-primary/20">
                 <Container>
                     <div className="text-center max-w-3xl mx-auto mb-20">
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -191,7 +230,7 @@ export function SEOPage({ plans }: { plans?: any[] }) {
             </Section>
 
             {/* NEW: Boost and Grow Traffic (SEOFix) */}
-            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden">
+            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden border-b border-primary/20">
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
                 <Container className="relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -236,7 +275,7 @@ export function SEOPage({ plans }: { plans?: any[] }) {
             </Section>
 
             {/* NEW: Services We Offer (Grid Section) */}
-            <Section className="py-24 bg-white/[0.02] border-b border-white/5">
+            <Section className="py-24 bg-white/[0.02] border-b border-primary/20">
                 <Container>
                     <div className="text-center max-w-3xl mx-auto mb-20">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Service We offer</h2>
@@ -339,7 +378,7 @@ export function SEOPage({ plans }: { plans?: any[] }) {
             </Section>
 
             {/* NEW: SEO Consulting / Solutions Section */}
-            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden">
+            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden border-b border-primary/20">
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05]" />
                 <Container className="relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -414,7 +453,7 @@ export function SEOPage({ plans }: { plans?: any[] }) {
             </Section>
 
             {/* NEW: What Customer Says (Testimonial Section) */}
-            <Section className="py-24 bg-white/[0.02] border-y border-white/5">
+            <Section className="py-24 bg-white/[0.02] border-b border-primary/20">
                 <Container>
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Customer Says</h2>
@@ -473,8 +512,12 @@ export function SEOPage({ plans }: { plans?: any[] }) {
                 </Container>
             </Section>
 
+
+            {/* 6. PRICING PLANS */}
+            <ServicePricing serviceName="SEO" plans={plans || []} />
+
             {/* NEW: FAQ & Newsletter Section */}
-            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden">
+            <Section className="py-24 bg-[#0B0F14] relative overflow-hidden border-y border-primary/20">
                 <Container className="relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
                         {/* FAQ Accordion */}
@@ -554,275 +597,52 @@ export function SEOPage({ plans }: { plans?: any[] }) {
                     </div>
 
                     {/* Newsletter Box */}
-                    <div className="rounded-3xl bg-primary p-8 md:p-12 relative overflow-hidden group hover:shadow-lg transition-shadow duration-300">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out z-0" />
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <h3 className="text-2xl md:text-3xl font-bold text-white max-w-md text-center md:text-left">
-                                Sign up for our newsletter to get update
+                    <div className="rounded-2xl bg-primary p-10 md:p-12 relative overflow-hidden shadow-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-200%] animate-[shimmer_3s_infinite] z-0" />
+
+                        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                            <h3 className="text-2xl md:text-3xl font-bold text-white text-center lg:text-left leading-tight">
+                                {success ? "Thanks for subscribing!" : "Sign up for our newsletter"} <br className="hidden lg:block" />
+                                {success ? "Check your inbox for updates." : "to get update"}
                             </h3>
-                            <div className="w-full max-w-md relative">
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email here"
-                                    className="w-full rounded-full bg-[#1A1F26] text-white py-4 pl-6 pr-4 focus:outline-none focus:ring-2 focus:ring-white/20 placeholder:text-gray-500 shadow-xl"
-                                />
-                            </div>
-                        </div>
-                    </div>
 
-                </Container>
-            </Section>
-
-            {/* 2. THE DIAGNOSIS (What's Going Wrong) - Visual Grid */}
-            <Section className="py-24 bg-white/[0.02] border-y border-white/5">
-                <Container>
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
-                        <div>
-                            <h2 className="text-4xl font-bold text-white mb-6">
-                                Why Most Websites <span className="text-primary">Fail</span> in Search
-                            </h2>
-                            <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-                                Most agencies sell you a "checklist" of fixes. But SEO isn't about fixing typos—it's about fixing <strong>relevance</strong> and <strong>authority</strong>.
-                            </p>
-
-                            <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 backdrop-blur-sm">
-                                <div className="flex items-start gap-4">
-                                    <AlertCircle className="w-8 h-8 text-primary shrink-0 mt-1" />
-                                    <div>
-                                        <h4 className="text-lg font-bold text-white mb-2">The "Checklist Trap"</h4>
-                                        <p className="text-gray-400">
-                                            Fixing meta tags won't help if your content has no authority. You need a strategy, not just a cleanup.
-                                        </p>
+                            <div className="w-full max-w-lg">
+                                {success ? (
+                                    <div className="flex items-center justify-center lg:justify-start gap-2 text-white h-14 bg-white/10 rounded-md px-6 border border-white/20">
+                                        <CheckCircle2 className="text-green-400 w-6 h-6" />
+                                        <span className="font-medium">Subscription successful!</span>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Visual Diagnosis Cards */}
-                        <div className="grid grid-cols-1 gap-4">
-                            {[
-                                { title: "Keyword Mismatch", desc: "Pages targeting words users don't actually search for.", icon: Search },
-                                { title: "Thin Content", desc: "Articles written for robots, offering zero value to humans.", icon: Layers },
-                                { title: "Ghost Authority", desc: "No reputable sites linking back to you.", icon: Globe },
-                            ].map((item, i) => (
-                                <div key={i} className="group flex items-center gap-6 p-6 rounded-2xl bg-[#0B0F14] border border-white/10 hover:border-primary/50 transition-all duration-300 shadow-lg">
-                                    <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary/10 group-hover:scale-110 transition-all">
-                                        <item.icon className="w-6 h-6 text-gray-400 group-hover:text-primary transition-colors" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors">{item.title}</h3>
-                                        <p className="text-sm text-gray-500">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 3. OUR STRATEGY (3 Pillars) - Featured Cards */}
-            <Section className="py-24 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F14] via-blue-900/10 to-[#0B0F14]" />
-                <Container className="relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                            How We Build <span className="text-primary">Unshakeable</span> Rankings
-                        </h2>
-                        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                            We don't guess. We engineer authority using a 3-pillar framework that Google rewards.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {[
-                            {
-                                step: "01",
-                                title: "Search Intent First",
-                                desc: "We map keywords to problems your customers are actually trying to solve.",
-                                icon: Zap,
-                                color: "from-yellow-500/20 to-orange-500/5",
-                                accent: "text-yellow-500"
-                            },
-                            {
-                                step: "02",
-                                title: "Structure & Silos",
-                                desc: "We organize your site so Google clearly understands exactly what you do.",
-                                icon: Layers,
-                                color: "from-primary/20 to-cyan-500/5",
-                                accent: "text-primary"
-                            },
-                            {
-                                step: "03",
-                                title: "Authority Building",
-                                desc: "We earn high-quality backlinks that signal trust to search engines.",
-                                icon: ShieldCheck,
-                                color: "from-purple-500/20 to-pink-500/5",
-                                accent: "text-purple-500"
-                            }
-                        ].map((card, i) => (
-                            <div key={i} className="group relative p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden">
-                                {/* Gradient Background */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
-                                <div className="relative z-10">
-                                    <div className={`text-6xl font-bold opacity-10 mb-4 ${card.accent}`}>{card.step}</div>
-                                    <div className={`w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                                        <card.icon className={`w-7 h-7 ${card.accent}`} />
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:translate-x-2 transition-transform duration-300">
-                                        {card.title}
-                                    </h3>
-                                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
-                                        {card.desc}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 4. THE ROADMAP (Timeline) - Vertical Journey */}
-            <Section className="py-24 bg-white/[0.02]">
-                <Container className="max-w-4xl">
-                    <div className="text-center mb-20">
-                        <h2 className="text-3xl font-bold text-white mb-4">
-                            The Roadmap to Page 1
-                        </h2>
-                        <p className="text-gray-400">
-                            SEO isn't magic. It's a predictable process.
-                        </p>
-                    </div>
-
-                    <div className="relative">
-                        {/* Connecting Line */}
-                        <div className="absolute left-[28px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary via-blue-500 to-transparent opacity-30" />
-
-                        <div className="space-y-16">
-                            {[
-                                {
-                                    month: "Month 1",
-                                    title: "The Foundation",
-                                    items: ["Deep Technical Audit", "Keyword Strategy Mapping", "Fixing Indexing Errors"],
-                                    icon: Search
-                                },
-                                {
-                                    month: "Month 2",
-                                    title: "Content & Structure",
-                                    items: ["Creating 'Power Pages'", "Optimizing Internal Links", "Improving Site Speed"],
-                                    icon: Layers
-                                },
-                                {
-                                    month: "Month 3-4",
-                                    title: "Authority Injection",
-                                    items: ["High-Quality Backlinks", "Digital PR Outreach", "Social Signals"],
-                                    icon: Globe
-                                },
-                                {
-                                    month: "Month 5+",
-                                    title: "Dominance & Scale",
-                                    items: ["Ranking #1-3", "Scaling Traffic", "Conversion Optimization"],
-                                    icon: BarChart
-                                }
-                            ].map((phase, i) => (
-                                <div key={i} className="relative flex gap-8 items-start group">
-                                    {/* Node */}
-                                    <div className="z-10 w-14 h-14 rounded-full bg-[#0B0F14] border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:shadow-[0_0_20px_var(--color-primary)] transition-all duration-300">
-                                        <phase.icon className="w-6 h-6 text-gray-400 group-hover:text-primary transition-colors" />
-                                    </div>
-
-                                    {/* Content Card */}
-                                    <div className="flex-1 p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/30 transition-all duration-300">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <h3 className="text-xl font-bold text-white">{phase.title}</h3>
-                                            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                                                {phase.month}
-                                            </span>
+                                ) : (
+                                    <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
+                                        <div className="flex-1 relative">
+                                            <input
+                                                type="email"
+                                                placeholder="Enter your email here"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                                disabled={loading}
+                                                className="w-full h-14 rounded-md bg-[#1F2937] text-white px-6 focus:outline-none focus:ring-2 focus:ring-white/20 placeholder:text-gray-400 border border-white/5 shadow-inner disabled:opacity-50"
+                                            />
+                                            {error && <p className="absolute -bottom-6 left-0 text-xs text-red-200 font-medium bg-red-500/10 px-2 py-0.5 rounded">{error}</p>}
                                         </div>
-                                        <ul className="grid sm:grid-cols-3 gap-4">
-                                            {phase.items.map((item, j) => (
-                                                <li key={j} className="flex items-center gap-2 text-sm text-gray-400">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 5. REALITY CHECK */}
-            <Section className="py-24">
-                <Container>
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-white mb-6">Who This Service Is For</h2>
-                        <p className="text-gray-400 max-w-2xl mx-auto">
-                            We're honest about who we can help. SEO is an investment, not a quick fix.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                        <div className="p-8 rounded-3xl bg-green-500/5 border border-green-500/20 backdrop-blur-sm shadow-lg shadow-green-900/10">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 rounded-xl bg-green-500/20">
-                                    <CheckCircle2 className="w-6 h-6 text-green-400" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-white">Perfect Fit For</h3>
+                                        <Button
+                                            type="submit"
+                                            disabled={loading}
+                                            className="h-14 px-8 bg-black hover:bg-gray-900 text-white font-bold rounded-md shadow-lg transition-transform hover:scale-105 disabled:opacity-70 disabled:hover:scale-100 min-w-[120px]"
+                                        >
+                                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit"}
+                                        </Button>
+                                    </form>
+                                )}
                             </div>
-                            <ul className="space-y-4">
-                                {["Business building a long-term brand", "Willing to invest 6 months for ROI", "Has a clear, proven offer", "Ready to dominate their niche"].map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-gray-300">
-                                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 shrink-0" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="p-8 rounded-3xl bg-red-500/5 border border-red-500/20 backdrop-blur-sm shadow-lg shadow-red-900/10">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 rounded-xl bg-red-500/20">
-                                    <XCircle className="w-6 h-6 text-red-400" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-white">Not a Fit For</h3>
-                            </div>
-                            <ul className="space-y-4">
-                                {["Needs sales by tomorrow", "Cannot wait for Google indexing", "Hoping for a $100 marketing miracle", "Frequent pivot of business model"].map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-gray-400">
-                                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 shrink-0" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     </div>
+
                 </Container>
             </Section>
 
-            {/* 6. PRICING PLANS */}
-            <ServicePricing serviceName="SEO" plans={plans || []} />
 
-            {/* 7. FINAL CTA - Minimal & Clean */}
-            <Section className="py-32 relative overflow-hidden">
-                <div className="absolute inset-0 bg-blue-900/5" />
-                <Container className="relative text-center max-w-3xl">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                        Stop Being Invisible.
-                    </h2>
-                    <p className="text-xl text-gray-400 mb-10">
-                        Let's check if your website has what it takes to rank #1.
-                    </p>
-                    <Link href="/contact">
-                        <Button size="lg" className="h-14 px-12 text-lg rounded-full">
-                            Request Free SEO Audit <ArrowRight className="ml-2 w-5 h-5" />
-                        </Button>
-                    </Link>
-                </Container>
-            </Section>
 
         </main>
     );

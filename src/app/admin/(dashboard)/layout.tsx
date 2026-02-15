@@ -18,8 +18,10 @@ export default function AdminLayout({
         <AdminHeader />
 
         {/* Content Area - Pages control their own scroll/padding */}
-        <main className="flex-1 overflow-y-auto flex flex-col bg-[#0B0F14] p-6 md:p-8">
-          {children}
+        <main className="flex-1 overflow-y-auto bg-[#0B0F14] scrollbar-thin scrollbar-thumb-white/10">
+          <div className="py-8 px-6 md:px-10">
+            {children}
+          </div>
         </main>
       </div>
     </div>

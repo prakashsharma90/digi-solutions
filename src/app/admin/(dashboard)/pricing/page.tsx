@@ -3,13 +3,19 @@
 import { useState, useEffect } from "react";
 import {
     Plus, Edit, Trash2, Check, DollarSign, Star, Copy, LayoutGrid, Tag,
-    AlertTriangle, Archive, Eye, EyeOff, ArrowLeft
+    AlertTriangle, Archive, Eye, EyeOff, ArrowLeft, ChevronDown, MoreVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import PricingPlanModal from "@/components/admin/pricing/PricingPlanModal";
 import { motion } from "framer-motion";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function AdminPricing() {
     const [services, setServices] = useState<any[]>([]);
@@ -53,6 +59,10 @@ export default function AdminPricing() {
     };
 
     const handleCreate = () => {
+        if (plans.length >= 3) {
+            alert("Maximum 3 pricing plans allowed per service.");
+            return;
+        }
         setEditingPlan(null);
         setModalOpen(true);
     };
@@ -63,6 +73,11 @@ export default function AdminPricing() {
     };
 
     const handleDuplicate = async (plan: any) => {
+        if (plans.length >= 3) {
+            alert("Cannot duplicate. Maximum 3 pricing plans allowed per service.");
+            return;
+        }
+
         if (!confirm(`Duplicate "${plan.title}"?`)) return;
 
         const newPlan = {
@@ -124,33 +139,56 @@ export default function AdminPricing() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-white font-poppins">Pricing Plans</h1>
-                        <p className="text-gray-400 mt-1">Manage tiers, pricing models, and feature sets.</p>
+                        <p className="text-gray-400 mt-1">Manage pricing tiers for your services.</p>
                     </div>
-                    {plans.length > 0 && selectedService && (
-                        <Button onClick={handleCreate} className="gap-2 shadow-[0_0_20px_-5px_var(--color-primary)] bg-primary text-black hover:bg-primary/90">
-                            <Plus size={18} /> Create Plan
-                        </Button>
-                    )}
                 </div>
             </div>
 
-            {/* Service Tabs */}
-            <div className="border-b border-white/10">
-                <div className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
-                    {services.map(service => (
-                        <button
-                            key={service.id}
-                            onClick={() => setSelectedService(service.id)}
-                            className={cn(
-                                "whitespace-nowrap px-6 py-3 border-b-2 text-sm font-medium transition-all duration-200",
-                                selectedService === service.id
-                                    ? "border-primary text-primary bg-primary/5"
-                                    : "border-transparent text-gray-400 hover:text-white hover:border-white/20"
-                            )}
-                        >
-                            {service.name}
-                        </button>
-                    ))}
+            {/* Service Selection Dropdown */}
+            <div className="bg-[#0F141A] p-6 rounded-2xl border border-white/5 space-y-4">
+                <label className="text-sm text-gray-400 uppercase tracking-widest font-bold">Select Service to Manage</label>
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="w-full sm:w-[300px] flex items-center justify-between px-4 py-3 bg-[#0B0F14] border border-white/10 rounded-xl text-white hover:border-primary/50 transition-all group">
+                                <span className="font-medium">{selectedServiceData?.name || "Select Service"}</span>
+                                <ChevronDown className="text-gray-500 group-hover:text-primary transition-colors" size={18} />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-[300px] bg-[#0B0F14] border border-white/10 text-white max-h-[300px] overflow-y-auto">
+                            {services.map((service) => (
+                                <DropdownMenuItem
+                                    key={service.id}
+                                    onClick={() => setSelectedService(service.id)}
+                                    className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-primary"
+                                >
+                                    {service.name}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Add New Plan Button (Max 3 Rule) */}
+                    {selectedService && (
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm text-gray-500 font-mono">
+                                {plans.length} / 3 Plans Created
+                            </span>
+                            <Button
+                                onClick={handleCreate}
+                                disabled={plans.length >= 3}
+                                className={cn(
+                                    "gap-2 shadow-[0_0_20px_-5px_var(--color-primary)] text-black font-bold transition-all",
+                                    plans.length >= 3
+                                        ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none hover:bg-gray-800"
+                                        : "bg-primary hover:bg-primary/90"
+                                )}
+                            >
+                                <Plus size={18} />
+                                {plans.length >= 3 ? "Limit Reached" : "Add New Plan"}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -161,7 +199,7 @@ export default function AdminPricing() {
                     <p className="text-gray-500 animate-pulse">Loading plans...</p>
                 </div>
             ) : !selectedService ? (
-                <div className="text-center py-20 text-gray-500">Select a service to manage pricing</div>
+                <div className="text-center py-20 text-gray-500">Select a service above to manage pricing</div>
             ) : plans.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 bg-[#0F141A] border border-white/5 rounded-2xl dashed">
                     <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
@@ -169,7 +207,7 @@ export default function AdminPricing() {
                     </div>
                     <h3 className="text-xl font-bold text-white">No plans configured</h3>
                     <p className="text-gray-400 text-sm mt-2 mb-8 max-w-md text-center">
-                        This service has no active pricing tiers. Create 3 tiers (Starter, Pro, Enterprise) for best conversion.
+                        This service has no active pricing tiers. Create up to 3 tiers (Starter, Pro, Enterprise).
                     </p>
                     <Button onClick={handleCreate} size="lg" className="bg-primary text-black hover:bg-primary/90">
                         <Plus size={18} className="mr-2" /> Add First Plan
@@ -210,7 +248,12 @@ export default function AdminPricing() {
                                     </div>
                                 </div>
 
-                                <h3 className="text-lg font-bold text-white mb-2">{plan.title}</h3>
+                                <h3 className="text-xl font-bold text-white mb-2">{plan.title}</h3>
+
+                                {/* Short Description */}
+                                <p className="text-sm text-gray-400 mb-6 line-clamp-2 min-h-[40px]">
+                                    {plan.description || "No description provided."}
+                                </p>
 
                                 <div className="mb-6 pb-6 border-b border-white/5">
                                     {(plan.price === 0 || plan.title.toLowerCase() === 'custom' || plan.is_custom) ? (
@@ -229,7 +272,7 @@ export default function AdminPricing() {
 
                                 <div className="space-y-3 flex-1">
                                     <div className="text-xs font-semibold text-gray-500 uppercase flex justify-between">
-                                        <span>Features</span>
+                                        <span>Features Included</span>
                                         <span className="text-gray-700">{plan.features?.length || 0}</span>
                                     </div>
                                     {plan.features?.slice(0, 5).map((f: any, i: number) => (
@@ -243,6 +286,13 @@ export default function AdminPricing() {
                                             + {plan.features.length - 5} more...
                                         </p>
                                     )}
+                                </div>
+
+                                {/* CTA Button Preview */}
+                                <div className="mt-6 pt-4 border-t border-white/5">
+                                    <div className="w-full py-2 bg-white/5 rounded text-center text-xs text-gray-400 font-medium border border-white/10">
+                                        Btn: {plan.cta_text || "Get Started"}
+                                    </div>
                                 </div>
                             </div>
 
@@ -265,7 +315,7 @@ export default function AdminPricing() {
                                     className="h-8 flex-1 text-gray-300 hover:text-white hover:bg-white/5"
                                     onClick={() => handleEdit(plan)}
                                 >
-                                    <Edit size={14} className="mr-2" /> Edit
+                                    <Edit size={14} className="mr-2" /> Edit Details
                                 </Button>
 
                                 <Button

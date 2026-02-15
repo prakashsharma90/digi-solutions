@@ -28,7 +28,7 @@ export interface ServiceType {
 }
 
 export const servicesData: Record<string, ServiceType> = {
-    "performance": {
+    "performance-marketing": {
         name: "Performance Marketing",
         title: "Results-Driven Performance Marketing",
         metaTitle: "Performance Marketing Services & Pricing | Digihub Solutions",

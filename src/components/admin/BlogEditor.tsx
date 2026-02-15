@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Save, Loader2, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { BlogPost } from "@/types";
+import TiptapEditor from "./TiptapEditor";
 
 interface BlogEditorProps {
     initialData?: BlogPost;
@@ -121,211 +122,169 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-8 pb-20">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/blogs">
-                        <Button variant="ghost" size="icon" type="button" className="text-gray-400 hover:text-white">
-                            <ArrowLeft size={20} />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">{isEditing ? "Edit Blog Post" : "Write New Blog"}</h1>
-                        <p className="text-gray-400 text-sm">Fill in the details below.</p>
+        <form onSubmit={handleSubmit} className="pb-20">
+            {/* Top Action Bar (Sticky) */}
+            <div className="sticky top-0 z-30 bg-[#0B0F14]/80 backdrop-blur-md border-b border-white/5 py-4 mb-8">
+                <div className="max-w-[1600px] mx-auto px-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link href="/admin/blogs">
+                            <Button variant="ghost" size="icon" type="button" className="text-gray-400 hover:text-white hover:bg-white/5">
+                                <ArrowLeft size={20} />
+                            </Button>
+                        </Link>
+                        <div className="flex items-center gap-3">
+                            <span className={`w-2 h-2 rounded-full ${formData.status === 'published' ? 'bg-green-500' : 'bg-yellow-500'}`}></span>
+                            <span className="text-sm font-medium text-gray-400 capitalize">{formData.status}</span>
+                        </div>
                     </div>
-                </div>
-                <div className="flex gap-3">
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        className="text-gray-400"
-                        onClick={() => router.push('/admin/blogs')}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        className="bg-primary text-black hover:bg-primary/90 min-w-[120px]"
-                        disabled={loading}
-                    >
-                        {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" size={18} />}
-                        {isEditing ? "Update" : "Save Blog"}
-                    </Button>
+                    <div className="flex gap-3">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="text-gray-400"
+                            onClick={() => router.push('/admin/blogs')}
+                        >
+                            Discard
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="bg-primary text-black hover:bg-primary/90 min-w-[140px] font-semibold"
+                            disabled={loading}
+                        >
+                            {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" size={18} />}
+                            {isEditing ? "Update Post" : "Publish Post"}
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Content (Left) */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Title */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Blog Title</label>
+            <div className="flex flex-col xl:flex-row justify-center items-start gap-12 px-6 max-w-[1600px] mx-auto">
+                {/* Main Content (Writer Focus) */}
+                <div className="w-full max-w-[1000px] space-y-12 pb-32">
+                    {/* Hero Title Input */}
+                    <div className="space-y-6">
+                        <textarea
+                            name="title"
+                            required
+                            rows={1}
+                            value={formData.title}
+                            onChange={(e) => {
+                                handleChange(e as any);
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
+                            }}
+                            placeholder="Post Title Here..."
+                            className="w-full bg-transparent border-none p-0 text-6xl md:text-7xl font-black text-white placeholder:text-gray-800 focus:ring-0 focus:outline-none leading-[1.1] tracking-tight resize-none overflow-hidden"
+                            style={{ height: 'auto' }}
+                        />
+
+                        {/* Slug Editor */}
+                        <div className="flex items-center gap-2 text-gray-600 group">
+                            <span className="text-sm font-mono opacity-40">https://digihub.agency/blog/</span>
                             <input
                                 type="text"
-                                name="title"
-                                required
-                                value={formData.title}
+                                name="slug"
+                                value={formData.slug}
                                 onChange={handleChange}
-                                placeholder="Enter a catchy title..."
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white text-lg focus:border-primary/50 focus:outline-none"
+                                className="bg-transparent border-b border-white/5 group-hover:border-white/20 focus:border-primary text-sm font-mono text-gray-500 focus:text-primary focus:outline-none transition-all min-w-[300px]"
                             />
                         </div>
-
-                        {/* Slug */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Slug (URL)</label>
-                            <div className="flex gap-2">
-                                <span className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-gray-500 font-mono text-sm flex items-center">
-                                    /blog/
-                                </span>
-                                <input
-                                    type="text"
-                                    name="slug"
-                                    required
-                                    value={formData.slug}
-                                    onChange={handleChange}
-                                    className="flex-1 bg-[#0B0F14] border border-white/10 rounded-lg p-2 text-gray-300 font-mono text-sm focus:border-primary/50 focus:outline-none"
-                                />
-                                <Button type="button" onClick={generateSlug} variant="outline" size="sm" className="h-[42px]">
-                                    Generate
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Editor */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl space-y-4 min-h-[500px] flex flex-col">
-                        <label className="block text-sm font-medium text-gray-400">Content (Markdown)</label>
-                        <textarea
-                            name="content"
-                            required
-                            value={formData.content}
-                            onChange={handleChange}
-                            placeholder="# Write your masterpiece here...\n\nUse markdown for formatting."
-                            className="flex-1 w-full bg-[#0B0F14] border border-white/10 rounded-lg p-4 text-white font-mono text-sm focus:border-primary/50 focus:outline-none leading-relaxed resize-none min-h-[400px]"
-                        />
-                        <p className="text-xs text-gray-500">
-                            Supports Markdown: **bold**, # Heading 1, ## Heading 2, - List items, &gt; Quotes
-                        </p>
                     </div>
 
                     {/* Excerpt */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl">
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Short Excerpt (SEO Description)</label>
+                    <div className="relative group">
+                        <div className="absolute left-[-2rem] top-0 bottom-0 w-1 bg-white/5 group-focus-within:bg-primary/50 transition-colors"></div>
                         <textarea
                             name="excerpt"
-                            rows={3}
+                            rows={2}
                             value={formData.excerpt}
                             onChange={handleChange}
-                            className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-gray-300 text-sm focus:border-primary/50 focus:outline-none"
+                            placeholder="Add a short excerpt or summary (SEO description)..."
+                            className="w-full bg-transparent border-none py-1 text-2xl text-gray-500 focus:ring-0 focus:outline-none resize-none leading-relaxed font-light italic"
+                        />
+                    </div>
+
+                    {/* Rich Editor */}
+                    <div className="pt-8 border-t border-white/5">
+                        <TiptapEditor
+                            content={formData.content}
+                            onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                         />
                     </div>
                 </div>
 
-                {/* Sidebar (Right) */}
-                <div className="space-y-6">
-                    {/* Publishing */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl space-y-4">
-                        <h3 className="font-semibold text-white">Publishing</h3>
+                {/* Sidebar (Settings Area) */}
+                <div className="w-full xl:w-80 shrink-0 xl:sticky xl:top-32 space-y-8">
+                    {/* Organization Card */}
+                    <div className="bg-[#0F141A] border border-white/5 rounded-2xl p-6 space-y-6 shadow-2xl shadow-black/50">
+                        <h3 className="font-bold text-white text-xs uppercase tracking-[0.2em] text-gray-500">Settings</h3>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Status</label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
-                            >
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+                        {/* Status */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Visibility</label>
+                            <div className="grid grid-cols-2 bg-[#0B0F14] p-1 rounded-xl border border-white/5">
+                                {['draft', 'published'].map((s) => (
+                                    <button
+                                        type="button"
+                                        key={s}
+                                        onClick={() => setFormData(p => ({ ...p, status: s }))}
+                                        className={`text-xs py-2 rounded-lg capitalize transition-all ${formData.status === s ? 'bg-white/10 text-white font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+                                    >
+                                        {s}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Content Type</label>
+                        {/* Category */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Category</label>
                             <select
-                                name="type"
-                                value={formData.type}
-                                onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
-                            >
-                                <option value="blog">Blog Post</option>
-                                <option value="news">News / Press</option>
-                                <option value="research">Research / Case Study</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Organization */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl space-y-4">
-                        <h3 className="font-semibold text-white">Organization</h3>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Category</label>
-                            <input
-                                type="text"
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                list="categories-list"
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
-                            />
-                            <datalist id="categories-list">
-                                <option value="Strategy" />
-                                <option value="SEO" />
-                                <option value="Social Media" />
-                                <option value="Automation" />
-                                <option value="Web Development" />
-                            </datalist>
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary/50 focus:outline-none appearance-none"
+                            >
+                                <option value="Strategy">Strategy</option>
+                                <option value="SEO">SEO</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Automation">Automation</option>
+                                <option value="Web Development">Web Development</option>
+                            </select>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Featured Image URL</label>
-                            <div className="space-y-3">
-                                <input
-                                    type="text"
-                                    name="image"
-                                    value={formData.image}
-                                    onChange={handleChange}
-                                    placeholder="https://..."
-                                    className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-xs text-gray-300 focus:border-primary/50 focus:outline-none"
-                                />
-                                {formData.image && (
-                                    <div className="rounded-lg overflow-hidden border border-white/10 aspect-video relative group">
-                                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <p className="text-xs text-white">Preview</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Author */}
-                    <div className="bg-[#0F141A] border border-white/5 p-6 rounded-2xl space-y-4">
-                        <h3 className="font-semibold text-white">Author</h3>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Name</label>
+                        {/* Author */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Author</label>
                             <input
                                 type="text"
                                 name="author_name"
                                 value={formData.author_name}
                                 onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary/50 focus:outline-none"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Role</label>
+                    </div>
+
+                    {/* Featured Image */}
+                    <div className="bg-[#0F141A] border border-white/5 rounded-2xl p-6 space-y-4 shadow-2xl shadow-black/50">
+                        <h3 className="font-bold text-white text-xs uppercase tracking-[0.2em] text-gray-500">Media</h3>
+                        <div className="space-y-4">
                             <input
                                 type="text"
-                                name="author_role"
-                                value={formData.author_role}
+                                name="image"
+                                value={formData.image}
                                 onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
+                                placeholder="Image URL..."
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-[10px] text-gray-400 focus:border-primary/50 focus:outline-none"
                             />
+                            <div className="rounded-xl overflow-hidden border border-white/5 aspect-video bg-[#0B0F14] flex items-center justify-center relative group">
+                                {formData.image ? (
+                                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                                ) : (
+                                    <ImageIcon className="text-gray-800" size={32} />
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

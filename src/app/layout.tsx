@@ -44,7 +44,6 @@ export default function RootLayout({
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
         <Preloader />
-        <SmoothScroll />
         <MegaMenuProvider>
           {children}
         </MegaMenuProvider>

@@ -38,6 +38,7 @@ export default function PricingPlanModal({
         is_popular: false,
         is_active: false,
         is_custom: false,
+        cta_text: "Get Started",
         features: [] as string[]
     });
 
@@ -56,6 +57,7 @@ export default function PricingPlanModal({
                 is_popular: planToEdit.is_popular,
                 is_active: planToEdit.is_active,
                 is_custom: planToEdit.is_custom || planToEdit.price === 0 || planToEdit.title.toLowerCase() === 'custom',
+                cta_text: planToEdit.cta_text || "Get Started",
                 features: planToEdit.features
                     ? planToEdit.features.map((f: any) => typeof f === 'string' ? f : f.feature_text)
                     : []
@@ -71,6 +73,7 @@ export default function PricingPlanModal({
                 is_popular: false,
                 is_active: false,
                 is_custom: false,
+                cta_text: "Get Started",
                 features: [""]
             });
         }
@@ -281,6 +284,17 @@ export default function PricingPlanModal({
                                         />
                                     </div>
                                 </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs text-gray-300 font-medium">Button Text (CTA)</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Get Started"
+                                        className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 outline-none transition-all placeholder:text-gray-600"
+                                        value={formData.cta_text}
+                                        onChange={(e) => setFormData({ ...formData, cta_text: e.target.value })}
+                                    />
+                                </div>
+
 
                                 {/* Custom/Enterprise Toggle */}
                                 <label className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5 rounded-xl cursor-pointer hover:bg-white/[0.04] transition-colors">
@@ -463,7 +477,8 @@ export default function PricingPlanModal({
                         </div>
                     </motion.div>
                 </>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }

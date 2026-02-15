@@ -28,6 +28,10 @@ interface Props {
 }
 
 async function getService(slug: string) {
+    // Handle URL migration for performance -> performance-marketing
+    // The DB might still have 'performance' as the slug
+    const dbSlug = slug === 'performance-marketing' ? 'performance' : slug;
+
     try {
         const supabase = await createClient();
 
@@ -35,7 +39,7 @@ async function getService(slug: string) {
         const { data: service } = await supabase
             .from('services')
             .select('*')
-            .eq('slug', slug)
+            .eq('slug', dbSlug)
             .eq('status', 'Published')
             .eq('is_deleted', false)
             .single();
@@ -91,7 +95,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
 
     // Custom metadata for Performance Marketing page
-    if (slug === 'performance') {
+    if (slug === 'performance-marketing') {
         return {
             title: "Performance Marketing Services - ROI-Focused Campaigns | Digihub",
             description: "Data-driven Google & Meta ad campaigns focused on ROI, not vanity metrics. Get qualified leads with 3-5x ROAS. Free performance audit available.",
@@ -175,7 +179,7 @@ export async function generateStaticParams() {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (data || []).map((service: any) => ({
-            slug: service.slug,
+            slug: service.slug === 'performance' ? 'performance-marketing' : service.slug,
         }));
     } catch (error) {
         console.error("generateStaticParams (Services): Error fetching services:", error);
@@ -229,7 +233,7 @@ export default async function ServicePage({ params }: Props) {
     }
 
     // Use custom Performance Marketing page for 'performance' slug
-    if (slug === 'performance') {
+    if (slug === 'performance-marketing') {
         return <PerformanceMarketingPage plans={finalPlans} />;
     }
 

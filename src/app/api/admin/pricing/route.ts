@@ -41,6 +41,7 @@ export async function POST(request: Request) {
         billing_cycle,
         is_popular,
         is_active,
+        // cta_text, // Uncomment after running migration
         features, // Array of strings or objects
     } = body;
 
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
             billing_cycle,
             is_popular,
             is_active,
+            // cta_text, // Uncomment after running migration
         })
         .select()
         .single();

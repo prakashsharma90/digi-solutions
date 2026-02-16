@@ -54,9 +54,9 @@ export default function ContactPage() {
                                 <div className="space-y-2 text-lg">
                                     <a href="mailto:contact@digihub.solutions" className="block text-white hover:text-primary transition-colors">contact@digihub.solutions</a>
                                     <a href="tel:+911244567890" className="block text-white hover:text-primary transition-colors">+91 124 456 7890</a>
-                                    <Link href="/support" className="inline-flex items-center gap-2 text-text-muted hover:text-white transition-colors underline decoration-border/30 underline-offset-4">
+                                    <a href="mailto:contact@digihub.solutions" className="inline-flex items-center gap-2 text-text-muted hover:text-white transition-colors underline decoration-border/30 underline-offset-4">
                                         Customer Support
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
 

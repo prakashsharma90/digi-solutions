@@ -6,11 +6,11 @@ import { Twitter, Linkedin, Instagram, Facebook } from "lucide-react";
 const footerLinks = {
     services: [
         { label: "SEO & Growth", href: "/services/seo" },
-        { label: "Paid Advertising", href: "/services/ads" },
+        { label: "Paid Advertising", href: "/services/performance-marketing" },
         { label: "Social Media", href: "/services/social" },
-        { label: "AI Automation", href: "/services/automation" },
+        { label: "AI Automation", href: "/services/ai-marketing" },
         { label: "Content Marketing", href: "/services/content-marketing" },
-        { label: "Web Development", href: "/services/web-dev" },
+        { label: "Web Development", href: "/services/website-designing-and-development" },
     ],
     company: [
         { label: "About Us", href: "/about" },

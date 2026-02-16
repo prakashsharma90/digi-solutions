@@ -68,7 +68,7 @@ export function GrowthHero() {
                                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </NextLink>
-                            <NextLink href="/case-studies">
+                            <NextLink href="/services">
                                 <Button
                                     variant="outline"
                                     className="w-full sm:w-auto h-12 px-7 text-sm font-semibold border border-white/15 hover:border-white/30 hover:bg-white/5 rounded-full transition-all"

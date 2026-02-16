@@ -19,7 +19,7 @@ const services = [
     {
         icon: Target,
         title: "PPC & Paid Advertising",
-        slug: "ppc",
+        slug: "performance-marketing",
         description: "Profitable paid ads. Lower CAC. Higher ROAS. Real-time optimization that maximizes every rupee.",
         metrics: ["ROAS optimization", "Ad spend efficiency", "Conversion tracking"],
         color: "from-primary/20 to-purple-500/20",

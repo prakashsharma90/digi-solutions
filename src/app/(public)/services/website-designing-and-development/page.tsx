@@ -376,7 +376,7 @@ function PortfolioSection() {
                         <h2 className="text-section">Selected Work.</h2>
                         <p className="text-body text-gray-500 font-medium">Results achieved for industry leaders.</p>
                     </div>
-                    <Link href="/portfolio" className="flex items-center gap-2 font-bold text-[#00D9C3] group text-nav">
+                    <Link href="#portfolio" className="flex items-center gap-2 font-bold text-[#00D9C3] group text-nav">
                         VIEW ALL PROJECTS
                         <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                     </Link>

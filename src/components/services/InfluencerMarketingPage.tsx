@@ -46,7 +46,7 @@ export function InfluencerMarketingPage() {
                                         Launch Campaign
                                     </Button>
                                 </Link>
-                                <Link href="/services/social">
+                                <Link href="/services/social-media-marketing">
                                     <Button variant="outline" size="lg" className="h-16 px-8 rounded-full border-white/10 hover:bg-white/5">
                                         View Social Stats
                                     </Button>

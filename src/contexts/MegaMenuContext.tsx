@@ -93,7 +93,7 @@ const defaultCategories: Category[] = [
         visible: true,
         order: 3,
         services: [
-            { id: "chan-1", name: "Social Media Marketing", slug: "social-media", subtitle: "Brand presence", icon: "MessageCircle", visible: true, featured: true, price: "₹15k/mo", order: 1 },
+            { id: "chan-1", name: "Social Media Marketing", slug: "social-media-marketing", subtitle: "Brand presence", icon: "MessageCircle", visible: true, featured: true, price: "₹15k/mo", order: 1 },
             { id: "chan-2", name: "Website Designing & Development", slug: "website-designing-and-development", subtitle: "High-converting sites", icon: "Code", visible: true, featured: true, price: "₹50k+", order: 2 },
             { id: "chan-3", name: "Email Marketing", slug: "email-marketing", subtitle: "Direct engagement", icon: "Mail", visible: true, featured: false, price: "₹10k/mo", order: 3 },
             { id: "chan-4", name: "WhatsApp Marketing", slug: "whatsapp-marketing", subtitle: "Instant messaging", icon: "Phone", visible: true, featured: false, price: "₹12k/mo", order: 4 },

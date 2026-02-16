@@ -90,8 +90,8 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
     return (
         <section className="py-24 bg-black relative overflow-hidden font-sans selection:bg-primary/30">
             {/* 1. Background Typography (Big Text) */}
-            <div className="absolute top-20 left-1/2 -translate-x-1/2 select-none pointer-events-none z-0 overflow-hidden w-full flex justify-center">
-                <h2 className="text-[25rem] md:text-[35rem] font-black text-white/[0.02] tracking-tighter leading-none whitespace-nowrap">
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 select-none pointer-events-none z-0 overflow-hidden w-full flex justify-center px-4">
+                <h2 className="text-[12rem] sm:text-[20rem] md:text-[35rem] font-black text-white/[0.02] tracking-tighter leading-none whitespace-nowrap">
                     Our Pricing
                 </h2>
             </div>
@@ -159,7 +159,7 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
                             <div
                                 key={plan.id}
                                 className={cn(
-                                    "group relative rounded-[2.5rem] p-10 flex flex-col h-full transition-all duration-500",
+                                    "group relative rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 lg:p-10 flex flex-col h-full transition-all duration-500",
                                     // Glassmorphism & Borders
                                     "bg-[#0a0a0a] backdrop-blur-xl border",
                                     isPopular
@@ -216,7 +216,7 @@ export function ServicePricing({ serviceName, plans }: ServicePricingProps) {
                                     <Link href="/contact" className="block w-full">
                                         <Button
                                             className={cn(
-                                                "w-full h-14 rounded-full text-base font-bold transition-all duration-300 flex items-center justify-center gap-2 group-hover:gap-3",
+                                                "w-full h-12 sm:h-14 rounded-full text-base font-bold transition-all duration-300 flex items-center justify-center gap-2 group-hover:gap-3",
                                                 isPopular
                                                     ? "bg-white text-black hover:bg-white/90 shadow-[0_0_30px_-10px_rgba(255,255,255,0.3)]"
                                                     : "bg-[#151515] text-white border border-white/10 hover:bg-[#202020] hover:border-white/20"

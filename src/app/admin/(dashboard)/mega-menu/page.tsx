@@ -39,21 +39,27 @@ export default function MegaMenuManagerPage() {
         setShowPricing,
         availableServices,
         loadingServices,
-        resetToDefaults
+        resetToDefaults,
+        saveCategories // Uses context function
     } = useMegaMenu();
 
     const [showPreview, setShowPreview] = useState(false);
     const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
     const [expandedCategory, setExpandedCategory] = useState<string | null>("acquisition");
-    const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+    const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
     const [validationExpanded, setValidationExpanded] = useState(true);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setSaveStatus("saving");
-        setTimeout(() => {
+        try {
+            await saveCategories();
             setSaveStatus("saved");
             setTimeout(() => setSaveStatus("idle"), 3000);
-        }, 1000);
+        } catch (error) {
+            console.error("Save failed", error);
+            setSaveStatus("error");
+            setTimeout(() => setSaveStatus("idle"), 3000);
+        }
     };
 
     const handleAddService = (categoryId: string, service: any) => {

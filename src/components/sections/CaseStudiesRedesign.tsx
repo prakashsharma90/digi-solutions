@@ -94,7 +94,7 @@ export function CaseStudiesRedesign() {
                         >
                             <div className={`
                                 bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-sm
-                                rounded-2xl border ${study.borderColor} p-8
+                                rounded-2xl border ${study.borderColor} p-6 sm:p-8
                                 hover:scale-[1.02] transition-all duration-300
                                 h-full flex flex-col
                             `}>

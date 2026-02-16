@@ -6,7 +6,7 @@ import {
     Bot, Cpu, Network, Zap,
     ArrowRight, Database, LineChart,
     Sparkles, Lock, Layers, BarChart3,
-    BrainCircuit, Code
+    BrainCircuit, Code, Users, MessageCircle, DollarSign
 } from "lucide-react";
 import Link from "next/link";
 
@@ -345,4 +345,4 @@ function Check({ className }: { className?: string }) {
         </svg>
     )
 }
-import { Users, MessageCircle, DollarSign } from "lucide-react";
+

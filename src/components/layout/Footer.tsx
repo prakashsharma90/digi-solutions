@@ -14,7 +14,7 @@ const footerLinks = {
     ],
     company: [
         { label: "About Us", href: "/about" },
-        { label: "Case Studies", href: "/blog" },
+        // { label: "Case Studies", href: "/blog" },
         { label: "Careers", href: "/contact" },
         { label: "Contact", href: "/contact" },
     ],
@@ -36,13 +36,23 @@ export function Footer() {
     return (
         <footer className="bg-black border-t border-white/10 pt-16 pb-8">
             <Container>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                    {/* Brand Column */}
-                    <div className="space-y-4">
-                        <Link href="/" className="text-2xl font-bold font-poppins tracking-tight text-white hover:text-primary transition-colors">
-                            Digi<span className="text-primary">hub</span>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                    {/* Brand Column - Full width on mobile */}
+                    <div className="col-span-2 lg:col-span-1 space-y-4">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                                <Image
+                                    src="/Digihub Solution (1).png"
+                                    alt="Digihub Logo"
+                                    fill
+                                    className="object-cover object-top"
+                                />
+                            </div>
+                            <span className="text-xl font-bold font-poppins tracking-tight text-white group-hover:text-primary transition-colors">
+                                Digihub Solution
+                            </span>
                         </Link>
-                        <p className="text-text-muted text-sm leading-relaxed">
+                        <p className="text-text-muted text-sm leading-relaxed max-w-xs">
                             Performance marketing agency helping businesses turn ad spend into predictable revenue since 2024.
                         </p>
                         <div className="flex gap-4 pt-4">
@@ -62,7 +72,7 @@ export function Footer() {
                     </div>
 
                     {/* Services Column */}
-                    <div>
+                    <div className="col-span-1">
                         <h3 className="font-semibold text-lg mb-6">Services</h3>
                         <ul className="space-y-3">
                             {footerLinks.services.map((link, index) => (
@@ -76,7 +86,7 @@ export function Footer() {
                     </div>
 
                     {/* Company Column */}
-                    <div>
+                    <div className="col-span-1">
                         <h3 className="font-semibold text-lg mb-6">Company</h3>
                         <ul className="space-y-3">
                             {footerLinks.company.map((link, index) => (
@@ -90,7 +100,7 @@ export function Footer() {
                     </div>
 
                     {/* Contact Column */}
-                    <div>
+                    <div className="col-span-2 lg:col-span-1">
                         <h3 className="font-semibold text-lg mb-6">Contact</h3>
                         <ul className="space-y-3">
                             {footerLinks.contact.map((link, index) => (
@@ -105,12 +115,12 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
-                    <div>
+                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left text-xs text-text-muted">
+                    <div className="order-2 md:order-1">
                         &copy; {new Date().getFullYear()} Digihub Solutions. All rights reserved.
                     </div>
-                    <div className="flex gap-6">
-                        <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+                    <div className="flex gap-6 order-1 md:order-2">
+                        <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
                     </div>
                 </div>

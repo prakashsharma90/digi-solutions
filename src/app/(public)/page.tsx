@@ -18,7 +18,7 @@ export default function Home() {
       <ServicesGridRedesign />
       <WhyUsRedesign />
       <ProcessFlow />
-      <CaseStudiesRedesign />
+      {/* <CaseStudiesRedesign /> */}
       <Insights />
       <HomeFAQ />
     </main>

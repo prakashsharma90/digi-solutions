@@ -59,7 +59,7 @@ export function ConsultationFormSection({
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative z-10 backdrop-blur-sm"
+                        className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl relative z-10 backdrop-blur-sm"
                     >
                         <LeadForm source={source} />
                     </motion.div>

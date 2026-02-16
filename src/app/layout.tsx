@@ -4,6 +4,7 @@ import "./globals.css";
 import { Preloader } from "@/components/ui/Preloader";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import { MegaMenuProvider } from "@/contexts/MegaMenuContext";
+import Script from "next/script";
 
 
 
@@ -28,23 +29,40 @@ export const metadata: Metadata = {
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-export default function RootLayout({
+import { getMegaMenuCategories } from "@/lib/mega-menu";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialCategories = await getMegaMenuCategories();
+
   return (
     <html lang="en" className="dark">
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-VNWPSJKLW5"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-VNWPSJKLW5');
+          `}
+        </Script>
       </head>
       <body
         suppressHydrationWarning
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
         <Preloader />
-        <MegaMenuProvider>
+        <MegaMenuProvider initialCategories={initialCategories}>
           {children}
         </MegaMenuProvider>
         <SpeedInsights />

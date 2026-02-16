@@ -52,6 +52,20 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/privacy',
+        destination: '/privacy-policy',
+        permanent: true,
+      },
+      {
+        source: '/services/content',
+        destination: '/services/content-marketing',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

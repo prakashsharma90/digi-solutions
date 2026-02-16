@@ -49,6 +49,7 @@ interface MegaMenuContextType {
     availableServices: AvailableService[];
     loadingServices: boolean;
     resetToDefaults: () => void;
+    saveCategories: () => Promise<void>;
 }
 
 const MegaMenuContext = createContext<MegaMenuContextType | undefined>(undefined);
@@ -65,10 +66,8 @@ const defaultCategories: Category[] = [
             { id: "seo-1", name: "Search Engine Optimization (SEO)", slug: "seo", subtitle: "Organic search dominance", icon: "Search", visible: true, featured: true, price: "₹25k/mo", order: 1 },
             { id: "seo-2", name: "Local SEO", slug: "local-seo", subtitle: "Local map rankings", icon: "MapPin", visible: true, featured: false, price: "₹15k/mo", order: 2 },
             { id: "seo-3", name: "E-commerce SEO", slug: "ecommerce-seo", subtitle: "Product visibility", icon: "ShoppingBag", visible: true, featured: false, price: "₹35k/mo", order: 3 },
-            { id: "seo-4", name: "Technical SEO", slug: "seo", subtitle: "Core web vitals & crawlability", icon: "Settings", visible: true, featured: false, price: "₹20k/mo", order: 4 },
-            { id: "seo-5", name: "SEO Audit", slug: "seo", subtitle: "Site health analysis", icon: "ClipboardCheck", visible: true, featured: false, price: "₹10k", order: 5 },
-            { id: "seo-6", name: "Keyword Research", slug: "seo", subtitle: "Targeted traffic strategy", icon: "Key", visible: true, featured: false, price: "₹5k", order: 6 },
-            { id: "seo-7", name: "Link Building", slug: "seo", subtitle: "Authority & trust building", icon: "Link", visible: true, featured: false, price: "₹30k/mo", order: 7 }
+            { id: "seo-4", name: "Content Marketing", slug: "content-marketing", subtitle: "Authority content", icon: "FileText", visible: true, featured: false, price: "₹20k/mo", order: 4 },
+            { id: "seo-9", name: "AI Search Optimization (SGE & LLM SEO)", slug: "ai-seo", subtitle: "Future-proof SEO", icon: "Sparkles", visible: true, featured: true, badge: "AI-Powered", price: "₹35k/mo", order: 5 }
         ]
     },
     {
@@ -83,8 +82,7 @@ const defaultCategories: Category[] = [
             { id: "paid-2", name: "Meta Ads (Facebook & Instagram)", slug: "meta-ads", subtitle: "Social media reach", icon: "Facebook", visible: true, featured: true, price: "₹15k/mo", order: 2 },
             { id: "paid-3", name: "YouTube Ads", slug: "youtube-ads", subtitle: "Video marketing", icon: "Youtube", visible: true, featured: false, price: "₹25k/mo", order: 3 },
             { id: "paid-4", name: "LinkedIn Ads", slug: "linkedin-ads", subtitle: "B2B lead generation", icon: "Linkedin", visible: true, featured: false, price: "₹30k/mo", order: 4 },
-            { id: "paid-5", name: "Performance Marketing", slug: "performance-marketing", subtitle: "ROI focused strategy", icon: "TrendingUp", visible: true, featured: true, price: "₹40k/mo", order: 5 },
-            { id: "paid-6", name: "Remarketing Campaigns", slug: "performance-marketing", subtitle: "Customer re-engagement", icon: "RefreshCw", visible: true, featured: false, price: "₹10k/mo", order: 6 }
+            { id: "paid-5", name: "Performance Marketing", slug: "meta-ads", subtitle: "ROI focused strategy", icon: "TrendingUp", visible: true, featured: true, price: "₹40k/mo", order: 5 }
         ]
     },
     {
@@ -99,9 +97,7 @@ const defaultCategories: Category[] = [
             { id: "chan-2", name: "Website Designing & Development", slug: "website-designing-and-development", subtitle: "High-converting sites", icon: "Code", visible: true, featured: true, price: "₹50k+", order: 2 },
             { id: "chan-3", name: "Email Marketing", slug: "email-marketing", subtitle: "Direct engagement", icon: "Mail", visible: true, featured: false, price: "₹10k/mo", order: 3 },
             { id: "chan-4", name: "WhatsApp Marketing", slug: "whatsapp-marketing", subtitle: "Instant messaging", icon: "Phone", visible: true, featured: false, price: "₹12k/mo", order: 4 },
-            { id: "chan-5", name: "Content Marketing", slug: "content-marketing", subtitle: "Authority content", icon: "FileText", visible: true, featured: false, price: "₹20k/mo", order: 5 },
-            { id: "chan-6", name: "AI Search Optimization (SGE & LLM SEO)", slug: "ai-marketing", subtitle: "Future-proof SEO", icon: "Sparkles", visible: true, featured: true, badge: "AI-Powered", price: "₹35k/mo", order: 6 },
-            { id: "chan-7", name: "Influencer Marketing", slug: "influencer", subtitle: "Social proof", icon: "Users", visible: true, featured: false, price: "Quote", order: 7 }
+            { id: "chan-5", name: "Influencer Marketing", slug: "influencer", subtitle: "Social proof", icon: "Users", visible: true, featured: false, price: "Quote", order: 5 }
         ]
     },
     {
@@ -112,37 +108,34 @@ const defaultCategories: Category[] = [
         visible: true,
         order: 4,
         services: [
-            { id: "growth-1", name: "Conversion Rate Optimization (CRO)", slug: "cro", subtitle: "Maximize efficiency", icon: "MousePointerClick", visible: true, featured: true, price: "₹25k/mo", order: 1 },
-            { id: "growth-2", name: "Landing Page Optimization", slug: "landing-page", subtitle: "High-impact pages", icon: "Layout", visible: true, featured: false, price: "₹15k+", order: 2 },
-            { id: "growth-3", name: "Funnel Building", slug: "funnel-building", subtitle: "Sales automation", icon: "Filter", visible: true, featured: false, price: "₹40k+", order: 3 },
-            { id: "growth-4", name: "Marketing Automation", slug: "marketing-automation", subtitle: "Scaling efficiency", icon: "Repeat", visible: true, featured: false, price: "₹30k/mo", order: 4 },
-            { id: "growth-5", name: "CRM Integration", slug: "crm-integration", subtitle: "Seamless workflows", icon: "Database", visible: true, featured: false, price: "₹20k+", order: 5 },
-            { id: "growth-6", name: "Online Reputation Management (ORM)", slug: "orm", subtitle: "Brand protection", icon: "ShieldCheck", visible: true, featured: false, price: "₹20k/mo", order: 6 },
-            { id: "growth-7", name: "Brand Strategy & Positioning", slug: "brand-strategy", subtitle: "Market differentiation", icon: "Flag", visible: true, featured: true, price: "₹50k+", order: 7 },
-            { id: "growth-8", name: "Analytics & Reporting", slug: "analytics", subtitle: "Insights & transparency", icon: "BarChart3", visible: true, featured: false, price: "₹10k/mo", order: 8 }
+            { id: "growth-2", name: "Landing Page Optimization", slug: "landing-page", subtitle: "High-impact pages", icon: "Layout", visible: true, featured: false, price: "₹15k+", order: 1 },
+            { id: "growth-4", name: "Marketing Automation", slug: "marketing-automation", subtitle: "Scaling efficiency", icon: "Repeat", visible: true, featured: false, price: "₹30k/mo", order: 2 },
+            { id: "growth-7", name: "Brand Strategy & Positioning", slug: "brand-strategy", subtitle: "Market differentiation", icon: "Flag", visible: true, featured: true, price: "₹50k+", order: 3 }
         ]
     }
 ];
 
-export function MegaMenuProvider({ children }: { children: ReactNode }) {
-    const [categories, setCategories] = useState<Category[]>(() => {
-        if (typeof window !== "undefined") {
-            const stored = localStorage.getItem("megaMenuCategories");
-            if (stored) {
-                try {
-                    const parsed = JSON.parse(stored);
-                    // Force update to new 4-column layout if they have fewer than 4 categories
-                    if (parsed.length < 4) {
-                        return defaultCategories;
-                    }
-                    return parsed;
-                } catch (e) {
-                    return defaultCategories;
+export function MegaMenuProvider({ children, initialCategories }: { children: ReactNode, initialCategories?: Category[] }) {
+    const [categories, setCategories] = useState<Category[]>(initialCategories && initialCategories.length > 0 ? initialCategories : defaultCategories);
+
+    // Fallback: If initialCategories wasn't provided, try to fetch on mount (client-side)
+    useEffect(() => {
+        if (!initialCategories || initialCategories.length === 0) {
+            const fetchSettings = async () => {
+                const supabase = createClient();
+                const { data, error } = await supabase
+                    .from('site_settings')
+                    .select('value')
+                    .eq('key', 'mega_menu_categories')
+                    .single();
+
+                if (data && data.value) {
+                    setCategories(data.value);
                 }
-            }
+            };
+            fetchSettings();
         }
-        return defaultCategories;
-    });
+    }, [initialCategories]);
 
     const [showPricing, setShowPricing] = useState(() => {
         if (typeof window !== "undefined") {
@@ -174,11 +167,21 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
         fetchServices();
     }, []);
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            localStorage.setItem("megaMenuCategories", JSON.stringify(categories));
+    const saveCategories = async () => {
+        const supabase = createClient();
+        const { error } = await supabase
+            .from('site_settings')
+            .upsert({
+                key: 'mega_menu_categories',
+                value: categories,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'key' }); // @ts-ignore
+
+        if (error) {
+            console.error("Error saving mega menu settings:", error);
+            throw error;
         }
-    }, [categories]);
+    };
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -279,7 +282,8 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
                 setShowPricing,
                 availableServices,
                 loadingServices,
-                resetToDefaults: () => setCategories(defaultCategories)
+                resetToDefaults: () => setCategories(defaultCategories),
+                saveCategories
             }}
         >
             {children}

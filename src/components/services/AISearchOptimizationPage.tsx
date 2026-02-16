@@ -1,3 +1,5 @@
+"use client";
+
 import { AISearchHero } from "@/components/services/ai-seo/AISearchHero";
 import { WhoThisIsFor } from "@/components/services/ai-seo/WhoThisIsFor";
 import { PainPoints } from "@/components/services/ai-seo/PainPoints";
@@ -12,21 +14,8 @@ import { AISearchFAQ } from "@/components/services/ai-seo/AISearchFAQ";
 import { LeadCapture } from "@/components/services/ai-seo/LeadCapture";
 import { FinalConversion } from "@/components/services/ai-seo/FinalConversion";
 import { StickyCTABar } from "@/components/services/ai-seo/StickyCTABar";
-import { createClient } from "@/lib/supabase/server";
 
-export const revalidate = 0; // Disable caching to always fetch fresh data
-
-export default async function AISearchOptimizationPage() {
-    // Fetch pricing plans from database
-    const supabase = await createClient();
-
-    const { data: plans } = await supabase
-        .from('pricing_plans')
-        .select('*')
-        .eq('service_id', 'ai-seo') // Assuming you have a service with this ID
-        .eq('is_active', true)
-        .order('price', { ascending: true });
-
+export function AISearchOptimizationPage({ plans }: { plans?: any[] }) {
     return (
         <main className="min-h-screen bg-background text-text-primary overflow-x-hidden">
             {/* Section 1: Hero */}

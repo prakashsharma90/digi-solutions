@@ -4,7 +4,7 @@ const PREVIEW_DEPLOYMENT_URL = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : null;
 
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || PREVIEW_DEPLOYMENT_URL || 'https://digihub-solutions.com';
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || PREVIEW_DEPLOYMENT_URL || 'https://digihubsolution.tech';
 
 export default function robots(): MetadataRoute.Robots {
     return {

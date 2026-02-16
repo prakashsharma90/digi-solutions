@@ -17,6 +17,7 @@ import { InfluencerMarketingPage } from "@/components/services/InfluencerMarketi
 import { AIMarketingPage } from "@/components/services/AIMarketingPage";
 import { PersonalBrandingPage } from "@/components/services/PersonalBrandingPage";
 import { EmailMarketingPage } from "@/components/services/EmailMarketingPage";
+import { AISearchOptimizationPage } from "@/components/services/AISearchOptimizationPage";
 
 
 
@@ -30,7 +31,12 @@ interface Props {
 async function getService(slug: string) {
     // Handle URL migration for performance -> performance-marketing
     // The DB might still have 'performance' as the slug
-    const dbSlug = slug === 'performance-marketing' ? 'performance' : slug;
+    // Handle URL migration for performance -> performance-marketing
+    // The DB might still have 'performance' as the slug
+    // Also map ai-seo -> ai-marketing so it fetches the same data
+    let dbSlug = slug;
+    if (slug === 'performance-marketing') dbSlug = 'performance';
+    if (slug === 'ai-seo') dbSlug = 'ai-marketing';
 
     try {
         const supabase = await createClient();
@@ -94,8 +100,8 @@ async function getService(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
 
-    // Custom metadata for Performance Marketing page
-    if (slug === 'performance-marketing') {
+    // Custom metadata for Performance Marketing / Meta Ads page
+    if (slug === 'performance-marketing' || slug === 'meta-ads') {
         return {
             title: "Performance Marketing Services - ROI-Focused Campaigns | Digihub",
             description: "Data-driven Google & Meta ad campaigns focused on ROI, not vanity metrics. Get qualified leads with 3-5x ROAS. Free performance audit available.",
@@ -131,7 +137,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
-    if (slug === 'ai-marketing') {
+    if (slug === 'ai-marketing' || slug === 'ai-seo') {
         return {
             title: "AI Marketing Services - The Neural Edge | Digihub",
             description: "Replace guesswork with neural intelligence. Predictive analytics, automated creative, and hyper-personalization at scale.",
@@ -232,8 +238,8 @@ export default async function ServicePage({ params }: Props) {
         ];
     }
 
-    // Use custom Performance Marketing page for 'performance' slug
-    if (slug === 'performance-marketing') {
+    // Use custom Performance Marketing page for 'performance' or 'meta-ads' slug
+    if (slug === 'performance-marketing' || slug === 'meta-ads') {
         return <PerformanceMarketingPage plans={finalPlans} />;
     }
 
@@ -257,9 +263,9 @@ export default async function ServicePage({ params }: Props) {
         return <InfluencerMarketingPage />;
     }
 
-    // Use custom AI Marketing page for 'ai-marketing' slug
-    if (slug === 'ai-marketing') {
-        return <AIMarketingPage plans={finalPlans} />;
+    // Use custom AI Marketing / SEO page for 'ai-marketing' or 'ai-seo' slug
+    if (slug === 'ai-marketing' || slug === 'ai-seo') {
+        return <AISearchOptimizationPage plans={finalPlans} />;
     }
 
     if (slug === 'personal-branding') {

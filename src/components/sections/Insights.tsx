@@ -118,7 +118,7 @@ export function Insights() {
                                     <img
                                         src={featured.image}
                                         alt={featured.title}
-                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        className="absolute inset-0 w-full h-full object-contain bg-black/40 group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/10 flex items-center justify-center">
@@ -193,7 +193,7 @@ export function Insights() {
                                             <img
                                                 src={post.image}
                                                 alt={post.title}
-                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                className="absolute inset-0 w-full h-full object-contain bg-black/40 group-hover:scale-105 transition-transform duration-500"
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-gradient-to-br from-white/[0.05] to-white/[0.02] flex items-center justify-center">

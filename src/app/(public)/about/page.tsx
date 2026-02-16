@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { Award, TrendingUp, Users, Target, CheckCircle2, Play, Star, ArrowRight, Quote } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,7 +24,7 @@ export default function AboutPage() {
 // 1. Hero Section
 function AboutHero() {
     return (
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-48 lg:pb-32 overflow-hidden border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     {/* Left: Text Content */}
@@ -41,7 +41,7 @@ function AboutHero() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-5xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight"
+                            className="text-[clamp(2.5rem,8vw,4.5rem)] font-black text-white leading-[1.1] tracking-tight"
                         >
                             Your Growth Partner <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9C3] to-[#00F5E0]">
@@ -68,32 +68,34 @@ function AboutHero() {
                     >
                         {/* Main Image */}
                         {/* Custom shape: Rounded corners, but we can stick to a consistent large radius */}
-                        <div className="relative aspect-[4/3] rounded-[3rem] overflow-hidden border border-white/10 group shadow-2xl z-10 bg-[#111]">
+                        <div className="relative aspect-[4/3] rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/10 group shadow-2xl z-10 bg-[#111]">
                             <Image
                                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2070"
                                 alt="Team Collaboration"
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                priority
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                         </div>
 
                         {/* Floating Badge - Bottom Left (Cutout effect simulated by positioning) */}
-                        <div className="absolute -bottom-10 -left-10 z-20">
-                            <div className="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.5)] animate-spin-slow">
+                        <div className="absolute -bottom-6 md:-bottom-10 -left-6 md:-left-10 z-20">
+                            <div className="relative w-24 h-24 md:w-32 md:h-32 bg-white rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.5)] animate-spin-slow">
                                 {/* Rotating Text Path */}
-                                <svg className="w-full h-full p-2" viewBox="0 0 100 100">
+                                <svg className="w-full h-full p-2 md:p-2" viewBox="0 0 100 100">
                                     <path id="curve" d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0" fill="transparent" />
                                     <text className="text-[10.5px] font-bold uppercase tracking-[0.18em] fill-black">
                                         <textPath href="#curve">
-                                            • Digihub Solutions • Est. 2018
+                                            • Digihub Solution • Est. 2018
                                         </textPath>
                                     </text>
                                 </svg>
                                 {/* Center Icon */}
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-12 h-12 bg-[#00D9C3] rounded-full flex items-center justify-center">
-                                        <ArrowRight className="w-6 h-6 text-black -rotate-45" />
+                                    <div className="w-8 h-8 md:w-12 md:h-12 bg-[#00D9C3] rounded-full flex items-center justify-center">
+                                        <ArrowRight className="w-4 h-4 md:w-6 md:h-6 text-black -rotate-45" />
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +117,7 @@ function IntroAndStats() {
     ];
 
     return (
-        <section className="py-24 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <section className="py-16 md:py-24 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 {/* Centered Intro Text */}
                 <motion.div
@@ -124,8 +126,8 @@ function IntroAndStats() {
                     viewport={{ once: true }}
                     className="max-w-4xl mx-auto text-center mb-24"
                 >
-                    <p className="text-2xl md:text-3xl lg:text-[2rem] leading-snug font-medium text-gray-500">
-                        At Digihub's, our mission is simple: <span className="text-white">make professional, results-driven digital marketing accessible</span> to every business. We believe whether you're a local startup or a global enterprise, you deserve <span className="text-white">marketing strategies that deliver measurable growth.</span>
+                    <p className="text-xl md:text-2xl lg:text-[clamp(1.5rem,4vw,2.25rem)] leading-snug font-medium text-gray-500">
+                        At Digihub Solution, our mission is simple: <span className="text-white">make professional, results-driven digital marketing accessible</span> to every business. We believe whether you're a local startup or a global enterprise, you deserve <span className="text-white">marketing strategies that deliver measurable growth.</span>
                     </p>
                 </motion.div>
 
@@ -140,10 +142,10 @@ function IntroAndStats() {
                             transition={{ delay: i * 0.1 }}
                             className="space-y-2 group cursor-default"
                         >
-                            <div className="text-5xl lg:text-6xl font-black text-white group-hover:text-[#00D9C3] transition-colors duration-300">
+                            <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white group-hover:text-[#00D9C3] transition-colors duration-300">
                                 {stat.val}
                             </div>
-                            <div className="text-sm font-bold text-gray-500 tracking-wider">
+                            <div className="text-xs sm:text-sm font-bold text-gray-500 tracking-wider">
                                 {stat.label}
                             </div>
                         </motion.div>
@@ -185,7 +187,7 @@ function CoreValues() {
     ];
 
     return (
-        <section className="py-32 space-y-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <section className="py-20 md:py-32 space-y-20 md:space-y-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 {sections.map((item, i) => (
                     <motion.div
@@ -197,11 +199,11 @@ function CoreValues() {
                         className={`flex flex-col lg:flex-row gap-20 items-center ${item.align === 'right' ? 'lg:flex-row-reverse' : ''} pb-24 mb-24 border-b border-white/10 last:border-0 last:pb-0 last:mb-0`}
                     >
                         {/* Image Side (Collage) */}
-                        <div className="flex-1 relative w-full min-h-[500px] flex items-center justify-center">
+                        <div className="flex-1 relative w-full min-h-[350px] md:min-h-[500px] flex items-center justify-center">
                             {/* Decorative Blur Background */}
                             <div className="absolute inset-0 bg-[#00D9C3]/5 rounded-full blur-[100px] pointer-events-none" />
 
-                            <div className="relative w-full h-[500px]">
+                            <div className="relative w-full h-[350px] md:h-[500px]">
                                 {/* Back Image */}
                                 <div className={`absolute top-0 w-[75%] h-[80%] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ${item.align === 'left' ? 'left-0' : 'right-0'}`}>
                                     <Image
@@ -224,8 +226,8 @@ function CoreValues() {
                                 </div>
 
                                 {/* Decorative Badge/Graphic */}
-                                <div className={`absolute top-1/2 -translate-y-1/2 w-24 h-24 bg-[#00D9C3] rounded-full flex items-center justify-center shadow-lg z-10 ${item.align === 'left' ? 'right-[45%]' : 'left-[45%]'}`}>
-                                    <TrendingUp className="w-10 h-10 text-black" />
+                                <div className={`absolute top-1/2 -translate-y-1/2 w-16 h-16 md:w-24 md:h-24 bg-[#00D9C3] rounded-full flex items-center justify-center shadow-lg z-10 ${item.align === 'left' ? 'right-[45%]' : 'left-[45%]'}`}>
+                                    <TrendingUp className="w-6 h-6 md:w-10 md:h-10 text-black" />
                                 </div>
                             </div>
                         </div>
@@ -233,7 +235,7 @@ function CoreValues() {
                         {/* Text Side */}
                         <div className="flex-1 space-y-8">
                             <div className="space-y-4">
-                                <h2 className="text-4xl lg:text-6xl font-black text-white leading-[1.1]">{item.title}</h2>
+                                <h2 className="text-3xl lg:text-[clamp(2rem,6vw,3.75rem)] font-black text-white leading-[1.1]">{item.title}</h2>
                                 <div className="w-20 h-1.5 bg-[#00D9C3] rounded-full" />
                             </div>
 
@@ -250,10 +252,6 @@ function CoreValues() {
                                     </li>
                                 ))}
                             </ul>
-
-                            <button className="flex items-center gap-2 text-[#00D9C3] font-bold uppercase tracking-widest hover:gap-4 transition-all">
-                                Learn More <ArrowRight className="w-4 h-4" />
-                            </button>
                         </div>
                     </motion.div>
                 ))}
@@ -265,14 +263,14 @@ function CoreValues() {
 // 4. How We Work (Video Placeholder)
 function HowWeWork() {
     return (
-        <Section className="py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <Section className="py-20 md:py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
                 <div className="text-center mb-16 space-y-4">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl lg:text-5xl font-black text-white"
+                        className="text-3xl md:text-4xl lg:text-5xl font-black text-white"
                     >
                         Our Approach to Digital Success
                     </motion.h2>
@@ -299,6 +297,7 @@ function HowWeWork() {
                         alt="How We Work"
                         fill
                         className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 1280px) 100vw, 1280px"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
@@ -323,22 +322,17 @@ function TeamSection() {
     ];
 
     return (
-        <Section className="py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <Section className="py-20 md:py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <Container>
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                    <div className="space-y-4">
-                        <motion.h2
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="text-4xl lg:text-5xl font-black text-white"
-                        >
-                            The People Behind <br /> Your Success
-                        </motion.h2>
-                    </div>
-                    <Link href="/team" className="px-8 py-3 rounded-full border border-white/10 text-white font-bold hover:bg-white hover:text-black transition-all">
-                        View All Members
-                    </Link>
+                <div className="text-center mb-16">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-3xl md:text-4xl lg:text-5xl font-black text-white"
+                    >
+                        The People Behind <br /> Your Success
+                    </motion.h2>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -349,7 +343,7 @@ function TeamSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.1 }}
-                            className="group p-10 rounded-[2.5rem] bg-[#0F1216] border border-white/5 hover:border-primary/20 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.15)] transition-all duration-500"
+                            className="group p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-[#0F1216] border border-white/5 hover:border-primary/20 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.15)] transition-all duration-500"
                         >
                             <div className="aspect-square rounded-full overflow-hidden mb-6 border-2 border-white/5 group-hover:border-[#00D9C3] transition-colors relative">
                                 <Image src={member.img} alt={member.name} fill className="object-cover" />
@@ -391,17 +385,26 @@ function Testimonials() {
         }
     ];
 
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveIndex((prev) => (prev + 1) % clients.length);
+        }, 6000); // 6 seconds auto-slide
+        return () => clearInterval(timer);
+    }, [clients.length]);
+
     return (
-        <section className="py-32 relative overflow-hidden border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
+        <section className="py-20 md:py-32 relative overflow-hidden border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#00D9C3]/5 rounded-full blur-[150px] pointer-events-none" />
 
             <Container className="relative z-10">
-                <div className="text-center mb-20">
+                <div className="text-center mb-16 md:mb-20">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl lg:text-5xl font-black text-white mb-4"
+                        className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4"
                     >
                         What Our Clients Say
                     </motion.h2>
@@ -416,7 +419,51 @@ function Testimonials() {
                     </motion.p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                {/* Mobile Slider */}
+                <div className="md:hidden relative px-4">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeIndex}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.5 }}
+                            className="p-8 pb-12 rounded-[2rem] bg-[#0a0a0a] border border-white/5"
+                        >
+                            <div className="flex gap-1 mb-6">
+                                {[...Array(clients[activeIndex].rating)].map((_, r) => (
+                                    <Star key={r} className="w-4 h-4 text-[#00D9C3] fill-[#00D9C3]" />
+                                ))}
+                            </div>
+                            <p className="text-gray-300 mb-8 leading-relaxed font-medium">"{clients[activeIndex].text}"</p>
+
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10">
+                                    <Image src={clients[activeIndex].img} alt={clients[activeIndex].name} width={48} height={48} className="object-cover w-full h-full" />
+                                </div>
+                                <div>
+                                    <div className="text-white font-bold text-sm">{clients[activeIndex].name}</div>
+                                    <div className="text-gray-500 text-xs uppercase tracking-wider">{clients[activeIndex].role}</div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+
+                    {/* Dots */}
+                    <div className="flex justify-center gap-2 mt-6">
+                        {clients.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setActiveIndex(i)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${activeIndex === i ? "w-6 bg-[#00D9C3]" : "bg-white/20"
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Desktop Grid */}
+                <div className="hidden md:grid md:grid-cols-3 gap-8">
                     {clients.map((client, i) => (
                         <motion.div
                             key={i}
@@ -424,7 +471,7 @@ function Testimonials() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.1 }}
-                            className="p-10 rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group"
+                            className="p-8 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 hover:border-white/10 transition-all group h-full flex flex-col"
                         >
                             <div className="flex gap-1 mb-6">
                                 {[...Array(client.rating)].map((_, r) => (
@@ -433,7 +480,7 @@ function Testimonials() {
                             </div>
                             <p className="text-gray-300 mb-8 leading-relaxed font-medium">"{client.text}"</p>
 
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4 mt-auto">
                                 <div className="w-12 h-12 rounded-full overflow-hidden border border-white/10">
                                     <Image src={client.img} alt={client.name} width={48} height={48} className="object-cover w-full h-full" />
                                 </div>
@@ -453,33 +500,36 @@ function Testimonials() {
 // 7. About CTA
 function AboutCTA() {
     return (
-        <section className="py-40 bg-black relative overflow-hidden">
+        <section className="py-16 md:py-24 bg-black relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-[#0F0F0F] to-black" />
 
-            <Container className="relative z-10 text-center">
+            <Container className="relative z-10">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="max-w-4xl mx-auto bg-[#111] p-12 md:p-20 rounded-[3rem] border border-white/10 relative overflow-hidden"
+                    className="max-w-6xl mx-auto bg-[#111] p-8 md:p-14 rounded-[2rem] md:rounded-[2.5rem] border border-white/10 relative overflow-hidden"
                 >
                     {/* Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00D9C3]/10 rounded-full blur-[120px] pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00D9C3]/5 rounded-full blur-[120px] pointer-events-none" />
 
-                    <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight relative z-10">
-                        Let's Create Your <br />
-                        <span className="text-[#00D9C3]">Success Story.</span>
-                    </h2>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left relative z-10">
+                        <div className="max-w-2xl">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
+                                Let&apos;s Create Your <br />
+                                <span className="text-[#00D9C3]">Success Story.</span>
+                            </h2>
+                            <p className="text-gray-400 font-medium text-base sm:text-lg leading-relaxed">
+                                Ready to take your digital marketing to the next level? No obligations, just honest conversation about your goals.
+                            </p>
+                        </div>
 
-                    <p className="text-gray-400 mb-10 max-w-xl mx-auto relative z-10 font-medium">
-                        Ready to take your digital marketing to the next level? No obligations, just honest conversation about your goals.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-                        <Link href="/contact" className="px-10 py-4 rounded-full bg-[#00D9C3] text-black font-bold hover:bg-[#00c0ad] transition-colors shadow-[0_0_20px_rgba(0,217,195,0.3)]">
-                            Get Started Today
-                        </Link>
+                        <div className="flex-shrink-0 w-full sm:w-auto">
+                            <Link href="/contact" className="block sm:inline-block px-10 py-5 rounded-full bg-[#00D9C3] text-black font-bold text-lg hover:bg-[#00c0ad] transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,217,195,0.3)]">
+                                Get Started Today
+                            </Link>
+                        </div>
                     </div>
                 </motion.div>
             </Container>

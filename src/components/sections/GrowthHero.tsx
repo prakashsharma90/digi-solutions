@@ -2,6 +2,7 @@
 
 import React from "react";
 import NextLink from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -31,7 +32,7 @@ export function GrowthHero() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
-                            className="text-[clamp(2.2rem,5vw,3.8rem)] font-bold font-poppins leading-[1.08] tracking-[-0.02em] text-white mb-6"
+                            className="text-[clamp(1.8rem,8vw,3.5rem)] font-bold font-poppins leading-[1.1] tracking-[-0.02em] text-white mb-6"
                         >
                             Grow Your Brand.
                             <br />
@@ -46,7 +47,7 @@ export function GrowthHero() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: 0.15 }}
-                            className="text-base text-gray-400 leading-[1.8] mb-8 max-w-md"
+                            className="text-sm md:text-base text-gray-400 leading-[1.6] md:leading-[1.8] mb-8 max-w-md"
                         >
                             We help digital-first companies scale through
                             performance marketing, creative strategy, and
@@ -59,10 +60,10 @@ export function GrowthHero() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: 0.25 }}
-                            className="flex flex-wrap items-center gap-4 mb-12"
+                            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-12"
                         >
                             <NextLink href="/contact" className="group">
-                                <Button className="h-12 px-7 text-sm font-semibold bg-primary hover:bg-primary/90 text-black rounded-full transition-all">
+                                <Button className="w-full sm:w-auto h-12 px-7 text-sm font-semibold bg-primary hover:bg-primary/90 text-black rounded-full transition-all">
                                     Let&apos;s Talk Strategy
                                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </Button>
@@ -70,7 +71,7 @@ export function GrowthHero() {
                             <NextLink href="/case-studies">
                                 <Button
                                     variant="outline"
-                                    className="h-12 px-7 text-sm font-semibold border border-white/15 hover:border-white/30 hover:bg-white/5 rounded-full transition-all"
+                                    className="w-full sm:w-auto h-12 px-7 text-sm font-semibold border border-white/15 hover:border-white/30 hover:bg-white/5 rounded-full transition-all"
                                 >
                                     View Works
                                 </Button>
@@ -83,22 +84,22 @@ export function GrowthHero() {
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.4 }}
-                            className="flex items-start gap-10"
+                            className="flex flex-row items-center justify-center lg:justify-start gap-6 md:gap-10"
                         >
-                            <div>
-                                <div className="text-3xl md:text-4xl font-bold text-white tracking-tight font-poppins">
+                            <div className="text-center lg:text-left">
+                                <div className="text-2xl md:text-4xl font-bold text-white tracking-tight font-poppins">
                                     +350%
                                 </div>
-                                <div className="text-xs text-gray-500 mt-1 font-medium">
+                                <div className="text-[10px] md:text-xs text-gray-500 mt-1 font-medium whitespace-nowrap">
                                     avg. increase in ROI
                                 </div>
                             </div>
-                            <div className="w-px h-12 bg-white/10" />
-                            <div>
-                                <div className="text-3xl md:text-4xl font-bold text-white tracking-tight font-poppins">
+                            <div className="w-px h-10 bg-white/10" />
+                            <div className="text-center lg:text-left">
+                                <div className="text-2xl md:text-4xl font-bold text-white tracking-tight font-poppins">
                                     92%
                                 </div>
-                                <div className="text-xs text-gray-500 mt-1 font-medium">
+                                <div className="text-[10px] md:text-xs text-gray-500 mt-1 font-medium whitespace-nowrap">
                                     client retention rate
                                 </div>
                             </div>
@@ -113,12 +114,16 @@ export function GrowthHero() {
                         transition={{ duration: 0.7, delay: 0.2 }}
                         className="relative flex items-center justify-center lg:justify-end"
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/586439f1c0116a15748b12465c57f33d.png"
-                            alt="Team collaborating on digital marketing strategy"
-                            className="w-full max-w-lg lg:max-w-none lg:w-[110%] h-auto drop-shadow-2xl"
-                        />
+                        <div className="relative w-full max-w-lg lg:max-w-none lg:w-[110%] aspect-[4/3] lg:aspect-square">
+                            <Image
+                                src="/586439f1c0116a15748b12465c57f33d.png"
+                                alt="Team collaborating on digital marketing strategy"
+                                fill
+                                className="object-contain drop-shadow-2xl"
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 55vw"
+                            />
+                        </div>
                     </motion.div>
                 </div>
             </Container>

@@ -62,15 +62,15 @@ const services = [
         color: "from-cyan-500/20 to-teal-500/20",
         borderColor: "hover:border-cyan-500/50",
     },
-    {
-        icon: Sparkles,
-        title: "AI Marketing Automation",
-        slug: "ai-marketing",
-        description: "Automate, optimize, scale. AI-powered campaigns that learn and improve. Work smarter, not harder.",
-        metrics: ["Workflow automation", "Predictive analytics", "Smart optimization"],
-        color: "from-emerald-500/20 to-teal-500/20",
-        borderColor: "hover:border-emerald-500/50",
-    },
+    // {
+    //     icon: Sparkles,
+    //     title: "AI Marketing Automation",
+    //     slug: "ai-marketing",
+    //     description: "Automate, optimize, scale. AI-powered campaigns that learn and improve. Work smarter, not harder.",
+    //     metrics: ["Workflow automation", "Predictive analytics", "Smart optimization"],
+    //     color: "from-emerald-500/20 to-teal-500/20",
+    //     borderColor: "hover:border-emerald-500/50",
+    // },
 ];
 
 export function ServicesGridRedesign() {
@@ -83,23 +83,24 @@ export function ServicesGridRedesign() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
-                    className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-14"
+                    className="flex items-center justify-between gap-4 mb-14 px-1"
                 >
-                    <div>
-                        <span className="text-sm font-semibold text-primary mb-2 block">
+                    <div className="flex-1">
+                        <span className="text-[10px] sm:text-sm font-semibold text-primary mb-1 sm:mb-2 block uppercase tracking-wider">
                             What We Do
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-bold font-poppins text-white">
+                        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-poppins text-white">
                             Our Services
                         </h2>
                     </div>
 
                     <Link
                         href="/services"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-black bg-primary hover:bg-primary/90 px-6 py-2.5 rounded-full transition-all group w-fit"
+                        className="flex-shrink-0 inline-flex items-center gap-2 text-[10px] sm:text-sm font-bold text-black bg-primary hover:bg-primary/90 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all group shadow-[0_0_20px_-5px_#00D9C3]"
                     >
-                        VIEW ALL
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <span className="hidden xs:inline">VIEW ALL</span>
+                        <span className="xs:hidden text-[12px] sm:text-sm font-bold">View All</span>
+                        <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </motion.div>
 
@@ -118,7 +119,7 @@ export function ServicesGridRedesign() {
                                 className={cn(
                                     "group block h-full",
                                     "bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-sm",
-                                    "rounded-2xl border border-white/10 p-8",
+                                    "rounded-2xl border border-white/10 p-6 sm:p-8",
                                     "transition-all duration-300",
                                     "hover:scale-[1.02] hover:shadow-2xl",
                                     service.borderColor,

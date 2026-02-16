@@ -45,7 +45,7 @@ const highlights = [
 
 export function ProcessFlow() {
     return (
-        <Section className="bg-gradient-to-b from-background to-[#0B0F14] relative overflow-hidden">
+        <Section className="bg-gradient-to-b from-background to-[#0B0F14] relative overflow-hidden border-y border-primary/20">
             <Container>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
                     {/* ── Left Column ── */}
@@ -117,8 +117,8 @@ export function ProcessFlow() {
                                     {/* Step Number Badge */}
                                     <div
                                         className={`relative z-10 flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${index === 0
-                                                ? "bg-primary text-black shadow-[0_0_20px_rgba(0,217,195,0.4)]"
-                                                : "bg-white/[0.06] border border-white/10 text-gray-500 group-hover:border-primary/40 group-hover:text-primary group-hover:shadow-[0_0_15px_rgba(0,217,195,0.15)]"
+                                            ? "bg-primary text-black shadow-[0_0_20px_rgba(0,217,195,0.4)]"
+                                            : "bg-white/[0.06] border border-white/10 text-gray-500 group-hover:border-primary/40 group-hover:text-primary group-hover:shadow-[0_0_15px_rgba(0,217,195,0.15)]"
                                             }`}
                                     >
                                         {step.number}

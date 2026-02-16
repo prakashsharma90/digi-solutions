@@ -29,7 +29,7 @@ const services = [
     {
         icon: Users,
         title: "Social Media Marketing",
-        slug: "social",
+        slug: "social-media-marketing",
         description: "Build engaged communities. Turn followers into customers. Platform-native strategies that work.",
         metrics: ["Engagement rate", "Community growth", "Brand awareness"],
         color: "from-pink-500/20 to-rose-500/20",

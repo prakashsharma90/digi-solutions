@@ -64,6 +64,11 @@ const nextConfig = {
         destination: '/services/content-marketing',
         permanent: true,
       },
+      {
+        source: '/services/social',
+        destination: '/services/social-media-marketing',
+        permanent: true,
+      },
     ];
   },
 };

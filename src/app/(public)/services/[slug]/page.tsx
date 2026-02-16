@@ -116,7 +116,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
-    if (slug === 'social') {
+    if (slug === 'social-media-marketing') {
         return {
             title: "Social Media Marketing - Build A Cult Brand | Digihub",
             description: "Stop shouting into the void. Build a loyal community that buys. Premium social media management, content strategy, and brand building.",
@@ -248,8 +248,8 @@ export default async function ServicePage({ params }: Props) {
         return <SEOPage plans={finalPlans} />;
     }
 
-    // Use custom Social Media Marketing page for 'social' slug
-    if (slug === 'social') {
+    // Use custom Social Media Marketing page for 'social-media-marketing' slug
+    if (slug === 'social-media-marketing') {
         return <SocialMediaMarketingPage plans={finalPlans} />;
     }
 

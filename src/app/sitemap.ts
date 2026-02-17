@@ -1,10 +1,8 @@
 import { MetadataRoute } from 'next';
 
-const PREVIEW_DEPLOYMENT_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : null;
+// Always use production URL for sitemap
+const SITE_URL = 'https://digihubsolution.tech';
 
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || PREVIEW_DEPLOYMENT_URL || 'https://digihubsolution.tech';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const lastModified = new Date();

@@ -48,6 +48,10 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
+        {/* Google Site Verification - Only on Production */}
+        {process.env.NEXT_PUBLIC_SITE_URL === 'https://digihubsolution.tech' && (
+          <meta name="google-site-verification" content="nmrw0tHjOXxuCbQZi1crZMbHcLF8zlap5OS3G8m96Kw" />
+        )}
         {/* Google Analytics */}
         <Script
           strategy="afterInteractive"

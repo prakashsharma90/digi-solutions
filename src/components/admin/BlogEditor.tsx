@@ -68,11 +68,6 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
         });
     };
 
-    const generateSlug = () => {
-        const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-        setFormData(prev => ({ ...prev, slug }));
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -88,9 +83,6 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
             status: formData.status,
             meta_title: formData.meta_title || formData.title,
             meta_description: formData.meta_description || formData.excerpt,
-            // Store author as JSON or flat? DB has flattened fields in my SQL schema, wait...
-            // Let's check SQL schema I wrote. 
-            // author_name, author_role, author_avatar.
             author_name: formData.author_name,
             author_role: formData.author_role,
             published_at: formData.status === 'published' && !formData.published_at ? new Date().toISOString() : formData.published_at
@@ -122,113 +114,156 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
     };
 
     return (
-        <form onSubmit={handleSubmit} className="pb-20">
-            {/* Top Action Bar (Sticky) */}
-            <div className="sticky top-0 z-30 bg-[#0B0F14]/80 backdrop-blur-md border-b border-white/5 py-4 mb-8">
-                <div className="max-w-[1600px] mx-auto px-6 flex items-center justify-between">
+        <form onSubmit={handleSubmit} className="min-h-screen bg-[#0B0F14]">
+            {/* Top Action Bar (Sticky) - Reduced Visual Weight */}
+            <div className="sticky top-0 z-30 bg-[#0B0F14]/90 backdrop-blur-xl border-b border-white/5 py-3 shadow-sm">
+                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link href="/admin/blogs">
-                            <Button variant="ghost" size="icon" type="button" className="text-gray-400 hover:text-white hover:bg-white/5">
-                                <ArrowLeft size={20} />
+                            <Button variant="ghost" size="icon" type="button" className="text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                                <ArrowLeft size={18} />
                             </Button>
                         </Link>
-                        <div className="flex items-center gap-3">
-                            <span className={`w-2 h-2 rounded-full ${formData.status === 'published' ? 'bg-green-500' : 'bg-yellow-500'}`}></span>
-                            <span className="text-sm font-medium text-gray-400 capitalize">{formData.status}</span>
+                        <div className="flex items-center gap-2 bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/5">
+                            <span className={`w-1.5 h-1.5 rounded-full ${formData.status === 'published' ? 'bg-green-400' : 'bg-yellow-400'}`}></span>
+                            <span className="text-xs font-medium text-gray-400 capitalize">{formData.status}</span>
                         </div>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
                         <Button
                             type="button"
                             variant="ghost"
-                            className="text-gray-400"
+                            size="sm"
+                            className="text-gray-400 hover:text-white hover:bg-white/5 text-sm"
                             onClick={() => router.push('/admin/blogs')}
                         >
                             Discard
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-primary text-black hover:bg-primary/90 min-w-[140px] font-semibold"
+                            size="sm"
+                            className="bg-primary text-black hover:bg-primary/90 font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
                             disabled={loading}
                         >
-                            {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" size={18} />}
-                            {isEditing ? "Update Post" : "Publish Post"}
+                            {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : <Save className="mr-2" size={16} />}
+                            {isEditing ? "Update" : "Publish"}
                         </Button>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col xl:flex-row justify-center items-start gap-12 px-6 max-w-[1600px] mx-auto">
-                {/* Main Content (Writer Focus) */}
-                <div className="w-full max-w-[1000px] space-y-12 pb-32">
-                    {/* Hero Title Input */}
-                    <div className="space-y-6">
-                        <textarea
-                            name="title"
-                            required
-                            rows={1}
-                            value={formData.title}
-                            onChange={(e) => {
-                                handleChange(e as any);
-                                e.target.style.height = 'auto';
-                                e.target.style.height = e.target.scrollHeight + 'px';
-                            }}
-                            placeholder="Post Title Here..."
-                            className="w-full bg-transparent border-none p-0 text-6xl md:text-7xl font-black text-white placeholder:text-gray-800 focus:ring-0 focus:outline-none leading-[1.1] tracking-tight resize-none overflow-hidden"
-                            style={{ height: 'auto' }}
-                        />
+            {/* Main Content - Centered with Auto Margins */}
+            <div className="w-full py-8 flex justify-center">
+                <div className="w-full px-6 space-y-6" style={{ maxWidth: '900px' }}>
 
-                        {/* Slug Editor */}
-                        <div className="flex items-center gap-2 text-gray-600 group">
-                            <span className="text-sm font-mono opacity-40">https://digihub.agency/blog/</span>
+                    {/* Metadata Box - Enhanced Visual Focus */}
+                    <div className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/10 rounded-2xl p-8 space-y-6 shadow-xl shadow-black/20">
+                        <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+                            <div className="w-1 h-8 bg-primary rounded-full"></div>
+                            <h2 className="text-xl font-bold text-white">Post Metadata</h2>
+                        </div>
+
+                        {/* Title */}
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-gray-300 uppercase tracking-wider block">
+                                Post Title *
+                            </label>
                             <input
                                 type="text"
-                                name="slug"
-                                value={formData.slug}
+                                name="title"
+                                required
+                                value={formData.title}
                                 onChange={handleChange}
-                                className="bg-transparent border-b border-white/5 group-hover:border-white/20 focus:border-primary text-sm font-mono text-gray-500 focus:text-primary focus:outline-none transition-all min-w-[300px]"
+                                placeholder="Enter your blog post title..."
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-xl font-semibold text-white placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all"
                             />
+                        </div>
+
+                        {/* URL Slug */}
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-gray-300 uppercase tracking-wider block">
+                                URL Slug *
+                            </label>
+                            <div className="flex items-center gap-2 bg-[#0B0F14] border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20">
+                                <span className="text-sm font-mono text-gray-500 whitespace-nowrap">
+                                    digihub.agency/blog/
+                                </span>
+                                <input
+                                    type="text"
+                                    name="slug"
+                                    required
+                                    value={formData.slug}
+                                    onChange={handleChange}
+                                    placeholder="url-slug-here"
+                                    className="flex-1 bg-transparent border-none text-base font-mono text-gray-200 placeholder:text-gray-600 focus:outline-none p-0"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Meta Description */}
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-gray-300 uppercase tracking-wider block">
+                                Meta Description (SEO)
+                            </label>
+                            <textarea
+                                name="meta_description"
+                                rows={3}
+                                value={formData.meta_description}
+                                onChange={handleChange}
+                                placeholder="Enter a compelling meta description for search engines (150-160 characters recommended)..."
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-base text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all resize-none"
+                            />
+                            <p className="text-xs text-gray-500 flex items-center gap-2">
+                                <span className={formData.meta_description.length > 160 ? 'text-yellow-400' : 'text-gray-500'}>
+                                    {formData.meta_description.length} / 160 characters
+                                </span>
+                            </p>
                         </div>
                     </div>
 
-                    {/* Excerpt */}
-                    <div className="relative group">
-                        <div className="absolute left-[-2rem] top-0 bottom-0 w-1 bg-white/5 group-focus-within:bg-primary/50 transition-colors"></div>
+                    {/* Excerpt - Enhanced */}
+                    <div className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/10 rounded-2xl p-8 space-y-4 shadow-xl shadow-black/20">
+                        <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+                            <div className="w-1 h-8 bg-primary rounded-full"></div>
+                            <h2 className="text-xl font-bold text-white">Excerpt / Summary</h2>
+                        </div>
                         <textarea
                             name="excerpt"
-                            rows={2}
+                            rows={3}
                             value={formData.excerpt}
                             onChange={handleChange}
-                            placeholder="Add a short excerpt or summary (SEO description)..."
-                            className="w-full bg-transparent border-none py-1 text-2xl text-gray-500 focus:ring-0 focus:outline-none resize-none leading-relaxed font-light italic"
+                            placeholder="Add a compelling excerpt that summarizes your post (used for previews and cards)..."
+                            className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-base text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all resize-none"
                         />
                     </div>
 
-                    {/* Rich Editor */}
-                    <div className="pt-8 border-t border-white/5">
+                    {/* Rich Editor - Enhanced */}
+                    <div className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/10 rounded-2xl p-8 space-y-4 shadow-xl shadow-black/20">
+                        <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+                            <div className="w-1 h-8 bg-primary rounded-full"></div>
+                            <h2 className="text-xl font-bold text-white">Content Editor</h2>
+                        </div>
                         <TiptapEditor
                             content={formData.content}
                             onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                         />
                     </div>
-                </div>
 
-                {/* Sidebar (Settings Area) */}
-                <div className="w-full xl:w-80 shrink-0 xl:sticky xl:top-32 space-y-8">
-                    {/* Organization Card */}
-                    <div className="bg-[#0F141A] border border-white/5 rounded-2xl p-6 space-y-6 shadow-2xl shadow-black/50">
-                        <h3 className="font-bold text-white text-xs uppercase tracking-[0.2em] text-gray-500">Settings</h3>
-
+                    {/* Settings Row - Compact */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* Status */}
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Visibility</label>
-                            <div className="grid grid-cols-2 bg-[#0B0F14] p-1 rounded-xl border border-white/5">
+                        <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5 space-y-3">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                <span className="w-1 h-3 bg-primary rounded-full"></span>
+                                Visibility
+                            </h3>
+                            <div className="grid grid-cols-2 bg-[#0B0F14] p-1 rounded-lg border border-white/10">
                                 {['draft', 'published'].map((s) => (
                                     <button
                                         type="button"
                                         key={s}
                                         onClick={() => setFormData(p => ({ ...p, status: s }))}
-                                        className={`text-xs py-2 rounded-lg capitalize transition-all ${formData.status === s ? 'bg-white/10 text-white font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+                                        className={`text-xs py-2 rounded-md capitalize transition-all font-medium ${formData.status === s ? 'bg-primary text-black font-bold' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
                                     >
                                         {s}
                                     </button>
@@ -237,13 +272,16 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                         </div>
 
                         {/* Category */}
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Category</label>
+                        <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5 space-y-3">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                <span className="w-1 h-3 bg-primary rounded-full"></span>
+                                Category
+                            </h3>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary/50 focus:outline-none appearance-none"
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-2.5 text-sm text-gray-200 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer hover:border-white/20 transition-all"
                             >
                                 <option value="Strategy">Strategy</option>
                                 <option value="SEO">SEO</option>
@@ -254,39 +292,52 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                         </div>
 
                         {/* Author */}
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Author</label>
+                        <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5 space-y-3">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                <span className="w-1 h-3 bg-primary rounded-full"></span>
+                                Author
+                            </h3>
                             <input
                                 type="text"
                                 name="author_name"
                                 value={formData.author_name}
                                 onChange={handleChange}
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary/50 focus:outline-none"
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-lg p-2.5 text-sm text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all"
+                                placeholder="Author name"
                             />
                         </div>
                     </div>
 
                     {/* Featured Image */}
-                    <div className="bg-[#0F141A] border border-white/5 rounded-2xl p-6 space-y-4 shadow-2xl shadow-black/50">
-                        <h3 className="font-bold text-white text-xs uppercase tracking-[0.2em] text-gray-500">Media</h3>
+                    <div className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/10 rounded-2xl p-8 space-y-4 shadow-xl shadow-black/20">
+                        <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+                            <div className="w-1 h-8 bg-primary rounded-full"></div>
+                            <h2 className="text-xl font-bold text-white">Featured Image</h2>
+                        </div>
                         <div className="space-y-4">
                             <input
                                 type="text"
                                 name="image"
                                 value={formData.image}
                                 onChange={handleChange}
-                                placeholder="Image URL..."
-                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-3 text-[10px] text-gray-400 focus:border-primary/50 focus:outline-none"
+                                placeholder="Paste image URL here..."
+                                className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-base text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all"
                             />
-                            <div className="rounded-xl overflow-hidden border border-white/5 aspect-video bg-[#0B0F14] flex items-center justify-center relative group">
+                            <div className="rounded-xl overflow-hidden border border-white/10 aspect-video bg-[#0B0F14] flex items-center justify-center relative group hover:border-white/20 transition-all">
                                 {formData.image ? (
                                     <img src={formData.image} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                                 ) : (
-                                    <ImageIcon className="text-gray-800" size={32} />
+                                    <div className="flex flex-col items-center gap-3 text-gray-600">
+                                        <ImageIcon size={48} />
+                                        <span className="text-sm">No image selected</span>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
+
+                    {/* Bottom Spacing */}
+                    <div className="h-16"></div>
                 </div>
             </div>
         </form>

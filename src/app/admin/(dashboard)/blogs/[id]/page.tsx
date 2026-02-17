@@ -54,7 +54,7 @@ export default function EditBlogPage() {
     return (
         <div className="flex h-screen bg-[#0B0F14]">
             <AdminSidebar />
-            <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto pl-0 md:pl-64 w-full">
                 <BlogEditor isEditing={true} initialData={blog} />
             </main>
         </div>

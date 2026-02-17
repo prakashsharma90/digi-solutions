@@ -5,6 +5,7 @@ import { Preloader } from "@/components/ui/Preloader";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import { MegaMenuProvider } from "@/contexts/MegaMenuContext";
 import Script from "next/script";
+import { AnalyticsScripts } from "@/components/analytics/AnalyticsScripts";
 
 
 
@@ -22,17 +23,44 @@ const roboto = Roboto({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Digihub Solutions - AI-First Digital Agency",
-  description: "Intelligence-driven digital solutions hub.",
-  icons: {
-    icon: [
-      { url: "/favicon.png", sizes: "any" },
-      { url: "/Digihub Solution (1).png", sizes: "any" },
-    ],
-    apple: "/Digihub Solution (1).png",
-  },
-};
+import { createClient } from "@/lib/supabase/server";
+
+async function getSiteSettings() {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["site_name", "tagline", "favicon_url", "logo_url"]);
+
+    const settings: Record<string, string> = {};
+    (data || []).forEach((row: { key: string; value: string }) => {
+      settings[row.key] = row.value;
+    });
+    return settings;
+  } catch {
+    return {};
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+
+  const siteName = settings.site_name || "Digihub Solutions";
+  const tagline = settings.tagline || "AI-First Digital Agency";
+  const faviconUrl = settings.favicon_url || "/favicon.png";
+
+  return {
+    title: `${siteName} - ${tagline}`,
+    description: "Intelligence-driven digital solutions hub.",
+    icons: {
+      icon: [
+        { url: faviconUrl, sizes: "any" },
+      ],
+      apple: settings.logo_url || "/Digihub Solution (1).png",
+    },
+  };
+}
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -52,24 +80,12 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://maps.googleapis.com" />
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="nmrw0tHjOXxuCbQZi1crZMbHcLF8zlap5OS3G8m96Kw" />
-        {/* Google Analytics */}
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-VNWPSJKLW5"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-VNWPSJKLW5');
-          `}
-        </Script>
       </head>
       <body
         suppressHydrationWarning
         className={`${roboto.variable} ${poppins.variable} antialiased bg-background text-text-primary`}
       >
+        <AnalyticsScripts />
         <Preloader />
         <MegaMenuProvider initialCategories={initialCategories}>
           {children}

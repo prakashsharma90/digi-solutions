@@ -10,7 +10,6 @@ import {
   FileText,
   Briefcase,
   Tag,
-  Layout,
   PieChart,
   LogOut,
   Layers,
@@ -18,36 +17,68 @@ import {
   Menu,
   X,
   Mail,
-  Navigation
+  Navigation,
+  Shield,
+  ChevronRight,
+  TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/leads", label: "Leads & Inquiries", icon: Users },
-  { href: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
-  { href: "/admin/services", label: "Services Management", icon: Layers },
-  { href: "/admin/mega-menu", label: "Mega Menu", icon: Navigation },
-  { href: "/admin/pricing", label: "Pricing Plans", icon: Tag },
-  { href: "/admin/blogs", label: "Blogs & Content", icon: FileEdit },
-  { href: "/admin/case-studies", label: "Case Studies", icon: Briefcase },
-  { href: "/admin/pages", label: "Pages", icon: FileText },
-  { href: "/admin/users", label: "Users & Roles", icon: Layout },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
-  { href: "/admin/analytics", label: "Analytics", icon: PieChart },
+type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+  role_name: string;
+  permissions: string[];
+};
+
+const allNavItems = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3, permissions: ["analytics.view"] },
+  { href: "/admin/leads", label: "Leads & Inquiries", icon: Users, permissions: ["users.view"] },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail, permissions: ["users.view"] },
+  { href: "/admin/services", label: "Services", icon: Layers, permissions: ["content.edit"] },
+  { href: "/admin/mega-menu", label: "Mega Menu", icon: Navigation, permissions: ["settings.general"] },
+  { href: "/admin/pricing", label: "Pricing Plans", icon: Tag, permissions: ["settings.general"] },
+  { href: "/admin/blogs", label: "Blogs & Content", icon: FileEdit, permissions: ["content.create", "content.edit"] },
+  { href: "/admin/case-studies", label: "Case Studies", icon: Briefcase, permissions: ["content.create", "content.edit"] },
+  { href: "/admin/pages", label: "Pages", icon: FileText, permissions: ["content.create", "content.edit"] },
+  { href: "/admin/settings", label: "Settings", icon: Settings, permissions: ["settings.general", "settings.security"] },
+  { href: "/admin/marketing/analytics", label: "Marketing", icon: TrendingUp, permissions: ["settings.general", "analytics.view"] },
+  { href: "/admin/analytics", label: "Analytics", icon: PieChart, permissions: ["analytics.view"] },
+  { href: "/admin/users", label: "Users & Roles", icon: Shield, permissions: ["users.view", "users.create"] },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(err => console.error("Sidebar: auth/me error:", err));
+  }, []);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.refresh();
     router.push("/admin/login");
   };
+
+  // Filter nav items based on user permissions
+  const navItems = allNavItems.filter(item => {
+    if (!user) return true; // Show all while loading
+    if (user.role_name === "Super Admin") return true; // Super Admin sees everything
+
+    // User needs ANY of the item's listed permissions
+    return item.permissions.some(permission => user.permissions.includes(permission));
+  });
 
   return (
     <>
@@ -91,7 +122,7 @@ export default function AdminSidebar() {
           <ul className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
               return (
                 <li key={item.href}>
@@ -117,15 +148,34 @@ export default function AdminSidebar() {
           </ul>
         </nav>
 
-        {/* Logout */}
-        <div className="p-3 border-t border-white/5">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2.5 text-gray-400 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all group"
-          >
-            <LogOut size={18} className="group-hover:text-red-400" />
-            <span className="text-sm font-medium">Log Out</span>
-          </button>
+        {/* User Profile + Logout */}
+        <div className="border-t border-white/5">
+          {/* User Profile */}
+          {user && (
+            <div className="px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                  <p className="text-[10px] text-gray-500 truncate">{user.role_name}</p>
+                </div>
+                <ChevronRight size={14} className="text-gray-600 shrink-0" />
+              </div>
+            </div>
+          )}
+
+          {/* Logout Button */}
+          <div className="px-3 pb-3">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-gray-400 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all group"
+            >
+              <LogOut size={18} className="group-hover:text-red-400" />
+              <span className="text-sm font-medium">Log Out</span>
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -1,8 +1,29 @@
 "use client";
 
 import { Bell, Search, User } from "lucide-react";
+import { useState, useEffect } from "react";
+
+type UserProfile = {
+    id: string;
+    name: string;
+    email: string;
+    role_name: string;
+};
 
 export function AdminHeader() {
+    const [user, setUser] = useState<UserProfile | null>(null);
+
+    useEffect(() => {
+        fetch("/api/auth/me")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.user) {
+                    setUser(data.user);
+                }
+            })
+            .catch(err => console.error("Header: auth/me error:", err));
+    }, []);
+
     return (
         <header className="flex items-center justify-between px-8 py-5 bg-[#0B0F14] border-b border-white/5 sticky top-0 z-30">
             {/* Search */}
@@ -25,15 +46,30 @@ export function AdminHeader() {
                     <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0F141A]"></span>
                 </button>
 
-                {/* User Profile */}
+                {/* User Profile — Dynamic from session */}
                 <div className="flex items-center gap-3 pl-6 border-l border-white/5">
                     <div className="flex flex-col text-right hidden sm:block">
-                        <span className="text-sm font-semibold text-white">Admin User</span>
-                        <span className="text-xs text-gray-500">admin@digihub.com</span>
+                        <span className="text-sm font-semibold text-white">
+                            {user?.name || "Loading..."}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                            {user?.email || ""}
+                        </span>
+                        {user?.role_name && (
+                            <span className="text-[10px] text-primary font-medium">
+                                {user.role_name}
+                            </span>
+                        )}
                     </div>
                     <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-blue-600 p-[1px]">
                         <div className="h-full w-full rounded-full bg-[#0F141A] flex items-center justify-center overflow-hidden">
-                            <User className="h-5 w-5 text-gray-300" />
+                            {user ? (
+                                <span className="text-sm font-bold text-primary">
+                                    {user.name.charAt(0).toUpperCase()}
+                                </span>
+                            ) : (
+                                <User className="h-5 w-5 text-gray-300" />
+                            )}
                         </div>
                     </div>
                 </div>

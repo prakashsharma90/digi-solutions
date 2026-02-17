@@ -25,6 +25,13 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Digihub Solutions - AI-First Digital Agency",
   description: "Intelligence-driven digital solutions hub.",
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "any" },
+      { url: "/Digihub Solution (1).png", sizes: "any" },
+    ],
+    apple: "/Digihub Solution (1).png",
+  },
 };
 
 import { SpeedInsights } from "@vercel/speed-insights/next";

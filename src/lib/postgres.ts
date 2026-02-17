@@ -1,9 +1,9 @@
 import { sql } from "@vercel/postgres";
 
 export async function initDatabase() {
-    try {
-        // Leads Table
-        await sql`
+  try {
+    // Leads Table
+    await sql`
       CREATE TABLE IF NOT EXISTS leads (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -17,8 +17,8 @@ export async function initDatabase() {
       );
     `;
 
-        // Services Table
-        await sql`
+    // Services Table
+    await sql`
       CREATE TABLE IF NOT EXISTS services (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -41,8 +41,8 @@ export async function initDatabase() {
       );
     `;
 
-        // Blogs Table
-        await sql`
+    // Blogs Table
+    await sql`
       CREATE TABLE IF NOT EXISTS blogs (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -50,8 +50,17 @@ export async function initDatabase() {
         excerpt TEXT,
         content TEXT,
         category TEXT,
+        image TEXT,
+        status TEXT DEFAULT 'draft',
+        type TEXT DEFAULT 'blog',
+        meta_title TEXT,
+        meta_desc TEXT,
+        author_name TEXT,
+        author_role TEXT,
         author JSONB,
         published_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         read_time TEXT,
         tags JSONB,
         table_of_contents JSONB,
@@ -60,8 +69,8 @@ export async function initDatabase() {
       );
     `;
 
-        // Pricing Table
-        await sql`
+    // Pricing Table
+    await sql`
       CREATE TABLE IF NOT EXISTS pricing (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -75,8 +84,8 @@ export async function initDatabase() {
       );
     `;
 
-        // Case Studies Table
-        await sql`
+    // Case Studies Table
+    await sql`
       CREATE TABLE IF NOT EXISTS case_studies (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -92,9 +101,9 @@ export async function initDatabase() {
       );
     `;
 
-        console.log("Database initialized successfully.");
-    } catch (error) {
-        console.error("Database initialization failed:", error);
-        throw error;
-    }
+    console.log("Database initialized successfully.");
+  } catch (error) {
+    console.error("Database initialization failed:", error);
+    throw error;
+  }
 }

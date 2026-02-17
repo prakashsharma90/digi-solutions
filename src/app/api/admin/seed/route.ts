@@ -235,7 +235,7 @@ As we move further into 2026, those who embrace these shifts in **${post.categor
                 published_at: new Date().toISOString(),
                 type: 'blog',
                 meta_title: post.title,
-                meta_description: post.excerpt
+                meta_desc: post.excerpt
             }, { onConflict: 'slug' });
 
         if (error) {

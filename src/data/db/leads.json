@@ -1,13 +1,1 @@
-[
-  {
-    "id": "2",
-    "name": "Jane Smith",
-    "email": "jane@techcorp.com",
-    "phone": "+1 234 567 890",
-    "service": "performance",
-    "source": "Ads",
-    "status": "Contacted",
-    "message": "Looking to scale our monthly ad spend.",
-    "createdAt": "2026-01-13T15:30:00.000Z"
-  }
-]
+[]

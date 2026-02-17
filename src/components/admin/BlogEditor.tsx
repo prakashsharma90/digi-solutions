@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Loader2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Image as ImageIcon, Upload } from "lucide-react";
 import Link from "next/link";
 import { BlogPost } from "@/types";
 import TiptapEditor from "./TiptapEditor";
@@ -18,6 +18,7 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
     const router = useRouter();
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -29,7 +30,7 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
         image: "",
         status: "draft",
         meta_title: "",
-        meta_description: "",
+        meta_desc: "",
         author_name: "Digihub Team",
         author_role: "Editor",
         published_at: null as string | null,
@@ -47,7 +48,7 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                 image: initialData.image || "",
                 status: initialData.status || "draft",
                 meta_title: initialData.meta_title || "",
-                meta_description: initialData.meta_desc || "",
+                meta_desc: initialData.meta_desc || "",
                 author_name: initialData.author?.name || "Digihub Team",
                 author_role: initialData.author?.role || "Editor",
                 published_at: initialData.published_at || null,
@@ -68,6 +69,35 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
         });
     };
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setFormData(prev => ({ ...prev, image: data.url }));
+            } else {
+                alert(`Upload failed: ${data.error}`);
+            }
+        } catch (error) {
+            alert('Failed to upload image');
+            console.error('Upload error:', error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -82,7 +112,7 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
             image: formData.image,
             status: formData.status,
             meta_title: formData.meta_title || formData.title,
-            meta_description: formData.meta_description || formData.excerpt,
+            meta_desc: formData.meta_desc || formData.excerpt,
             author_name: formData.author_name,
             author_role: formData.author_role,
             published_at: formData.status === 'published' && !formData.published_at ? new Date().toISOString() : formData.published_at
@@ -97,7 +127,10 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
             if (error) {
                 alert(`Error updating blog: ${error.message}`);
             } else {
+                // Revalidate the blog page cache
+                await fetch(`/api/revalidate?path=/blog/${formData.slug}`, { method: 'POST' });
                 router.push('/admin/blogs');
+                router.refresh();
             }
         } else {
             const { error } = await supabase
@@ -108,6 +141,7 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                 alert(`Error creating blog: ${error.message}`);
             } else {
                 router.push('/admin/blogs');
+                router.refresh();
             }
         }
         setLoading(false);
@@ -206,16 +240,16 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                                 Meta Description (SEO)
                             </label>
                             <textarea
-                                name="meta_description"
+                                name="meta_desc"
                                 rows={3}
-                                value={formData.meta_description}
+                                value={formData.meta_desc}
                                 onChange={handleChange}
                                 placeholder="Enter a compelling meta description for search engines (150-160 characters recommended)..."
                                 className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-base text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all resize-none"
                             />
                             <p className="text-xs text-gray-500 flex items-center gap-2">
-                                <span className={formData.meta_description.length > 160 ? 'text-yellow-400' : 'text-gray-500'}>
-                                    {formData.meta_description.length} / 160 characters
+                                <span className={formData.meta_desc.length > 160 ? 'text-yellow-400' : 'text-gray-500'}>
+                                    {formData.meta_desc.length} / 160 characters
                                 </span>
                             </p>
                         </div>
@@ -315,6 +349,45 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                             <h2 className="text-xl font-bold text-white">Featured Image</h2>
                         </div>
                         <div className="space-y-4">
+                            {/* Upload Button */}
+                            <div className="flex gap-3">
+                                <label className="flex-1">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                        disabled={uploading}
+                                    />
+                                    <div className="w-full bg-primary/10 border border-primary/30 rounded-xl p-4 text-center cursor-pointer hover:bg-primary/20 hover:border-primary/50 transition-all group">
+                                        <div className="flex items-center justify-center gap-2 text-primary">
+                                            {uploading ? (
+                                                <>
+                                                    <Loader2 className="animate-spin" size={20} />
+                                                    <span className="font-medium">Uploading...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Upload size={20} />
+                                                    <span className="font-medium">Upload Image</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            {/* OR Divider */}
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-white/10"></div>
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-[#0B0F14] px-2 text-gray-500">Or use URL</span>
+                                </div>
+                            </div>
+
+                            {/* URL Input */}
                             <input
                                 type="text"
                                 name="image"
@@ -323,6 +396,8 @@ export default function BlogEditor({ initialData, isEditing = false }: BlogEdito
                                 placeholder="Paste image URL here..."
                                 className="w-full bg-[#0B0F14] border border-white/10 rounded-xl p-4 text-base text-gray-200 placeholder:text-gray-600 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 hover:border-white/20 transition-all"
                             />
+
+                            {/* Image Preview */}
                             <div className="rounded-xl overflow-hidden border border-white/10 aspect-video bg-[#0B0F14] flex items-center justify-center relative group hover:border-white/20 transition-all">
                                 {formData.image ? (
                                     <img src={formData.image} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-105" />

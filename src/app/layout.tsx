@@ -25,11 +25,6 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Digihub Solutions - AI-First Digital Agency",
   description: "Intelligence-driven digital solutions hub.",
-  verification: {
-    google: process.env.NEXT_PUBLIC_SITE_URL === 'https://digihubsolution.tech'
-      ? 'nmrw0tHjOXxuCbQZi1crZMbHcLF8zlap5OS3G8m96Kw'
-      : undefined,
-  },
 };
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -48,10 +43,8 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
-        {/* Google Site Verification - Only on Production */}
-        {process.env.NEXT_PUBLIC_SITE_URL === 'https://digihubsolution.tech' && (
-          <meta name="google-site-verification" content="nmrw0tHjOXxuCbQZi1crZMbHcLF8zlap5OS3G8m96Kw" />
-        )}
+        {/* Google Site Verification */}
+        <meta name="google-site-verification" content="nmrw0tHjOXxuCbQZi1crZMbHcLF8zlap5OS3G8m96Kw" />
         {/* Google Analytics */}
         <Script
           strategy="afterInteractive"

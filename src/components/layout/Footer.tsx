@@ -8,7 +8,7 @@ const footerLinks = {
         { label: "SEO & Growth", href: "/services/seo" },
         { label: "Paid Advertising", href: "/services/performance-marketing" },
         { label: "Social Media", href: "/services/social-media-marketing" },
-        { label: "AI Automation", href: "/services/ai-marketing" },
+        { label: "Marketing Automation", href: "/services/marketing-automation" },
         { label: "Content Marketing", href: "/services/content-marketing" },
         { label: "Web Development", href: "/services/website-designing-and-development" },
     ],

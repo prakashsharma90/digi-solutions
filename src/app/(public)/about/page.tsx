@@ -2,7 +2,8 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { Award, TrendingUp, Users, Target, CheckCircle2, Play, Star, ArrowRight, Quote } from "lucide-react";
+import { Award, TrendingUp, Users, Target, CheckCircle2, Play, Star, ArrowRight, Quote, Linkedin, Plus, X, ChevronDown } from "lucide-react";
+import { ConsultationFormSection } from "@/components/sections/ConsultationForm";
 import Link from "next/link";
 import Image from "next/image";
 import { Container, Section } from "@/components/ui/container";
@@ -16,7 +17,8 @@ export default function AboutPage() {
             <HowWeWork />
             <TeamSection />
             <Testimonials />
-            <AboutCTA />
+            <AboutFAQ />
+            <ConsultationFormSection source="about-page" />
         </main>
     );
 }
@@ -48,7 +50,7 @@ function AboutHero() {
                                 in the Digital World
                             </span>
                         </motion.h1>
-
+        
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -315,42 +317,117 @@ function HowWeWork() {
 // 5. Team Section
 function TeamSection() {
     const team = [
-        { name: "Alex Anderson", role: "CEO & Founder", desc: "Visionary leader with a decade+ in digital marketing.", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800" },
-        { name: "Sarah Chen", role: "Creative Director", desc: "Bringing brands to life with stunning visuals.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" },
-        { name: "David Kim", role: "SEO & Analytics Lead", desc: "Turning complex data into actionable growth.", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=800" },
-        { name: "Emily Davis", role: "Social Media Strategist", desc: "Building communities that spark conversations.", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=800" },
+        {
+            name: "Buddhi Prakash Sharma",
+            role: "CEO & Founder",
+            desc: "Visionary leadership driving the intersection of technology and creative marketing.",
+            img: "/bps-image-1-1024x1005.jpg.bv.png",
+            bgText: "VISION"
+        },
+        {
+            name: "Sarah Chen",
+            role: "Creative Director",
+            desc: "Defining visual narratives that transform brands into cultural icons.",
+            img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800",
+            bgText: "DESIGN"
+        },
+        {
+            name: "David Kim",
+            role: "SEO & Stats Lead",
+            desc: "Expertly scaling organic dominance through data-backed architectural strategies.",
+            img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=800",
+            bgText: "GROWTH"
+        },
     ];
 
     return (
-        <Section className="py-20 md:py-32 border-b border-primary/20 bg-[#080b10]/80 backdrop-blur-md">
-            <Container>
-                <div className="text-center mb-16">
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-3xl md:text-4xl lg:text-5xl font-black text-white"
-                    >
-                        The People Behind <br /> Your Success
-                    </motion.h2>
+        <Section className="py-24 md:py-44 bg-black relative overflow-hidden">
+            {/* Massive Background Text */}
+            <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none select-none overflow-hidden">
+                <div className="absolute top-[5%] -right-20 text-[25vw] font-black leading-none text-white whitespace-nowrap tracking-tighter">
+                    ELITE
+                </div>
+            </div>
+
+            <Container className="relative z-10">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-32 gap-12">
+                    <div className="max-w-3xl">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: "120px" }}
+                            viewport={{ once: true }}
+                            className="h-3 bg-[#00D9C3] mb-10"
+                        />
+                        <h2 className="text-[clamp(3.5rem,12vw,9rem)] font-black text-white leading-[0.8] tracking-tighter uppercase">
+                            THE POWER <br />
+                            <span className="text-transparent" style={{ WebkitTextStroke: "2px rgba(255,255,255,0.2)" }}>TRIAD</span>
+                        </h2>
+                    </div>
+                    <div className="lg:max-w-[380px] lg:pb-6">
+                        <p className="text-xl text-gray-400 font-medium leading-relaxed border-l-4 border-[#00D9C3] pl-8">
+                            Engineering market dominance through three specialized spheres of influence.
+                        </p>
+                    </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid md:grid-cols-3 gap-12 lg:gap-24 items-start">
                     {team.map((member, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 60 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: i * 0.1 }}
-                            className="group p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-[#0F1216] border border-white/5 hover:border-primary/20 hover:shadow-[0_0_30px_-10px_rgba(0,217,195,0.15)] transition-all duration-500"
+                            transition={{ delay: i * 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            className={`group relative ${i === 1 ? 'md:mt-40' : i === 2 ? 'md:mt-20' : ''}`}
                         >
-                            <div className="aspect-square rounded-full overflow-hidden mb-6 border-2 border-white/5 group-hover:border-[#00D9C3] transition-colors relative">
-                                <Image src={member.img} alt={member.name} fill className="object-cover" />
+                            {/* Layered Background Category Text */}
+                            <div className="absolute -top-16 -left-8 text-8xl lg:text-[10rem] font-black text-white/[0.02] pointer-events-none transition-all duration-1000 group-hover:text-[#00D9C3]/[0.05] group-hover:-translate-y-4">
+                                {member.bgText}
                             </div>
-                            <h3 className="text-2xl font-black mb-2 tracking-tight text-white group-hover:text-[#00D9C3] transition-colors">{member.name}</h3>
-                            <p className="text-xs uppercase tracking-widest font-bold text-[#00D9C3] mb-4">{member.role}</p>
-                            <p className="text-sm text-gray-400 font-medium leading-relaxed group-hover:text-gray-300 transition-colors">{member.desc}</p>
+
+                            <div className="relative">
+                                {/* Image Container */}
+                                <div className="relative z-10 mb-12 overflow-hidden rounded-2xl bg-[#0a0a0a] ring-1 ring-white/10 group-hover:ring-[#00D9C3]/30 transition-all duration-500">
+                                    <Image
+                                        src={member.img}
+                                        alt={member.name}
+                                        width={800}
+                                        height={1000}
+                                        className="object-cover aspect-[4/5] grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
+
+                                    {/* Liquid Overlay on hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#00D9C3]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                </div>
+
+                                {/* Content Area */}
+                                <div className="space-y-6 relative z-20">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-px w-8 bg-[#00D9C3]/50" />
+                                        <span className="text-[#00D9C3] text-[10px] font-black uppercase tracking-[0.4em]">
+                                            {member.role}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none group-hover:text-transparent group-hover:[-webkit-text-stroke:1px_#00D9C3] transition-all duration-500">
+                                        {member.name}
+                                    </h3>
+
+                                    <div className="relative h-1 w-full bg-white/5 overflow-hidden">
+                                        <motion.div
+                                            className="absolute inset-0 bg-[#00D9C3] origin-left"
+                                            initial={{ scaleX: 0 }}
+                                            whileInView={{ scaleX: 1 }}
+                                            transition={{ delay: 0.5 + (i * 0.1), duration: 1 }}
+                                        />
+                                    </div>
+
+                                    <p className="text-gray-500 font-medium leading-relaxed text-sm lg:text-base group-hover:text-white transition-colors duration-500">
+                                        {member.desc}
+                                    </p>
+                                </div>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
@@ -497,42 +574,110 @@ function Testimonials() {
     );
 }
 
-// 7. About CTA
-function AboutCTA() {
+// 7. About FAQ
+function AboutFAQ() {
+    const [openIndex, setOpenIndex] = useState<number>(0);
+    const faqs = [
+        {
+            question: "What makes Digihub different from other agencies?",
+            answer: "We don't just sell services; we architect growth systems. Our approach combines high-end creative engineering with deep data analytics and cutting-edge automation to ensure every rupee spent translates into measurable business growth."
+        },
+        {
+            question: "Do you offer custom-tailored marketing plans?",
+            answer: "Absolutely. We understand that no two businesses are the same. Every partnership begins with a deep dive into your specific goals, audience, and industry to build a bespoke roadmap for success."
+        },
+        {
+            question: "How do you ensure transparency in your reporting?",
+            answer: "You get access to a live, real-time data dashboard where you can track every key metric. No monthly 'PDF surprises'. Just honest, real-time performance tracking 24/7."
+        },
+        {
+            question: "What industries do you specialize in?",
+            answer: "While we are industry-agnostic at our core, we have deep expertise in B2B SaaS, E-commerce, Real Estate, and High-Ticket Professional Services where lead quality is paramount."
+        }
+    ];
+
     return (
-        <section className="py-16 md:py-24 bg-black relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0F0F0F] to-black" />
-
-            <Container className="relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-6xl mx-auto bg-[#111] p-8 md:p-14 rounded-[2rem] md:rounded-[2.5rem] border border-white/10 relative overflow-hidden"
-                >
-                    {/* Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00D9C3]/5 rounded-full blur-[120px] pointer-events-none" />
-
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left relative z-10">
-                        <div className="max-w-2xl">
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
-                                Let&apos;s Create Your <br />
-                                <span className="text-[#00D9C3]">Success Story.</span>
-                            </h2>
-                            <p className="text-gray-400 font-medium text-base sm:text-lg leading-relaxed">
-                                Ready to take your digital marketing to the next level? No obligations, just honest conversation about your goals.
-                            </p>
+        <Section className="bg-gradient-to-b from-[#0B0F14] to-[#0a0a0a] relative overflow-hidden border-y border-[#00D9C3]/20">
+            <Container>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-start">
+                    {/* Left Column */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="lg:sticky lg:top-32"
+                    >
+                        <div className="flex items-center gap-2 mb-5">
+                            <div className="w-2 h-2 rounded-full bg-[#00D9C3]" />
+                            <span className="text-sm font-semibold text-[#00D9C3]">FAQs</span>
                         </div>
 
-                        <div className="flex-shrink-0 w-full sm:w-auto">
-                            <Link href="/contact" className="block sm:inline-block px-10 py-5 rounded-full bg-[#00D9C3] text-black font-bold text-lg hover:bg-[#00c0ad] transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,217,195,0.3)]">
-                                Get Started Today
+                        <h2 className="text-4xl md:text-5xl font-black leading-[1.1] mb-12 text-white uppercase tracking-tighter">
+                            Frequently Asked <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9C3] to-[#00F5E0]">Questions</span>
+                        </h2>
+
+                        <div className="bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00D9C3]/30 to-[#00F5E0]/20 border-2 border-[#00D9C3]/30 flex items-center justify-center mb-5 overflow-hidden">
+                                <Users className="w-8 h-8 text-[#00D9C3]" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-2">Need a custom plan?</h3>
+                            <p className="text-sm text-gray-400 leading-relaxed mb-6">
+                                Book a quick strategy session to discuss your specific goals and get a tailored roadmap for your business.
+                            </p>
+                            <Link href="/contact" className="block text-center px-8 py-4 bg-[#00D9C3] text-black font-bold rounded-xl shadow-[0_0_20px_rgba(0,217,195,0.3)] hover:scale-105 transition-all">
+                                Book a Strategy Call
                             </Link>
                         </div>
+                    </motion.div>
+
+                    {/* Right Column: Accordion */}
+                    <div className="space-y-3">
+                        {faqs.map((faq, index) => {
+                            const isOpen = openIndex === index;
+                            return (
+                                <div
+                                    key={index}
+                                    className={`rounded-xl border transition-all duration-300 ${isOpen
+                                        ? "bg-gradient-to-br from-white/[0.06] to-white/[0.02] border-[#00D9C3]/20"
+                                        : "bg-white/[0.02] border-white/[0.06] hover:border-white/15"
+                                        }`}
+                                >
+                                    <button
+                                        onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                                        className="w-full flex items-center justify-between p-5 md:p-6 text-left"
+                                    >
+                                        <span className={`text-base md:text-lg font-bold pr-4 transition-colors ${isOpen ? "text-white" : "text-gray-300"}`}>
+                                            {faq.question}
+                                        </span>
+                                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen
+                                            ? "bg-[#00D9C3]/20 text-[#00D9C3] rotate-0"
+                                            : "bg-white/[0.06] text-gray-500"
+                                            }`}>
+                                            {isOpen ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                                        </div>
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {isOpen && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <p className="px-5 md:px-6 pb-5 md:pb-6 text-sm text-gray-400 font-medium leading-relaxed">
+                                                    {faq.answer}
+                                                </p>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            );
+                        })}
                     </div>
-                </motion.div>
+                </div>
             </Container>
-        </section>
+        </Section>
     );
 }

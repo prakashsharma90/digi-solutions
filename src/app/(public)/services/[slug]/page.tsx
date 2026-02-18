@@ -18,6 +18,8 @@ import { AIMarketingPage } from "@/components/services/AIMarketingPage";
 import { PersonalBrandingPage } from "@/components/services/PersonalBrandingPage";
 import { EmailMarketingPage } from "@/components/services/EmailMarketingPage";
 import { AISearchOptimizationPage } from "@/components/services/AISearchOptimizationPage";
+import { MarketingAutomationPage } from "@/components/services/MarketingAutomationPage";
+import { LinkedInAdsPage } from "@/components/services/LinkedInAdsPage";
 
 
 
@@ -160,6 +162,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    if (slug === 'marketing-automation') {
+        return {
+            title: "Marketing Automation Services - Scale Without Headcount | Digihub",
+            description: "Stop doing tasks. Start scaling systems. AI-powered marketing automation that runs 24/7 — email sequences, lead nurturing, CRM workflows, and more.",
+            keywords: ["marketing automation", "email automation", "lead nurturing", "CRM automation", "marketing automation agency India"]
+        };
+    }
+
+    if (slug === 'linkedin-ads') {
+        return {
+            title: "LinkedIn Ads Services - B2B Growth Engineering | Digihub",
+            description: "Own the boardroom. Target decision-makers with surgical precision through professional B2B LinkedIn advertising. Scale your pipeline with high-intent leads.",
+            keywords: ["linkedin ads agency", "b2b marketing", "linkedin lead generation", "professional advertising", "cxo targeting"]
+        };
+    }
+
     const service = await getService(slug);
     if (!service) return {};
 
@@ -274,6 +292,69 @@ export default async function ServicePage({ params }: Props) {
 
     if (slug === 'email' || slug === 'email-marketing') {
         return <EmailMarketingPage plans={finalPlans} />;
+    }
+
+    if (slug === 'marketing-automation') {
+        // If no DB plans found, use static fallback plans
+        const automationPlans = finalPlans.length > 0 ? finalPlans : [
+            {
+                id: 'ma-starter',
+                title: 'Starter',
+                price: 14999,
+                currency: 'INR',
+                billing_cycle: 'month',
+                is_popular: false,
+                features: [
+                    { feature_text: 'Up to 3 automation workflows', is_included: true },
+                    { feature_text: 'Email sequence setup (up to 5 emails)', is_included: true },
+                    { feature_text: 'Basic lead scoring', is_included: true },
+                    { feature_text: 'CRM integration (1 platform)', is_included: true },
+                    { feature_text: 'Monthly performance report', is_included: true },
+                    { feature_text: 'Multi-channel automation', is_included: false },
+                    { feature_text: 'A/B testing', is_included: false },
+                ]
+            },
+            {
+                id: 'ma-growth',
+                title: 'Growth',
+                price: 29999,
+                currency: 'INR',
+                billing_cycle: 'month',
+                is_popular: true,
+                features: [
+                    { feature_text: 'Up to 10 automation workflows', is_included: true },
+                    { feature_text: 'Full email nurture sequences', is_included: true },
+                    { feature_text: 'Advanced lead scoring & segmentation', is_included: true },
+                    { feature_text: 'CRM integration (up to 3 platforms)', is_included: true },
+                    { feature_text: 'Ad retargeting automation', is_included: true },
+                    { feature_text: 'A/B testing & optimization', is_included: true },
+                    { feature_text: 'Weekly performance dashboard', is_included: true },
+                ]
+            },
+            {
+                id: 'ma-enterprise',
+                title: 'Enterprise',
+                price: 0,
+                currency: 'INR',
+                billing_cycle: 'month',
+                is_popular: false,
+                is_custom: true,
+                features: [
+                    { feature_text: 'Unlimited automation workflows', is_included: true },
+                    { feature_text: 'Full-stack marketing automation', is_included: true },
+                    { feature_text: 'AI-powered predictive lead scoring', is_included: true },
+                    { feature_text: 'Multi-CRM & custom integrations', is_included: true },
+                    { feature_text: 'Dedicated automation strategist', is_included: true },
+                    { feature_text: 'Custom reporting & analytics', is_included: true },
+                    { feature_text: 'Priority support & SLA', is_included: true },
+                ]
+            }
+        ];
+        return <MarketingAutomationPage plans={automationPlans} />;
+    }
+
+    if (slug === 'linkedin-ads') {
+        return <LinkedInAdsPage plans={finalPlans} />;
     }
 
     // If no custom page and no DB service, 404

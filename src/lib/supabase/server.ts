@@ -9,8 +9,8 @@ export async function createClient() {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_digisolutions_SUPABASE_ANON_KEY || process.env.digisolutions_SUPABASE_ANON_KEY;
 
     return createServerClient(
-        supabaseUrl!,
-        supabaseAnonKey!,
+        supabaseUrl || '',
+        supabaseAnonKey || '',
         {
             cookies: {
                 getAll() {

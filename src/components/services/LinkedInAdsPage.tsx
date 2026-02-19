@@ -434,7 +434,6 @@ export function LinkedInAdsPage({ plans }: { plans?: any[] }) {
                 source="linkedin-ads-page"
                 title="Ready to Scale Your B2B Sales?"
                 subtitle="Book a free 30-minute discovery call. We'll audit your current strategy and show you exactly how we can help."
-                className="bg-[#0B0F14]"
             />
         </main>
     );

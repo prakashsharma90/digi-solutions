@@ -50,7 +50,10 @@ export class ChatService {
     private model: string = "llama3.1-8b"; // Cerebras usually provides Llama models
 
     constructor() {
-        const apiKey = process.env.CEREBRAS_API_KEY || '';
+        const apiKey = (process.env.CEREBRAS_API_KEY || '').trim();
+        if (!apiKey) {
+            console.warn('[ChatService] CEREBRAS_API_KEY is not set!');
+        }
         this.client = new Cerebras({
             apiKey: apiKey,
         });

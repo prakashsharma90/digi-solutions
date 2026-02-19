@@ -430,11 +430,11 @@ export function LinkedInAdsPage({ plans }: { plans?: any[] }) {
             {/* ══════════════════════════════════════════════
                 7. FINAL CTA
             ══════════════════════════════════════════════ */}
-            <ConsultationFormSection
+            {/* <ConsultationFormSection
                 source="linkedin-ads-page"
                 title="Ready to Scale Your B2B Sales?"
                 subtitle="Book a free 30-minute discovery call. We'll audit your current strategy and show you exactly how we can help."
-            />
+            /> */}
         </main>
     );
 }

@@ -65,6 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { getMegaMenuCategories } from "@/lib/mega-menu";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 export default async function RootLayout({
   children,
@@ -90,6 +91,7 @@ export default async function RootLayout({
         <MegaMenuProvider initialCategories={initialCategories}>
           {children}
         </MegaMenuProvider>
+        <ChatWidget />
         <SpeedInsights />
       </body>
     </html>

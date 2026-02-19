@@ -101,6 +101,36 @@ export async function initDatabase() {
       );
     `;
 
+    // Chat Sessions Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id VARCHAR(255),
+        channel VARCHAR(50),
+        started_at TIMESTAMPTZ DEFAULT NOW(),
+        ended_at TIMESTAMPTZ,
+        metadata JSONB
+      );
+    `;
+
+    // Chat Messages Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS messages (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
+        role VARCHAR(20) NOT NULL,
+        content TEXT NOT NULL,
+        intent VARCHAR(100),
+        confidence FLOAT,
+        latency_ms INTEGER,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+
+    // Create Indexes
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, created_at);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id, started_at DESC);`;
+
     console.log("Database initialized successfully.");
   } catch (error) {
     console.error("Database initialization failed:", error);

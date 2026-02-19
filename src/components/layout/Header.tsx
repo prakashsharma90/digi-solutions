@@ -96,7 +96,7 @@ export function Header() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
                 scrolled
-                    ? "py-4 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-primary/40 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
+                    ? "py-4 bg-[#0B0F14]/90 backdrop-blur-md border-b border-primary/40 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
                     : "py-6 bg-transparent"
             )}
             initial={{ y: -100 }}

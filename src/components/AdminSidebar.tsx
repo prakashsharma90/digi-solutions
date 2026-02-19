@@ -21,6 +21,7 @@ import {
   Shield,
   ChevronRight,
   TrendingUp,
+  Bot,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -35,6 +36,7 @@ type UserProfile = {
 const allNavItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3, permissions: ["analytics.view"] },
   { href: "/admin/leads", label: "Leads & Inquiries", icon: Users, permissions: ["users.view"] },
+  { href: "/admin/chatbot-leads", label: "Chatbot Leads", icon: Bot, permissions: ["users.view"] },
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail, permissions: ["users.view"] },
   { href: "/admin/services", label: "Services", icon: Layers, permissions: ["content.edit"] },
   { href: "/admin/mega-menu", label: "Mega Menu", icon: Navigation, permissions: ["settings.general"] },

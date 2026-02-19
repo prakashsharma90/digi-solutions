@@ -1,768 +1,516 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    Check, ArrowRight, Star, BarChart3, Users, Zap, Shield,
-    Mail, LayoutTemplate, Globe, MessageSquare, ChevronDown,
-    PlayCircle, Code2, Smartphone, Megaphone, Calendar, Settings, Monitor, Rocket, Bot, Send, ChevronLeft, ChevronRight, IndianRupee, HelpCircle, Plus, Minus
+    Mail,
+    Send,
+    Users,
+    TrendingUp,
+    ShieldCheck,
+    Zap,
+    BarChart3,
+    ArrowRight,
+    CheckCircle2,
+    PieChart,
+    Sparkles,
+    MousePointerClick,
+    Globe,
+    Lock,
+    X
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { Container, Section } from "@/components/ui/container";
+import { ConsultationFormSection } from "@/components/sections/ConsultationForm";
+import { ServicePricing } from "@/components/sections/ServicePricing";
 
-// --- Components ---
+/* ─── FLOATING NOTIFICATIONS BACKGROUND ─────────────────────────────────── */
+const FloatingNotifications = () => {
+    const notifs = [
+        { text: "Campaign Sent 🚀", icon: Send, delay: 0, x: "10%", y: "20%" },
+        { text: "Revenue +$12,400", icon: TrendingUp, delay: 2, x: "70%", y: "15%" },
+        { text: "Open Rate: 42%", icon: Users, delay: 4, x: "20%", y: "60%" },
+        { text: "New Subscriber", icon: Sparkles, delay: 6, x: "80%", y: "70%" },
+    ];
 
-const Section = ({ className, children }: { className?: string, children: React.ReactNode }) => (
-    <section className={cn("py-20 md:py-32", className)}>
-        {children}
-    </section>
-);
-
-const CheckItem = ({ text }: { text: string }) => (
-    <div className="flex items-center gap-3 text-slate-600">
-        <div className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
-            <Check className="w-3 h-3" />
-        </div>
-        <span className="text-sm font-medium">{text}</span>
-    </div>
-);
-
-const FeatureCard = ({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) => (
-    <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:shadow-lg hover:shadow-orange-500/5 transition-all duration-300 group">
-        <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform shadow-sm">
-            <Icon className="w-7 h-7" />
-        </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
-        <p className="text-slate-500 leading-relaxed text-sm">{desc}</p>
-    </div>
-);
-
-const PricingCard = ({ plan, highlight = false }: { plan: any, highlight?: boolean }) => (
-    <div className={cn(
-        "p-8 rounded-3xl border flex flex-col h-full transition-all duration-300",
-        highlight
-            ? "bg-[#0B0F14] border-slate-800 text-white shadow-2xl shadow-orange-500/10 scale-105 relative z-10"
-            : "bg-white border-slate-100 text-slate-900 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5"
-    )}>
-        {highlight && (
-            <div className="absolute top-0 right-0 p-4">
-                <div className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</div>
-            </div>
-        )}
-        <div className="mb-8">
-            <h3 className={cn("text-lg font-bold mb-2", highlight ? "text-slate-200" : "text-slate-800")}>{plan.name}</h3>
-            <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold tracking-tight">${plan.price}</span>
-                <span className={cn("text-sm", highlight ? "text-slate-400" : "text-slate-500")}>/month</span>
-            </div>
-            <p className={cn("mt-4 text-sm leading-relaxed", highlight ? "text-slate-400" : "text-slate-500")}>{plan.desc}</p>
-        </div>
-        <div className="space-y-4 mb-8 flex-1">
-            {plan.features.map((feat: string, i: number) => (
-                <div key={i} className="flex items-center gap-3">
-                    <Check className={cn("w-4 h-4 shrink-0", highlight ? "text-orange-500" : "text-green-500")} />
-                    <span className={cn("text-sm", highlight ? "text-slate-300" : "text-slate-600")}>{feat}</span>
-                </div>
+    return (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            {notifs.map((n, i) => (
+                <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                    animate={{
+                        opacity: [0, 1, 1, 0],
+                        y: [0, -40],
+                        scale: [0.8, 1, 1, 0.9]
+                    }}
+                    transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        delay: n.delay,
+                        repeatDelay: 2
+                    }}
+                    className="absolute flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-[#0B0F14]/80 backdrop-blur-md shadow-xl"
+                    style={{ left: n.x, top: n.y }}
+                >
+                    <div className="w-2 h-2 rounded-full bg-[#00D9C3] animate-pulse" />
+                    <n.icon size={14} className="text-[#00D9C3]" />
+                    <span className="text-xs font-mono font-medium text-white">{n.text}</span>
+                </motion.div>
             ))}
         </div>
-        <Button
-            className={cn(
-                "w-full h-12 rounded-xl font-bold transition-all",
-                highlight
-                    ? "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/25"
-                    : "bg-slate-900 hover:bg-slate-800 text-white"
-            )}
-        >
-            Get Started
-        </Button>
-    </div>
-);
-
-const FaqItem = ({ q, a, defaultOpen = false }: { q: string, a?: string, defaultOpen?: boolean }) => {
-    const [isOpen, setIsOpen] = useState(defaultOpen);
-    return (
-        <div className={cn(
-            "rounded-3xl transition-all duration-300 overflow-hidden",
-            isOpen ? "bg-black text-white p-8" : "bg-slate-50 hover:bg-slate-100 p-6 flex items-center justify-between cursor-pointer"
-        )} onClick={() => !isOpen && setIsOpen(true)}>
-
-            {isOpen ? (
-                <div>
-                    <div className="flex justify-between items-start mb-4">
-                        <h3 className="font-bold text-xl leading-snug pr-8">{q}</h3>
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 cursor-pointer" onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}>
-                            <Minus size={16} className="text-black" strokeWidth={3} />
-                        </div>
-                    </div>
-                    <p className="text-slate-400 leading-relaxed text-sm">
-                        {a}
-                    </p>
-                </div>
-            ) : (
-                <>
-                    <h3 className="font-bold text-slate-900 text-lg">{q}</h3>
-                    <div className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center shrink-0">
-                        <Plus size={16} className="text-slate-400" />
-                    </div>
-                </>
-            )}
-        </div>
     );
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* ─── MAIN COMPONENT ───────────────────────────────────────────────────── */
 export function EmailMarketingPage({ plans }: { plans?: any[] }) {
+
+    // Updated Pricing Data adapter for ServicePricing component
+    const pricingPlans = [
+        {
+            id: "starter",
+            title: "Starter",
+            price: 499,
+            currency: "USD",
+            billing_cycle: "monthly",
+            is_popular: false,
+            desc: "For early-stage businesses ready to build a professional email program from scratch.",
+            features: [
+                "2 campaign sends/month",
+                "Welcome automation flow",
+                "Basic segmentation (3 segments)",
+                "Monthly performance report",
+                "Deliverability monitoring"
+            ]
+        },
+        {
+            id: "growth",
+            title: "Growth",
+            price: 1299,
+            currency: "USD",
+            billing_cycle: "monthly",
+            is_popular: true,
+            desc: "The complete email program for scaling brands that need results, not just sends.",
+            features: [
+                "8 campaigns/month",
+                "6 automation flows built",
+                "Advanced segmentation (unlimited)",
+                "Weekly A/B testing program",
+                "Dedicated copywriter",
+                "Abandoned cart + win-back",
+                "Revenue attribution dashboard",
+                "Bi-weekly strategy calls"
+            ]
+        },
+        {
+            id: "enterprise",
+            title: "Enterprise",
+            price: "Custom",
+            currency: "USD",
+            billing_cycle: "monthly",
+            is_popular: false,
+            desc: "For high-volume senders, enterprise e-commerce, and multi-brand businesses.",
+            features: [
+                "Unlimited campaigns",
+                "Full automation architecture",
+                "Multi-brand / multi-ESP mgmt",
+                "Dedicated email strategist",
+                "Custom integrations & API work",
+                "SLA & priority support",
+                "Quarterly business reviews"
+            ]
+        }
+    ];
+
     return (
-        <div className="bg-white min-h-screen text-slate-900 font-sans selection:bg-orange-100 selection:text-orange-900">
+        <main className="bg-[#0B0F14] text-white min-h-screen selection:bg-[#00D9C3] selection:text-black font-sans">
 
             {/* 1. HERO SECTION */}
-            <section className="relative pt-40 pb-20 overflow-hidden bg-slate-50/30">
-                {/* Subtle Grid Background */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+                <FloatingNotifications />
 
-                <Container className="relative z-10 text-center max-w-5xl">
-                    <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white border border-slate-100 text-slate-800 text-sm font-semibold mb-8 shadow-sm hover:shadow-md transition-all cursor-default">
-                        <div className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
-                            <Mail size={12} fill="currentColor" />
+                <Container className="relative z-10 text-center lg:text-left">
+                    <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                        {/* Left Content */}
+                        <div className="lg:w-1/2 space-y-8">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#00D9C3]/10 border border-[#00D9C3]/20 text-[#00D9C3] text-sm font-bold tracking-wide uppercase"
+                            >
+                                <span className="animate-pulse w-2 h-2 rounded-full bg-[#00D9C3]" />
+                                Campaigns live in 72 hours · No lock-in
+                            </motion.div>
+
+                            <motion.h1
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="text-5xl lg:text-[5rem] font-black leading-[0.95] tracking-tight text-white"
+                            >
+                                Email that actually <br />
+                                <span className="text-[#00D9C3]">drives revenue.</span>
+                            </motion.h1>
+
+                            <motion.p
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-xl text-gray-400 max-w-lg leading-relaxed lg:mx-0 mx-auto"
+                            >
+                                DigiHub's email marketing engine combines precision audience segmentation, AI-powered personalization, and obsessive analytics — so every send turns subscribers into customers.
+                            </motion.p>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-wrap gap-4 justify-center lg:justify-start"
+                            >
+                                <Link href="/contact">
+                                    <button className="px-8 py-4 bg-[#00D9C3] hover:bg-[#00c0ad] text-black font-bold text-lg rounded-full transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(0,217,195,0.4)] flex items-center gap-2">
+                                        Start Free Audit <ArrowRight size={20} />
+                                    </button>
+                                </Link>
+                                <Link href="#services">
+                                    <button className="px-8 py-4 bg-transparent border border-white/20 hover:bg-white/5 text-white font-bold text-lg rounded-full transition-all">
+                                        Explore Services
+                                    </button>
+                                </Link>
+                            </motion.div>
                         </div>
-                        Email Marketing Services
-                    </div>
 
-                    <h1 className="text-5xl md:text-6xl font-bold text-slate-900 tracking-tight leading-[1.15] mb-8">
-                        Done-For-You Email Campaigns <br />
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-500 text-white mx-2 align-middle -mt-2 rotate-12 shadow-lg shadow-orange-500/30">
-                            <img src="https://img.icons8.com/ios-filled/50/ffffff/hand-holding-heart.png" className="w-6 h-6 invert brightness-0" alt="icon" style={{ filter: 'brightness(0) invert(1)' }} />
-                        </span>
-                        That Turn Subscribers
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-400 text-white mx-3 align-middle -mt-2 -rotate-6 shadow-lg shadow-yellow-400/30">
-                            <Megaphone className="w-6 h-6 fill-white" />
-                        </span>
-                        Into Customers
-                    </h1>
-
-                    <p className="text-lg text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Digihub is a performance-driven marketing agency helping brands generate predictable revenue through high-converting email strategies, automation, and lifecycle marketing.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-                        <Button size="lg" className="h-14 px-8 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-semibold text-base shadow-xl shadow-orange-500/20 transition-all hover:scale-105">
-                            Book a Free Strategy Call
-                        </Button>
-                        <Button size="lg" variant="outline" className="h-14 px-8 rounded-full bg-white border border-slate-200 text-slate-700 font-semibold text-base hover:bg-slate-50 transition-all shadow-sm">
-                            <div className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center mr-3">
-                                <Check size={12} strokeWidth={3} />
-                            </div>
-                            Request Email Audit
-                        </Button>
-                    </div>
-
-                    {/* Placeholder for Dashboard UI */}
-                    <div className="relative mx-auto max-w-5xl rounded-[2.5rem] p-4 bg-slate-900/5 shadow-2xl">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-orange-500/20 blur-[100px] rounded-full pointer-events-none" />
-                        <div className="relative bg-white rounded-[2rem] overflow-hidden border border-slate-200/50 shadow-inner">
-                            {/* Fake Dashboard UI */}
-                            <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2">
-                                <div className="flex gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                                    <div className="w-3 h-3 rounded-full bg-green-400" />
-                                </div>
-                                <div className="ml-4 h-6 w-96 bg-slate-50 rounded-lg" />
-                            </div>
-                            <div className="p-8 grid grid-cols-12 gap-8 bg-slate-50/50 aspect-[16/9] md:aspect-[21/9]">
-                                <div className="col-span-3 space-y-4">
-                                    <div className="h-32 bg-white rounded-xl shadow-sm border border-slate-100 p-4">
-                                        <div className="h-8 w-8 bg-orange-100 rounded-lg mb-4" />
-                                        <div className="h-4 w-24 bg-slate-100 rounded mb-2" />
-                                        <div className="h-8 w-16 bg-slate-200 rounded" />
-                                    </div>
-                                    <div className="h-32 bg-white rounded-xl shadow-sm border border-slate-100 p-4">
-                                        <div className="h-8 w-8 bg-blue-100 rounded-lg mb-4" />
-                                        <div className="h-4 w-24 bg-slate-100 rounded mb-2" />
-                                        <div className="h-8 w-16 bg-slate-200 rounded" />
-                                    </div>
-                                </div>
-                                <div className="col-span-9 bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                                    <div className="flex justify-between mb-8">
-                                        <div className="h-8 w-48 bg-slate-100 rounded" />
-                                        <div className="h-8 w-24 bg-slate-100 rounded" />
-                                    </div>
-                                    <div className="flex items-end gap-4 h-64">
-                                        {[40, 60, 45, 80, 55, 70, 90, 65, 85].map((h, i) => (
-                                            <div key={i} className="flex-1 bg-orange-100 rounded-t-lg relative group overflow-hidden">
-                                                <div
-                                                    className="absolute bottom-0 w-full bg-orange-500 rounded-t-lg transition-all duration-1000 group-hover:bg-orange-600"
-                                                    style={{ height: `${h}%` }}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                        {/* Right: Abstract Visual */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.8 }}
+                            className="lg:w-1/2 relative"
+                        >
+                            <div className="bg-[#0F161E] border border-white/10 rounded-3xl p-8 shadow-2xl relative">
+                                <div className="absolute top-0 right-0 w-full h-full bg-[#00D9C3]/5 blur-[80px]" />
+                                <div className="grid grid-cols-2 gap-4 relative z-10">
+                                    {[
+                                        { label: "Avg. ROI", val: "42x", sub: "Benchmark" },
+                                        { label: "Emails Sent", val: "3.8M+", sub: "Monthly" },
+                                        { label: "Retention", val: "94%", sub: "Client Rate" },
+                                        { label: "Expertise", val: "10+", sub: "Years" },
+                                    ].map((s, i) => (
+                                        <div key={i} className="p-6 bg-[#0B0F14] rounded-2xl border border-white/5 text-center">
+                                            <div className="text-3xl font-black text-white mb-1">{s.val}</div>
+                                            <div className="text-sm font-bold text-[#00D9C3] uppercase">{s.label}</div>
+                                            <div className="text-xs text-gray-500 mt-1">{s.sub}</div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </Container>
             </section>
 
-            {/* 2. SOCIAL PROOF */}
-            <section className="py-20 border-b border-slate-100 bg-white">
-                <Container className="text-center">
-                    <h3 className="text-4xl font-bold text-slate-900 mb-4 tracking-tight">Trusted by 80+ Growing Brands</h3>
-                    <p className="text-slate-500 mb-16 max-w-2xl mx-auto text-base leading-relaxed">
-                        From startups to enterprises — businesses choose Digihub to design, manage, and scale email marketing that actually delivers ROI.
-                    </p>
-
-                    <div className="flex flex-col gap-12 items-center opacity-90">
-                        {/* Row 1 */}
-                        <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10">
-                            {/* Ephemeral - Chain Link */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-800">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Ephemeral</span>
-                            </div>
-
-                            {/* Wildcrafted - Abstract W/Leaf */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="text-slate-700">
-                                    <path d="M11.5 2C11.5 2 7 10 7 10L2 10L9 22H14L21 10L16 10C16 10 11.5 2 11.5 2Z" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Wildcrafted</span>
-                            </div>
-
-                            {/* Codecraft_ - Connected Squares */}
-                            <div className="flex items-center gap-1 group cursor-default">
-                                <div className="relative w-8 h-8">
-                                    <div className="absolute top-0 left-0 w-4 h-4 bg-slate-800 rounded-sm" />
-                                    <div className="absolute top-3 left-3 w-4 h-4 bg-slate-800 rounded-sm" />
-                                </div>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Codecraft_</span>
-                            </div>
-
-                            {/* Convergence - 8pt Star/Spark */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-800">
-                                    <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Convergence</span>
-                            </div>
-
-                            {/* ImgCompress - 4pt Star */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="text-slate-700">
-                                    <path d="M12 2C12 2 14 9 14 9C14 9 21 11 21 11C21 11 14 13 14 13C14 13 12 20 12 20C12 20 10 13 10 13C10 13 3 11 3 11C3 11 10 9 10 9C10 9 12 2 12 2Z" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">ImgCompress</span>
-                            </div>
-                        </div>
-
-                        {/* Row 2 */}
-                        <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10">
-                            {/* Epicurious - Stacked S-shape */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="text-slate-700">
-                                    <path d="M4 6h16v3H7c-1.1 0-2 .9-2 2s.9 2 2 2h13v3H4v-3h13c1.1 0 2-.9 2-2s-.9-2-2-2H4V6z" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Epicurious</span>
-                            </div>
-
-                            {/* Watchtower - Spiral/Eye */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-800">
-                                    <path d="M22 12A10 10 0 1 1 12 2a10 10 0 0 1 10 10Z" />
-                                    <path d="M12 8a4 4 0 1 0 4 4" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Watchtower</span>
-                            </div>
-
-                            {/* Renaissance - R Logo */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-slate-800">
-                                    <path d="M4 22V2h7a6 6 0 0 1 0 12H4" />
-                                    <path d="M10 14l5 8" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Renaissance</span>
-                            </div>
-
-                            {/* ContrastAI - Split Circle */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden relative">
-                                    <div className="absolute top-0 left-0 w-1/2 h-full bg-slate-800" />
-                                </div>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">ContrastAI</span>
-                            </div>
-
-                            {/* Nietzsche - Burst */}
-                            <div className="flex items-center gap-2 group cursor-default">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-800">
-                                    <circle cx="12" cy="12" r="4" />
-                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                                </svg>
-                                <span className="text-2xl font-bold text-slate-700 tracking-tight">Nietzsche</span>
-                            </div>
-                        </div>
-                    </div>
-                </Container>
-            </section>
-
-            {/* 3. HOW IT WORKS GRID */}
-            <Section className="bg-white">
+            {/* 1.5 TECH STACK SLIDER */}
+            <div className="border-y border-white/5 bg-[#0B0F14]/50 backdrop-blur-sm overflow-hidden py-8">
                 <Container>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-                        <div className="max-w-2xl">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 text-slate-800 text-xs font-bold mb-6 border border-orange-100">
-                                <div className="w-4 h-4 rounded-full bg-orange-500 flex items-center justify-center text-white">
-                                    <Check size={10} strokeWidth={3} />
-                                </div>
-                                End-to-End Email Growth System
-                            </div>
-                            <h2 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight leading-tight">
-                                We don’t sell tools. <br />
-                                We build revenue engines.
-                            </h2>
-                            <p className="text-slate-500 text-lg max-w-lg leading-relaxed">
-                                Our team handles everything: Strategy & funnel mapping, Copywriting & design, Automation flows, and ESP setup.
-                            </p>
+                    <p className="text-center text-gray-500 text-xs font-mono uppercase tracking-widest mb-6">Powering campaigns across all major platforms</p>
+                    <div className="relative flex overflow-hidden group">
+                        <div className="flex animate-marquee whitespace-nowrap gap-16 px-8 min-w-full">
+                            {[
+                                "Klaviyo", "Mailchimp", "HubSpot", "ActiveCampaign", "Salesforce Marketing Cloud", "Braze", "Omnisend", "Customer.io", "Drip", "ConvertKit",
+                                "Klaviyo", "Mailchimp", "HubSpot", "ActiveCampaign", "Salesforce Marketing Cloud", "Braze", "Omnisend", "Customer.io", "Drip", "ConvertKit"
+                            ].map((tool, i) => (
+                                <span key={i} className="text-xl font-bold text-gray-600 hover:text-[#00D9C3] transition-colors cursor-default select-none">
+                                    {tool}
+                                </span>
+                            ))}
                         </div>
-                        <div className="mb-4">
-                            <Button className="rounded-full bg-black text-white px-8 h-12 hover:bg-slate-800 shadow-lg font-semibold">
-                                Get Started
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Card 1 */}
-                        <div className="p-10 rounded-[2.5rem] bg-slate-50/80 hover:bg-slate-50 transition-colors duration-300">
-                            <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white mb-8 shadow-lg shadow-orange-500/20">
-                                <BarChart3 className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Performance Tracking & Optimization</h3>
-                            <p className="text-slate-500 leading-relaxed mb-4">We monitor open rates, CTRs, revenue per subscriber, and deliverability health.</p>
-                            <p className="text-slate-500 leading-relaxed">…and continuously optimize campaigns using A/B testing.</p>
-                        </div>
-
-                        {/* Card 2 */}
-                        <div className="p-10 rounded-[2.5rem] bg-slate-50/80 hover:bg-slate-50 transition-colors duration-300">
-                            <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white mb-8 shadow-lg shadow-orange-500/20">
-                                <LayoutTemplate className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">High-Converting Copy & Design</h3>
-                            <p className="text-slate-500 leading-relaxed mb-2">Our copywriters and designers craft emails that get opened, read, and clicked.</p>
-                            <p className="text-slate-500 leading-relaxed">Always fully aligned with your brand voice.</p>
-                        </div>
-
-                        {/* Card 3 */}
-                        <div className="p-10 rounded-[2.5rem] bg-slate-50/80 hover:bg-slate-50 transition-colors duration-300">
-                            <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white mb-8 shadow-lg shadow-orange-500/20">
-                                <Settings className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Automation & Lifecycle Campaigns</h3>
-                            <p className="text-slate-500 leading-relaxed mb-4">
-                                We build comprehensive flows:
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                                {["Welcome sequences", "Abandoned cart flows", "Lead-nurturing drips", "Re-engagement series"].map(tag => (
-                                    <span key={tag} className="px-3 py-1 rounded-full bg-white border border-slate-100 text-xs font-semibold text-slate-600">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Card 4 */}
-                        <div className="p-10 rounded-[2.5rem] bg-slate-50/80 hover:bg-slate-50 transition-colors duration-300">
-                            <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white mb-8 shadow-lg shadow-orange-500/20">
-                                <Globe className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Global Sending, Inbox-Ready</h3>
-                            <p className="text-slate-500 leading-relaxed mb-2">We optimize technical setup, warming, and authentication.</p>
-                            <p className="text-slate-500 leading-relaxed">SPF, DKIM, DMARC, and list hygiene to maximize inbox placement worldwide.</p>
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 4. OUR PRODUCTS FEATURES */}
-            <Section className="bg-white">
-                <Container>
-                    <div className="text-center mb-20">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-slate-800 text-xs font-bold mb-6 border border-orange-100">
-                            <Monitor size={12} className="text-orange-600" />
-                            Features
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">What’s Included in Our Service</h2>
-                        <p className="text-slate-500">Everything you need to scale your email revenue.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* FEATURE 1: Complete Management */}
-                        <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100">
-                            <h3 className="text-xl font-bold text-slate-900 mb-6">Complete Email Marketing Management</h3>
-                            <ul className="space-y-4">
-                                {["Monthly campaign planning", "Email design & copywriting", "ESP management", "Automation workflows", "CRM syncing", "Segmentation strategy", "A/B testing", "Reporting dashboards", "Revenue attribution"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600">
-                                        <div className="w-5 h-5 rounded-full bg-white border border-slate-200 flex items-center justify-center text-orange-500 shrink-0">
-                                            <Check size={12} strokeWidth={3} />
-                                        </div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* FEATURE 2: Security */}
-                        <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100 flex flex-col">
-                            <h3 className="text-xl font-bold text-slate-900 mb-6">Enterprise-Grade Security & Compliance</h3>
-                            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                                We follow industry best practices for GDPR-aligned processes, data protection, and secure access controls.
-                            </p>
-                            <div className="bg-white rounded-2xl p-6 border border-slate-100 flex-1 flex items-center justify-center">
-                                <div className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-4 mx-auto">
-                                        <Shield size={32} />
-                                    </div>
-                                    <div className="font-bold text-slate-900">100% Secure</div>
-                                    <div className="text-xs text-slate-400">GDPR & CCPA Ready</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* FEATURE 3: Strategies (Col 1) */}
-                        <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100">
-                            <h3 className="text-xl font-bold text-slate-900 mb-6">Email Strategies We Execute</h3>
-                            <ul className="space-y-4">
-                                {["Ecommerce Revenue Flows", "SaaS User Onboarding", "Lead Nurture Funnels", "Newsletter Growth Systems"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600">
-                                        <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
-                                            <Zap size={16} fill="currentColor" />
-                                        </div>
-                                        <span className="font-medium">{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* FEATURE 4: Strategies (Col 2) */}
-                        <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100">
-                            <h3 className="text-xl font-bold text-slate-900 mb-6">More Strategies</h3>
-                            <ul className="space-y-4">
-                                {["Webinar Promotions", "Membership Retention", "Product Launch Campaigns", "Event Marketing Emails"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-600">
-                                        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                                            <LayoutTemplate size={16} />
-                                        </div>
-                                        <span className="font-medium">{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 5. TESTIMONIALS */}
-            <Section className="bg-white">
-                <Container>
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                        <div className="max-w-3xl">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-slate-800 text-xs font-bold mb-6 border border-orange-100">
-                                <MessageSquare size={12} className="text-orange-600" />
-                                Client Results
-                            </div>
-                            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight leading-tight">
-                                Real Results from <br /> Real Brands
-                            </h2>
-                            <p className="text-slate-500 text-lg max-w-xl">
-                                See how we help businesses grow faster and connect better with their audience.
-                            </p>
-                        </div>
-                        <div className="flex gap-4">
-                            <button className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-orange-500 hover:text-orange-500 transition-colors">
-                                <ChevronLeft size={20} />
-                            </button>
-                            <button className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-orange-500 hover:text-orange-500 transition-colors">
-                                <ChevronRight size={20} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Left Column: Case Study Card */}
-                        <div className="relative rounded-[2.5rem] overflow-hidden min-h-[500px] group bg-slate-900">
-                            <div className="absolute inset-0 opacity-70 group-hover:opacity-60 transition-opacity">
-                                <img
-                                    src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop"
-                                    className="w-full h-full object-cover grayscale"
-                                    alt="Case Study"
-                                />
-                            </div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                            <div className="relative z-10 p-10 h-full flex flex-col justify-between text-white">
-                                <div className="flex justify-between items-start">
-                                    <div className="w-10 h-10 opacity-80">
-                                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-                                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                        </svg>
-                                    </div>
-                                    <div className="text-xs font-bold tracking-widest uppercase flex items-center gap-1 cursor-pointer hover:text-orange-400 transition-colors">
-                                        Read The Case Study <ChevronRight size={12} />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-3xl font-bold mb-4 leading-tight">
-                                        “Digihub helped us scale email revenue by <br /> 47% in 90 days.”
-                                    </h3>
-                                    <p className="text-white/60 text-sm">CEO, Scaling Brand</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right Column: Reviews */}
-                        <div className="flex flex-col gap-6">
-                            {/* Review 1 */}
-                            <div className="p-10 rounded-[2.5rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100">
-                                        <img src="https://i.pravatar.cc/150?u=a042581f4e29026024d" alt="Max" className="w-full h-full object-cover" />
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-slate-900 text-lg">Sarah Jenkins</div>
-                                        <div className="text-slate-500 text-sm">Marketing Director</div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-1 text-orange-500 mb-4">
-                                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-5 h-5 fill-current" />)}
-                                </div>
-                                <p className="text-slate-600 text-lg leading-relaxed">
-                                    “Our deliverability issues vanished after onboarding. The team is incredibly technical and strategic.”
-                                </p>
-                            </div>
-
-                            {/* Review 2 */}
-                            <div className="p-10 rounded-[2.5rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100">
-                                        <img src="https://i.pravatar.cc/150?u=a04258114e29026302d" alt="Jake" className="w-full h-full object-cover" />
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-slate-900 text-lg">Mike Ross</div>
-                                        <div className="text-slate-500 text-sm">Founder, EcomStore</div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-1 text-orange-500 mb-4">
-                                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-5 h-5 fill-current" />)}
-                                </div>
-                                <p className="text-slate-600 text-lg leading-relaxed">
-                                    “Open rates increased dramatically within weeks. Best investment we've made this year.”
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 6. PRICING */}
-            <Section className="bg-white">
-                <Container>
-                    <div className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-slate-800 text-xs font-bold mb-6 border border-orange-100">
-                            <div className="w-4 h-4 rounded-full bg-orange-500 flex items-center justify-center text-white font-serif italic text-[10px]">$</div>
-                            Service Packages
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
-                            Email Marketing Pricing
-                        </h2>
-                        <p className="text-slate-500 text-lg">Monthly Retainers Based on Growth Stage</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {/* Starter Plan */}
-                        <div className="bg-white rounded-[2.5rem] p-10 border border-slate-200">
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Starter</h3>
-                            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                                For small teams testing email marketing seriously.
-                            </p>
-                            <div className="flex items-baseline gap-1 mb-8">
-                                <IndianRupee size={32} className="text-slate-900" strokeWidth={3} />
-                                <span className="text-5xl font-bold text-slate-900 tracking-tight">15,000</span>
-                                <span className="text-slate-400 text-lg">/Month</span>
-                            </div>
-
-                            <Button className="w-full h-12 rounded-full bg-black text-white font-bold mb-10 hover:bg-slate-800">
-                                Start a Project
-                            </Button>
-
-                            <ul className="space-y-4">
-                                {["Strategy setup", "2 campaigns / month", "Basic automations", "Reporting", "Email support"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-sm text-slate-700">
-                                        <Check size={16} className="text-slate-400" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Growth Plan */}
-                        <div className="bg-black rounded-[2.5rem] p-10 border border-black text-white relative shadow-2xl shadow-orange-500/10 transform md:scale-105 z-10">
-                            <h3 className="text-2xl font-bold text-white mb-4">Growth</h3>
-                            <p className="text-slate-400 text-sm mb-8 leading-relaxed">
-                                For scaling brands.
-                            </p>
-                            <div className="flex items-baseline gap-1 mb-8">
-                                <IndianRupee size={32} className="text-white" strokeWidth={3} />
-                                <span className="text-5xl font-bold tracking-tight">35,000</span>
-                                <span className="text-slate-400 text-lg">/Month</span>
-                            </div>
-
-                            <Button className="w-full h-12 rounded-full bg-orange-600 text-white font-bold mb-10 hover:bg-orange-500 shadow-lg shadow-orange-500/25 border-0">
-                                Start a Project
-                            </Button>
-
-                            <ul className="space-y-4">
-                                {["Weekly campaigns", "Advanced automations", "CRO copywriting", "Deliverability optimization", "A/B testing", "Monthly performance calls"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-sm text-white">
-                                        <div className="w-4 h-4 rounded-full bg-orange-600 flex items-center justify-center text-white shrink-0"><Check size={10} strokeWidth={4} /></div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Enterprise Plan */}
-                        <div className="bg-white rounded-[2.5rem] p-10 border border-slate-200">
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Enterprise</h3>
-                            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                                For high-volume senders & complex funnels.
-                            </p>
-                            <div className="flex items-baseline gap-1 mb-8">
-                                <span className="text-5xl font-bold text-slate-900 tracking-tight">Custom</span>
-                            </div>
-
-                            <Button className="w-full h-12 rounded-full bg-black text-white font-bold mb-10 hover:bg-slate-800">
-                                Start a Project
-                            </Button>
-
-                            <ul className="space-y-4">
-                                {["Dedicated strategist", "Full lifecycle marketing", "ESP migrations", "Compliance setup", "Revenue forecasting", "Executive reporting"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-sm text-slate-700">
-                                        <Check size={16} className="text-slate-400" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 7. FAQ */}
-            <Section className="bg-white">
-                <Container>
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-24 align-top">
-                        {/* Left Column */}
-                        <div className="md:col-span-5">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-slate-800 text-xs font-bold mb-6 border border-orange-100">
-                                <HelpCircle size={12} className="text-orange-600" />
-                                FAQ
-                            </div>
-                            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight leading-tiht">
-                                Frequent Questions. <br /> Clear Answers.
-                            </h2>
-                            <p className="text-slate-500 text-lg mb-10 leading-relaxed">
-                                Everything you need to know about our services and process.
-                            </p>
-                            <Button className="rounded-full bg-black text-white px-8 h-12 hover:bg-slate-800 shadow-lg font-semibold">
-                                Request a Free Audit
-                            </Button>
-                        </div>
-
-                        {/* Right Column */}
-                        <div className="md:col-span-7 space-y-4">
-                            <FaqItem
-                                q="Do you work with our existing ESP?"
-                                a="Yes — HubSpot, Klaviyo, Mailchimp, Zoho, SendGrid, and more."
-                                defaultOpen={true}
-                            />
-                            <FaqItem q="Do you offer a free audit?" a="Yes. We analyze your current email setup and growth opportunities." />
-                            <FaqItem q="Who creates the emails?" a="Digihub handles copy, design, QA, deployment, and optimization." />
-                            <FaqItem q="Is there a minimum contract period?" a="Typically 3 months to see meaningful results." />
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 8. CTA / Global Stats */}
-            <Section className="bg-[#0B0F14] text-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] opacity-[0.03] bg-center bg-no-repeat bg-cover" />
-                <Container className="relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <div className="inline-block bg-orange-500/20 text-orange-400 px-4 py-1.5 rounded-full text-sm font-bold mb-6 border border-orange-500/30">
-                                GLOBAL REACH
-                            </div>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                                Global Brands. <br /> <span className="text-orange-500">Proven Systems.</span>
-                            </h2>
-                            <p className="text-slate-400 text-lg mb-8 max-w-md">
-                                Join thousands of companies using our platform to drive growth and maintain brand consistency across the globe.
-                            </p>
-
-                            <div className="flex gap-12">
-                                <div>
-                                    <div className="text-3xl font-bold text-white mb-1">1500+</div>
-                                    <div className="text-slate-500 text-sm">Clients</div>
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-bold text-white mb-1">1000+</div>
-                                    <div className="text-slate-500 text-sm">Integrations</div>
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-bold text-white mb-1">100+</div>
-                                    <div className="text-slate-500 text-sm">Countries</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="relative">
-                            {/* Map Dots Mockup */}
-                            <div className="aspect-video bg-white/5 rounded-2xl border border-white/10 p-8 backdrop-blur-sm">
-                                <Globe className="w-full h-full text-slate-700 opacity-20" />
-                                <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-orange-500 rounded-full animate-ping" />
-                                <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-orange-500 rounded-full" />
-
-                                <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-orange-500 rounded-full animate-ping delay-700" />
-                                <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-orange-500 rounded-full" />
-
-                                <div className="absolute top-1/2 right-1/4 w-3 h-3 bg-orange-500 rounded-full animate-ping delay-300" />
-                                <div className="absolute top-1/2 right-1/4 w-3 h-3 bg-orange-500 rounded-full" />
-                            </div>
-                        </div>
-                    </div>
-                </Container>
-            </Section>
-
-            {/* 9. FINAL CTA */}
-            <div className="bg-slate-50 py-32 rounded-b-[3rem]">
-                <Container className="text-center max-w-4xl">
-                    <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-8 tracking-tight">
-                        Ready to Turn Email Into Your <br /> Top Revenue Channel?
-                    </h2>
-                    <p className="text-xl text-slate-500 mb-10 max-w-2xl mx-auto">
-                        Book a free consultation with Digihub’s email marketing experts today.
-                    </p>
-                    <div className="flex justify-center">
-                        <Button className="h-16 px-10 rounded-full bg-orange-500 hover:bg-orange-600 shadow-xl shadow-orange-500/30 flex items-center justify-center transition-all hover:scale-105 group text-lg font-bold">
-                            Schedule Free Strategy Call <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                        </Button>
                     </div>
                 </Container>
             </div>
-        </div>
+
+            {/* 2. ROI COMPARISON CHART */}
+            <Section className="py-24 bg-[#080A0D] border-t border-white/5">
+                <Container>
+                    <div className="flex flex-col lg:flex-row gap-16 items-center">
+                        <motion.div
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="lg:w-1/2"
+                        >
+                            <SectionHeading
+                                title="The Channel That Wins"
+                                subtitle="While brands chase vanity metrics on social, email quietly delivers the highest ROI of any digital channel."
+                            />
+                            <ul className="space-y-6 mt-8">
+                                {[
+                                    { icon: Mail, text: "Email reaches 4.3 billion daily users — more than any social platform." },
+                                    { icon: Zap, text: "Segmented campaigns see 760% higher revenue than batch-and-blast sends." },
+                                    { icon: Sparkles, text: "Automated flows work 24/7, turning your list into a revenue engine on autopilot." },
+                                    { icon: BarChart3, text: "Every metric is trackable — open rates, clicks, revenue per email, LTV." }
+                                ].map((item, i) => (
+                                    <motion.li
+                                        key={i}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: i * 0.1 + 0.5 }}
+                                        className="flex gap-4 items-start"
+                                    >
+                                        <div className="w-10 h-10 rounded-full bg-[#00D9C3]/10 flex items-center justify-center shrink-0 text-[#00D9C3]">
+                                            <item.icon size={20} />
+                                        </div>
+                                        <p className="text-gray-300 leading-relaxed">{item.text}</p>
+                                    </motion.li>
+                                ))}
+                            </ul>
+                        </motion.div>
+
+                        {/* Bar Chart Visualization */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="lg:w-1/2 w-full"
+                        >
+                            <div className="bg-[#0B0F14] border border-white/10 rounded-3xl p-8 relative overflow-hidden shadow-2xl">
+                                <h3 className="text-xl font-bold text-white mb-8 border-b border-white/10 pb-4">Average ROI by Channel (Per $1 Spent)</h3>
+                                <div className="space-y-6">
+                                    {[
+                                        { label: "Email Marketing", val: 42, color: "#00D9C3" },
+                                        { label: "SEO", val: 22, color: "#34d399" },
+                                        { label: "Paid Search (PPC)", val: 17, color: "#60a5fa" },
+                                        { label: "Social Media Ads", val: 10, color: "#a78bfa" },
+                                        { label: "Display Advertising", val: 3, color: "#f472b6" },
+                                    ].map((item, i) => (
+                                        <div key={i}>
+                                            <div className="flex justify-between text-sm mb-2">
+                                                <span className="text-gray-400 font-medium">{item.label}</span>
+                                                <motion.span
+                                                    initial={{ opacity: 0 }}
+                                                    whileInView={{ opacity: 1 }}
+                                                    transition={{ delay: 1 + i * 0.1 }}
+                                                    className="text-white font-bold"
+                                                >
+                                                    ${item.val}
+                                                </motion.span>
+                                            </div>
+                                            <div className="h-4 bg-white/5 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    whileInView={{ width: `${(item.val / 42) * 100}%` }}
+                                                    viewport={{ once: true }}
+                                                    transition={{ duration: 1.5, delay: i * 0.1 + 0.2, type: "spring", stiffness: 50 }}
+                                                    className="h-full rounded-full relative"
+                                                    style={{ backgroundColor: item.color }}
+                                                >
+                                                    <motion.div
+                                                        className="absolute inset-0 bg-white/20"
+                                                        initial={{ x: "-100%" }}
+                                                        animate={{ x: "100%" }}
+                                                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear", delay: i * 0.2 }}
+                                                    />
+                                                </motion.div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-6 text-right">Source: DMA, Litmus, HubSpot 2024</p>
+                            </div>
+                        </motion.div>
+                    </div>
+                </Container>
+            </Section>
+
+            {/* 3. WHAT WE DO (Services Grid) */}
+            <Section id="services" className="py-24 bg-[#0B0F14] border-t border-white/5">
+                <Container>
+                    <div className="text-center mb-16">
+                        <SectionHeading title="Everything Your Email Program Needs" subtitle="From list growth to revenue attribution — we own the entire email lifecycle." />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[
+                            { title: "Strategy & Audit", icon: ArrowRight, desc: "Deep-dive into your current email program, deliverability health, and funnel gaps. We map a revenue-first roadmap.", stat: "72h to first insights" },
+                            { title: "Campaign Management", icon: Mail, desc: "We craft, schedule, A/B test, and optimize every newsletter and product launch broadcast for maximum conversions.", stat: "+38% avg open rate lift" },
+                            { title: "Automation Flows", icon: Zap, desc: "Welcome sequences, abandoned cart recovery, win-back campaigns. Intelligent triggers firing 24/7.", stat: "$6.4 avg revenue per email" },
+                            { title: "Segmentation", icon: Users, desc: "Behavioral and purchase-based segmentation. Dynamic content that makes subscribers feel understood.", stat: "3.2x higher conversion" },
+                            { title: "List Growth", icon: TrendingUp, desc: "High-converting opt-in strategies, pop-up design, and lead magnets that systematically turn cold leads into prospects.", stat: "-70% acquisition cost" },
+                            { title: "Deliverability", icon: ShieldCheck, desc: "Domain warming, DKIM/SPF/DMARC setup, and spam score monitoring. We ensure you land in the Inbox.", stat: "98% placement rate" },
+                        ].map((s, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1, duration: 0.5 }}
+                                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                                className="group p-8 rounded-2xl bg-[#080A0D] border border-white/5 hover:border-[#00D9C3]/40 transition-colors shadow-lg hover:shadow-[#00D9C3]/10"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-[#00D9C3]/10 flex items-center justify-center text-[#00D9C3] mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    <s.icon size={24} />
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#00D9C3] transition-colors">{s.title}</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-6 h-20">{s.desc}</p>
+                                <div className="py-2 px-3 bg-white/5 rounded-lg border border-white/5 inline-block text-xs font-mono text-[#00D9C3]">
+                                    {s.stat}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </Container>
+            </Section>
+
+            {/* 4. HOW IT WORKS */}
+            <Section className="py-24 bg-[#080A0D] border-y border-white/5 relative overflow-hidden">
+                {/* Background decorative line */}
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#00D9C3]/20 to-transparent hidden lg:block" />
+
+                <Container className="relative z-10">
+                    <div className="flex flex-col lg:flex-row gap-16">
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="lg:w-1/3 lg:sticky lg:top-32 self-start"
+                        >
+                            <h2 className="text-4xl font-black text-white mb-6">From Audit to <br /><span className="text-[#00D9C3]">Revenue.</span></h2>
+                            <p className="text-gray-400 text-lg">A clear, accountable 5-step process that gets campaigns live within 72 hours.</p>
+
+                            <Link href="/contact" className="mt-8 inline-block">
+                                <button className="px-6 py-3 rounded-full border border-[#00D9C3]/50 text-[#00D9C3] font-bold text-sm hover:bg-[#00D9C3]/10 transition-colors">
+                                    Book Strategy Call
+                                </button>
+                            </Link>
+                        </motion.div>
+
+                        <div className="lg:w-2/3 grid gap-12">
+                            {[
+                                { step: "01", title: "Discovery Call", desc: "We learn your goals, audience, tech stack, and existing results in a 45-min deep-dive." },
+                                { step: "02", title: "Full ESP Audit", desc: "We analyse your list health, deliverability, past campaigns, and automation gaps." },
+                                { step: "03", title: "Strategy Blueprint", desc: "Custom email calendar, segmentation map, automation flow architecture, and KPI targets." },
+                                { step: "04", title: "Build & Launch", desc: "We design, copy-write, code, and deploy campaigns and flows — live within 72 hours." },
+                                { step: "05", title: "Optimise & Scale", desc: "Weekly reporting, A/B testing cadence, and monthly strategy reviews." },
+                            ].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                                    className="flex gap-6 items-start group relative"
+                                >
+                                    <div className="text-5xl font-black text-white/5 group-hover:text-[#00D9C3]/20 transition-colors font-mono mt-[-10px] absolute -left-4 -top-4 -z-10 select-none">
+                                        {item.step}
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border border-[#00D9C3]/30 bg-[#0B0F14] flex items-center justify-center shrink-0 text-[#00D9C3] font-bold z-10 shadow-[0_0_20px_-5px_rgba(0,217,195,0.3)]">
+                                        {i + 1}
+                                    </div>
+                                    <div className="pt-2">
+                                        <h4 className="text-xl font-bold text-white mb-2 group-hover:text-[#00D9C3] transition-colors">{item.title}</h4>
+                                        <p className="text-gray-400 leading-relaxed">{item.desc}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </Container>
+            </Section>
+
+            {/* 5. PRICING (Using ServicePricing Component) */}
+            <ServicePricing serviceName="Email Marketing" plans={pricingPlans} />
+
+            {/* 6. TESTIMONIALS */}
+            <Section className="py-24 bg-[#080A0D] border-t border-white/5">
+                <Container>
+                    <div className="text-center mb-16">
+                        <SectionHeading title="Proven Results" subtitle="Numbers our clients actually brag about." />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            { name: "Sarah Roth", role: "CMO · Luminary Beauty Co.", text: "DigiHub rebuilt our entire email program. Within 60 days, open rates jumped from 14% to 41% and revenue tripled.", start: 5 },
+                            { name: "Mark Alderton", role: "CEO · Verve Athletic Gear", text: "We had no strategy. DigiHub rebuilt our segments and launched 6 flows in 3 weeks. Our abandoned cart now generates $18k/month.", start: 5 },
+                            { name: "Priya Lakhani", role: "Founder · NutraCore", text: "Professional, data-driven, and truly invested. They helped us build a 6-figure recurring revenue stream from our list.", start: 5 },
+                        ].map((t, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.2 }}
+                                whileHover={{ y: -10 }}
+                                className="bg-[#0B0F14] border border-white/5 p-8 rounded-2xl relative shadow-lg hover:shadow-2xl transition-all duration-300"
+                            >
+                                <div className="flex gap-1 mb-6 text-[#00D9C3]">
+                                    {[...Array(5)].map((_, i) => <Sparkles key={i} size={14} fill="currentColor" />)}
+                                </div>
+                                <p className="text-gray-300 mb-8 italic leading-relaxed">"{t.text}"</p>
+                                <div>
+                                    <div className="font-bold text-white">{t.name}</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">{t.role}</div>
+                                </div>
+                                <div className="absolute top-8 right-8 text-[#00D9C3]/10">
+                                    <Sparkles size={40} />
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </Container>
+            </Section>
+
+            {/* 7. WHY DIGIHUB (Trust Badges) */}
+            <Section className="py-24 bg-[#0B0F14] border-t border-white/5">
+                <Container>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                        {[
+                            { title: "10+ Years Experience", desc: "A decade of hands-on results across global markets.", icon: Sparkles },
+                            { title: "No Lock-in Contracts", desc: "We earn your business every single month.", icon: Lock },
+                            { title: "Revenue Reporting", desc: "See exactly what each email earns — tied to your bottom line.", icon: BarChart3 },
+                            { title: "GDPR & CAN-SPAM", desc: "Full compliance management built into every campaign.", icon: ShieldCheck },
+                            { title: "72-Hour Launch", desc: "From signed brief to live campaign in 3 business days.", icon: Zap },
+                            { title: "Global Client Base", desc: "Serving brands across 18 countries with localized strategy.", icon: Globe },
+                        ].map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                className="flex gap-4 group"
+                            >
+                                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center shrink-0 text-[#00D9C3] border border-white/10 group-hover:bg-[#00D9C3] group-hover:text-black transition-colors duration-300 shadow-lg group-hover:shadow-[#00D9C3]/50">
+                                    <item.icon size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white mb-2 group-hover:text-[#00D9C3] transition-colors">{item.title}</h4>
+                                    <p className="text-sm text-gray-400">{item.desc}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </Container>
+            </Section>
+
+            {/* 8. CTA */}
+            <div className="mb-[-1px] bg-[#0B0F14] border-t border-white/5">
+                <div className="py-24">
+                    <ConsultationFormSection
+                        source="email-page-v2"
+                        title="Ready to Monetize Your List?"
+                        subtitle="Book a free 30-minute email audit. We'll show you exactly where the money is being left on the table."
+                    />
+                </div>
+            </div>
+        </main>
     );
 }
+
+const SectionHeading = ({ title, subtitle }: { title: string, subtitle: string }) => (
+    <>
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">{title}</h2>
+        <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed text-lg">{subtitle}</p>
+    </>
+);
